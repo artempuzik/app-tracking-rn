@@ -105,6 +105,7 @@ const AppProfile = () => {
                     <CustomButton
                         title={'Сохранить'}
                         isLoading={loading}
+                        onPress={submit}
                     />
                 </View>
     );

@@ -58,7 +58,6 @@ export default function ResetPasswordScreen({navigation}) {
             setError(e.message)
             setLoading(false)
         }
-
     }
 
     const resetPasswordBlock = useMemo(() => {

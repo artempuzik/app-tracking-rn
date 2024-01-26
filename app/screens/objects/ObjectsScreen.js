@@ -96,8 +96,6 @@ const ObjectsScreen = ({navigation}) => {
         fetchData().catch(() => {})
     }, []);
 
-    console.log(items)
-
     const selectElement = useMemo(() => (
         <View style={{...styles.selectContainer, paddingHorizontal: 20}}>
             <SelectList

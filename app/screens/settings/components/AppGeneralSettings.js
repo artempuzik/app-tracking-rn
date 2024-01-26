@@ -3,9 +3,8 @@ import {View, Text, ScrollView, Platform, KeyboardAvoidingView} from 'react-nati
 import styles from '../styles'
 import {useDispatch, useSelector} from "react-redux";
 import SelectList from "../../../components/select/SelectList";
-import {CODE_LIST, LANGUAGE_LIST, METRICS_LIST} from "../../../config";
+import {CODE_LIST, METRICS_LIST} from "../../../config";
 import CustomButton from "../../../components/button/Button";
-import {setLanguage} from "../../../store/app";
 import {changeUser} from "../../../store/user/usersActions";
 
 const AppGeneralSettings = () => {
@@ -17,16 +16,14 @@ const AppGeneralSettings = () => {
 
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        dispatch(setLanguage(language))
-    }, [language]);
-
     const user = useSelector(state => state.user.currentUser)
 
     const languages = useSelector(state => state.app.languages)
 
     useEffect(() => {
         if(user) {
+            setGeocoder(user.geocoder)
+            setFlags(user.flags)
             setGeocoder(user.geocoder)
         }
     }, [user])
@@ -38,8 +35,8 @@ const AppGeneralSettings = () => {
             dispatch(changeUser({
                 geocoder,
                 language,
+                flags,
             })).then((response) => {
-                console.log(response)
                 setLoading(false)
                 if(response.error) {
                     setError(response.error)
@@ -48,6 +45,10 @@ const AppGeneralSettings = () => {
         } catch (e) {
             setLoading(false)
         }
+    }
+
+    if(!user) {
+        return null
     }
 
     return (
@@ -60,15 +61,15 @@ const AppGeneralSettings = () => {
                         >
                         <View style={styles.block}>
                             <Text style={styles.text}>Язык интерфейса</Text>
-                            <SelectList items={languages} value={user.language} onChange={setLang}/>
+                            <SelectList items={languages} value={language} onChange={setLang}/>
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>Карта по умолчанию</Text>
-                            <SelectList items={METRICS_LIST} value={user.flags} onChange={setFlags}/>
+                            <SelectList items={METRICS_LIST} value={flags} onChange={setFlags}/>
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>Система измерения</Text>
-                            <SelectList items={CODE_LIST} value={user.geocoder} onChange={setGeocoder}/>
+                            <SelectList items={CODE_LIST} value={geocoder} onChange={setGeocoder}/>
                         </View>
                         <Text style={styles.error}>
                             {error}
@@ -78,6 +79,7 @@ const AppGeneralSettings = () => {
                     <CustomButton
                         title={'Сохранить'}
                         isLoading={loading}
+                        onPress={submitHandler}
                     />
                 </View>
     );

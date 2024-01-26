@@ -56,7 +56,7 @@ export const getSettings = () => async (dispatch) => {
         .then(response => response.json())
         .then(data => {
           dispatch(setServers(data.servers))
-          dispatch(setLanguages(data.languages))
+          dispatch(setLanguages(data.langs))
         })
   } catch (e) {
     console.log(e)

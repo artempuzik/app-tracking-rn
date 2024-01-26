@@ -27,7 +27,13 @@ export const appSlice = createSlice({
             state.servers = action.payload
         },
         setLanguages: (state, action) => {
-            state.languages = action.payload
+            const formatted = []
+            for (const code in action.payload) {
+                formatted.push({
+                    [code]: action.payload[code]
+                })
+            }
+            state.languages = formatted
         },
         resetAppState: (state) => {
             state.language = initialState.language

@@ -15,7 +15,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import styles from "./styles";
 import {useDispatch, useSelector} from "react-redux";
 import {changeServer, getToken} from "../../store/app/appActions";
-import {BASE_URL, LANGUAGE_LIST, SERVERS} from "../../config";
+import {BASE_URL} from "../../config";
 import CustomButton from "../../components/button/Button";
 import RNPickerSelect from "react-native-picker-select";
 import {setLanguage} from "../../store/app";
