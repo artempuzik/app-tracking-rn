@@ -4,6 +4,8 @@ const initialState = {
     objects: [],
     groups: [],
     statuses: [],
+    icons: [],
+    transactions: [],
 }
 
 export const objectsSlice = createSlice({
@@ -19,6 +21,12 @@ export const objectsSlice = createSlice({
         setObjectsStatuses: (state, action) => {
             state.statuses = action.payload
         },
+        setObjectsIcons: (state, action) => {
+            state.icons = action.payload
+        },
+        setTransactions: (state, action) => {
+            state.transactions = action.payload
+        },
         resetObjectsState: (state) => {
             state.objects = initialState.drivers
             state.groups = initialState.groups
@@ -31,6 +39,8 @@ export const {
     setObjects,
     resetObjectsState,
     setObjectsStatuses,
+    setObjectsIcons,
+    setTransactions,
 } = objectsSlice.actions
 
 export default objectsSlice.reducer

@@ -23,6 +23,7 @@ export const userSlice = createSlice({
         resetUserState: (state) => {
             state.userName = initialState.userName
             state.users = initialState.users
+            state.currentUser = initialState.currentUser
         },
     },
 })

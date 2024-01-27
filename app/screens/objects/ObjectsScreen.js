@@ -10,8 +10,9 @@ import {MOVE_OPTIONS, PRESSED_COLOR, STATUS_OPTIONS, WITH_IGNITION_OPTIONS} from
 import {useDispatch, useSelector} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import SelectList from "../../components/select/SelectList";
-import {getObjects, getObjectsStatuses} from "../../store/objects/objectsActions";
+import {getObjectIcons, getObjects, getObjectsStatuses} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
+import ObjectsMap from "./components/ObjectsMap";
 
 const initialFilters = {
     withIgnition: null,
@@ -28,7 +29,9 @@ const ObjectsScreen = ({navigation}) => {
     const [query, setQuery] = useState('')
 
     const [objects, setObjects] = useState([])
-    const [objectsStatuses, setObjectsStatuses] = useState([])
+    const [icons, setIcons] = useState([])
+
+    const [isMapOpen, setMapOpen] = useState(false)
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
@@ -80,9 +83,9 @@ const ObjectsScreen = ({navigation}) => {
             await dispatch(getObjects()).then(async (data) =>{
                 if(data.response) {
                     setObjects(data.response)
-                    await dispatch(getObjectsStatuses()).then((data) => {
+                    await dispatch(getObjectIcons()).then((data) => {
                         if(data.response) {
-                            setObjectsStatuses(data.response)
+                            setIcons(data.response)
                         }
                     })
                 }
@@ -213,7 +216,7 @@ const ObjectsScreen = ({navigation}) => {
                             },
                             styles.headerButton,
                         ]}
-                        onPress={() => navigation.navigate('ObjectsMap')}
+                        onPress={() => setMapOpen(false)}
                     >
                         <Svg
                             width={25}
@@ -269,6 +272,15 @@ const ObjectsScreen = ({navigation}) => {
                 }
             </View>
     ), [items, isLoading])
+
+    if(isMapOpen) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <AppHeader canGoBack={true} />
+                <ObjectsMap objects={items} icons={icons}/>
+            </SafeAreaView>
+        )
+    }
 
     return (
         <SafeAreaView style={styles.container}>

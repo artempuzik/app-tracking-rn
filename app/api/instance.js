@@ -5,10 +5,8 @@ import {Platform} from "react-native";
 import * as Updates from "expo-updates";
 let reconnect = 0
 
-const base = AsyncStorage.getItem('server') || BASE_URL
-
 const api = axios.create({
-    baseURL: base + '/api'
+    baseURL: BASE_URL + '/api'
 });
 
 const refreshToken = async () => {
@@ -16,6 +14,7 @@ const refreshToken = async () => {
     const response = await api.post('/token/refresh', {
             language,
         })
+    console.log('----------', response)
     return response;
 };
 
@@ -24,8 +23,8 @@ const getUserDataFromStorage = async () => {
     return JSON.parse(user)
 }
 
-const clearStorage = async () => {
-    console.log('CLEAR')
+export const clearStorage = async () => {
+    console.log('CLEAR STORAGE')
     const asyncStorageKeys = await AsyncStorage.getAllKeys();
     if (asyncStorageKeys.length > 0) {
         if (Platform.OS === 'android') {
@@ -35,6 +34,7 @@ const clearStorage = async () => {
             await AsyncStorage.multiRemove(asyncStorageKeys);
         }
     }
+    reconnect = 0
     await Updates.reloadAsync()
 }
 
@@ -67,13 +67,18 @@ api.interceptors.response.use((response) => {
     return response
 }, async function (error) {
     const originalRequest = error.config;
+    console.log('originalRequest', error.response.status)
+    if(!axios.defaults.baseURL) {
+        axios.defaults.baseURL = BASE_URL + '/api';
+    }
     if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-        if(reconnect = 5) {
+        if(reconnect === 5) {
             await clearStorage();
-            return;
+            return Promise.reject(error);
         }
         const access_token = await refreshToken();
+        console.log('---------', access_token)
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
         if (access_token) {
             reconnect = 0

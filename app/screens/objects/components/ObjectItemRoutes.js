@@ -8,6 +8,7 @@ import {useNavigation} from "@react-navigation/native";
 import styles from '../styles';
 import Button from "../../../components/button/Button";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
+import CustomButton from "../../../components/button/Button";
 
 const ObjectItemRoutes = ({object}) => {
     const navigation = useNavigation();
@@ -163,18 +164,9 @@ const ObjectItemRoutes = ({object}) => {
                             <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
                         </Pressable>
                     </View>
-                    <Pressable
-                        style={({pressed}) => [
-                            {
-                                backgroundColor: pressed ? '#c7c7c9' : '#2060ae',
-                            },
-                            styles.saveFiltersButton,
-                            {marginHorizontal: 20}
-                        ]}
-                        onPress={saveFilters}
-                    >
-                        <Text style={styles.saveButtonText}>Сохранить</Text>
-                    </Pressable>
+                    <View style={{marginHorizontal: 20}}>
+                        <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                    </View>
                 </View>
             </View>
         ), [minDrive, maxDrive, isFiltersOpen])

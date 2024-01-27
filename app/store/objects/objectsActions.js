@@ -1,5 +1,5 @@
 import Api from '../../api'
-import {setObjects, setObjectsStatuses} from "./index";
+import {setObjects, setObjectsIcons, setObjectsStatuses, setTransactions} from "./index";
 
 export const getObjects = () => async (dispatch) => {
   try {
@@ -55,6 +55,43 @@ export const getObjectsStatuses = () => async (dispatch) => {
 export const getObjectStatusById = (id) => async (dispatch, getState) => {
   try {
     const response = await Api.getObjectStatusById(id)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
+export const getObjectIcons = () => async (dispatch, getState) => {
+  try {
+    const response = await Api.getObjectIcons()
+    console.log(response)
+    if(response.status === 200) {
+      dispatch(setObjectsIcons(response.data))
+    }
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
+export const getTransactions = (dto) => async (dispatch, getState) => {
+  try {
+    const response = await Api.getTransactions(dto)
+    if(response.status === 200) {
+      dispatch(setTransactions(response.data))
+    }
     return {
       response: response.data,
       error: null,

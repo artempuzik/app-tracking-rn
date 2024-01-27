@@ -4,6 +4,7 @@ import {BASE_URL} from "../../config";
 const initialState = {
     subUserId: 0,
     token: null,
+    currentServer: BASE_URL,
     language: 'ru',
     profile: null,
     languages: ['ru-ru'],
@@ -26,6 +27,9 @@ export const appSlice = createSlice({
         setServers: (state, action) => {
             state.servers = action.payload
         },
+        setCurrentServer: (state, action) => {
+            state.currentServer = action.payload
+        },
         setLanguages: (state, action) => {
             const formatted = []
             for (const code in action.payload) {
@@ -40,6 +44,7 @@ export const appSlice = createSlice({
             state.token = initialState.token
             state.profile = initialState.profile
             state.servers = initialState.servers
+            state.currentServer = initialState.currentServer
         }
     },
 })
@@ -51,6 +56,7 @@ export const {
     setProfile,
     setServers,
     setLanguages,
+    setCurrentServer,
 } = appSlice.actions
 
 export default appSlice.reducer

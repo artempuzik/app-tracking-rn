@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Pressable, Text, View} from "react-native";
 import styles from "./styles";
 import Svg, {Path} from "react-native-svg";
@@ -24,8 +24,11 @@ const AppCalendarFilter = ({
 
     const saveCalendar = useCallback(() => {
         setIsCalendarOpen(false)
+        const from = new Date(minDate).setTime(new Date(minTime))
+        const till = new Date(maxDate).setTime(new Date(maxTime))
         setCalendarProperties({
-            minDate, maxDate, minTime, maxTime
+            from,
+            till,
         })
     }, [minDate, maxDate, minTime, maxTime])
 

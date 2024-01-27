@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Text, Pressable, ScrollView} from 'react-native';
+import {View, Text, Pressable, ScrollView, Linking} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, {Circle, Path} from "react-native-svg"
 import styles from './styles'
@@ -92,6 +92,7 @@ const HomeScreen = ({ navigation }) => {
                             },
                             styles.mainMenuItem,
                         ]}
+                        onPress={() => navigation.navigate('Map')}
                     >
                         <Svg
                             width={30}
@@ -130,6 +131,7 @@ const HomeScreen = ({ navigation }) => {
                             },
                             styles.mainMenuItem,
                         ]}
+                        onPress={() => navigation.navigate('Gas')}
                     >
                         <Svg
                             width={30}
@@ -187,15 +189,16 @@ const HomeScreen = ({ navigation }) => {
                     },
                     styles.footer,
                 ]}
+                onPress={() => Linking.openURL('https://geotek.online/')}
             >
                 <Svg
-                    width={30}
-                    height={30}
-                    viewBox="0 0 20 20"
+                    width={25}
+                    height={25}
+                    viewBox="0 0 16 14"
                 >
-                    <Path fill-rule="evenodd" d="M1 1h14v8H1V1zM0 9V0h16v11h-6v1h2v2H4v-2h2v-1H0V9z" clip-rule="evenodd" fill="#a7a7aa"/>
+                    <Path fillRule="evenodd" d="M1 1h14v8H1V1zM0 9V0h16v11h-6v1h2v2H4v-2h2v-1H0V9z" clipRule="evenodd" fill="#373738FF"/>
                 </Svg>
-                <Text>Полная версия</Text>
+                <Text style={{marginLeft: 10}}>Полная версия</Text>
             </Pressable>
         </SafeAreaView>
     );

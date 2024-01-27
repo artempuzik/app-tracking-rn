@@ -26,10 +26,12 @@ export default StyleSheet.create({
     },
     rightBlock: {
         flexDirection: 'row',
+        alignItems: 'center',
     },
     filtersMainContainer: {
         flex: 1,
         justifyContent: 'space-between',
+        marginTop: 10,
     },
     pageIconsBlock: {
         width: '100%',
@@ -164,7 +166,7 @@ export default StyleSheet.create({
         justifyContent: 'flex-start',
     },
     selectContainer: {
-        marginVertical: 20,
+        marginVertical: 10,
         height: 50,
     },
     radioButtonsContainer: {

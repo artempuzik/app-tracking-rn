@@ -153,18 +153,9 @@ const ObjectItemStatistics = ({object}) => {
                         <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
                     </Pressable>
                 </View>
-                <Pressable
-                    style={({pressed}) => [
-                        {
-                            backgroundColor: pressed ? '#c7c7c9' : '#2060ae',
-                        },
-                        styles.saveFiltersButton,
-                        {marginHorizontal: 20}
-                    ]}
-                    onPress={saveFilters}
-                >
-                    <Text style={styles.saveButtonText}>Сохранить</Text>
-                </Pressable>
+                <View style={{marginHorizontal: 20}}>
+                    <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                </View>
             </View>
         </View>
     ), [report, isFiltersOpen])
@@ -181,5 +172,6 @@ const ObjectItemStatistics = ({object}) => {
 };
 
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
+import CustomButton from "../../../components/button/Button";
 
 export default ObjectItemStatistics;

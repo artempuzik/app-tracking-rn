@@ -6,8 +6,7 @@ export default StyleSheet.create({
         flexDirection: 'column',
     },
     mapContainer: {
-        width: '100%',
-        height: '25%',
+        height: '40%',
     },
     pageHeader: {
         width: '100%',
@@ -24,6 +23,15 @@ export default StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#d8d8d9',
     },
+    rightBlock: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    filtersMainContainer: {
+        flex: 1,
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
     pageIconsBlock: {
         width: '100%',
         flexDirection: 'row',
@@ -39,27 +47,8 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    filtersMainContainer: {
-        flex: 1,
-        justifyContent: 'space-between',
-        marginTop: 10,
-        paddingHorizontal: 20,
-    },
     headerItemButton: {
         paddingTop: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    rightBlock: {
-        flexDirection: 'row',
-    },
-    error: {
-        color: 'red',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    headerItemIcon: {
-        width: '20%',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -69,14 +58,31 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    headerItemIcon: {
+        width: '20%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    objectsItem: {
+        paddingHorizontal: 20,
+    },
+    footer: {
+        flexDirection: 'row'
+    },
+    footerElement: {
+        flex: 1,
+        backgroundColor: '#d8d8d9',
+        marginHorizontal: 2,
+        padding: 5,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     main: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
         paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#a7a7aa'
     },
     leftBlock: {
         flexDirection: 'row',
@@ -93,14 +99,15 @@ export default StyleSheet.create({
     },
     objectItemTitle: {
         fontWeight: 'bold',
+        marginBottom: 5,
     },
     screenTitle: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderBottomColor: '#a7a7aa',
+        paddingHorizontal: 20,
     },
     iconTitle: {
         textAlign: 'center',
@@ -108,7 +115,6 @@ export default StyleSheet.create({
     },
     mainInfo: {
         marginLeft: 10,
-        justifyContent: 'center',
     },
     line: {
         height: 1,
@@ -123,9 +129,10 @@ export default StyleSheet.create({
         opacity: 0.6,
     },
     sendCommentButton: {
+        width: '48%',
         borderColor: '#2060ae',
         borderWidth: 2,
-        margin: 20,
+        marginVertical: 20,
         padding: 10,
     },
     commentText: {
@@ -158,7 +165,7 @@ export default StyleSheet.create({
         justifyContent: 'flex-start',
     },
     selectContainer: {
-        marginVertical: 20,
+        marginVertical: 10,
         height: 50,
     },
     radioButtonsContainer: {
@@ -166,10 +173,16 @@ export default StyleSheet.create({
     },
     radioButtons: {
         marginVertical: 10,
+        width: '90%',
+        justifyContent: 'space-between',
     },
     resetButton: {
         borderColor: '#a7a7aa',
         borderWidth: 1,
+        padding: 15,
+        marginBottom: 10,
+    },
+    saveFiltersButton: {
         padding: 15,
         marginBottom: 10,
     },
@@ -185,8 +198,71 @@ export default StyleSheet.create({
         color: 'white',
         fontSize: 12,
     },
-    saveFiltersButton: {
-        padding: 15,
+    filterRow: {
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: '#a7a7aa',
+        padding: 10,
+        marginBottom: 20,
+    },
+    filterRowText: {
+        marginLeft: 20,
+        opacity: 0.6,
+    },
+    buttonsDaysBlock: {
+        paddingHorizontal: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'row'
+    },
+    infoPropRow: {
+        paddingVertical: 10,
+        marginHorizontal: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        opacity: 0.6,
+        borderBottomColor: '#a7a7aa',
+        borderBottomWidth: 1,
+    },
+    sendBtnContainer: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        paddingHorizontal: 20
+    },
+    mainStatRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: '#ceced0',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginVertical: 5,
+        opacity: 0.6,
+    },
+    subStatRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginVertical: 5,
+    },
+    gasItemBlock: {
+        padding: 10,
+        borderBottomColor: '#a7a7aa',
+        borderBottomWidth: 1,
+    },
+    itemRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         marginBottom: 10,
     },
+    idsBlock: {
+        paddingVertical: 2,
+        paddingHorizontal: 5,
+        backgroundColor: '#0f19d5',
+        color: '#fff',
+        fontSize: 12,
+    },
+    itemText: {
+        fontSize: 12,
+        opacity: 0.6,
+    }
 });

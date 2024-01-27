@@ -19,7 +19,6 @@ import {BASE_URL} from "../../config";
 import CustomButton from "../../components/button/Button";
 import RNPickerSelect from "react-native-picker-select";
 import {setLanguage} from "../../store/app";
-import axios from "../../api/instance";
 
 const background = require('../../../assets/bg_auth.png')
 const logo = require('../../../assets/logo.png')
@@ -44,7 +43,7 @@ export default function AuthScreen({navigation}) {
 
     useEffect(() => {
         if(host) {
-            changeServer(host).catch((err) => setError(err.message))
+            dispatch(changeServer(host))
         }
     }, [host]);
 

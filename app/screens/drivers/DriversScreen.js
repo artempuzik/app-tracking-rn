@@ -10,8 +10,8 @@ import {DRIVERS_OPTIONS, PRESSED_COLOR} from "../../config";
 import {useDispatch} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import SelectList from "../../components/select/SelectList";
-import {getDriverGroups, getDrivers} from "../../store/drivers/driversActions";
-import {getObjectGroups, getObjects} from "../../store/objects/objectsActions";
+import {getDriverGroups, getDrivers, getDriverSessionById} from "../../store/drivers/driversActions";
+import CustomButton from "../../components/button/Button";
 
 const initialFilters = {
     isAll: null,
@@ -52,14 +52,10 @@ const DriversScreen = ({navigation}) => {
         setSelectedGroup(initialFilters.selectedGroup)
         setIsAll(initialFilters.isAll)
     },[])
-
-    useEffect(() => {
-    }, []);
     const fetchData = async () => {
         try {
             setIsLoading(true)
             await dispatch(getDrivers()).then((data) =>{
-                console.log(data)
                 if(data.response) {
                     setDrivers(data.response)
                 }
@@ -118,34 +114,29 @@ const DriversScreen = ({navigation}) => {
                             </Svg>
                         </Pressable>
                     </View>
-                    <View style={styles.selectContainer}>
-                        <SelectList
-                            items={formatGroups} onChange={setSelectedGroup}
-                        />
+                    <View style={{paddingHorizontal: 20}}>
+                        <View style={styles.selectContainer}>
+                            <SelectList
+                                items={formatGroups} onChange={setSelectedGroup}
+                            />
+                        </View>
+                        {radioButtonsBlock}
+                        <Pressable
+                            style={({pressed}) => [
+                                {
+                                    backgroundColor: pressed ? '#c7c7c9' : 'transparent',
+                                },
+                                styles.resetButton,
+                            ]}
+                            onPress={resetFilters}
+                        >
+                            <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                        </Pressable>
                     </View>
-                    {radioButtonsBlock}
-                    <Pressable
-                        style={({pressed}) => [
-                            {
-                                backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                            },
-                            styles.resetButton,
-                        ]}
-                        onPress={resetFilters}
-                    >
-                        <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
-                    </Pressable>
                 </View>
-                <Pressable
-                    style={({pressed}) => [
-                        {
-                            backgroundColor: pressed ? '#c7c7c9' : '#2060ae',
-                        },
-                        styles.saveFiltersButton,
-                    ]}
-                >
-                    <Text style={styles.saveButtonText}>Сохранить</Text>
-                </Pressable>
+                <View style={{paddingHorizontal: 20}}>
+                    <CustomButton title={'Сохранить'} onPress={() => {}} />
+                </View>
             </View>
         )
     }, [selectedGroup, resetFilters, radioButtonsBlock])

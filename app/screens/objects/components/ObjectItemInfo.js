@@ -5,7 +5,7 @@ import styles from '../styles';
 import {LeafletView} from "react-native-leaflet-view";
 import {useNavigation} from "@react-navigation/native";
 import {getObjectStatusById} from "../../../store/objects/objectsActions";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 const ObjectItemInfo = ({object}) => {
     const navigation = useNavigation();
@@ -14,11 +14,13 @@ const ObjectItemInfo = ({object}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [status, setStatus] = useState(null)
 
+    const icons = useSelector(state => state.objects.icons)
+    const baseUrl = useSelector(state => state.app.currentServer)
+
     const fetchData = async () => {
         try {
             setIsLoading(true)
             await dispatch(getObjectStatusById(object.main.id)).then((data) =>{
-                console.log(data)
                 if(data.response) {
                     setStatus(data.response)
                 }
@@ -52,13 +54,14 @@ const ObjectItemInfo = ({object}) => {
         if(!status) {
             return []
         }
+        const icon = icons.find((ic) => ic.id === object.main.iconId)
         return status?.points?.map(point => ({
             position: {
                 lat: point.lat,
                 lng: point.lng,
             },
-            icon: '📍',
-            size: [32, 32],
+            icon: baseUrl + icon.url,
+            size: [icon.width, icon.height]
         }))
     }, [status])
 
@@ -115,6 +118,7 @@ const ObjectItemInfo = ({object}) => {
                 <LeafletView
                     doDebug={false}
                     mapMarkers={points}
+                    mapCenterPosition={points[0]?.position}
                 />
             </View>
             <View style={{...styles.footer, marginTop: 20, paddingHorizontal: 20}}>

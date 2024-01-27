@@ -3,12 +3,10 @@ import {View, Text, Pressable, TextInput} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation} from "@react-navigation/native";
 import styles from '../styles';
-import AppModal from "../../../components/modal/AppModal";
-import DateTimePicker from "react-native-ui-datepicker";
-import Button from "../../../components/button/Button";
 import RadioForm from "react-native-simple-radio-button";
 import {PARKING_OPTIONS} from "../../../config";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
+import CustomButton from "../../../components/button/Button";
 
 const initialFilters = {
     minParking: '',
@@ -174,18 +172,9 @@ const ObjectItemParking = ({object}) => {
                         <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
                     </Pressable>
                 </View>
-                <Pressable
-                    style={({pressed}) => [
-                        {
-                            backgroundColor: pressed ? '#c7c7c9' : '#2060ae',
-                        },
-                        styles.saveFiltersButton,
-                        {marginHorizontal: 20}
-                    ]}
-                    onPress={saveFilters}
-                >
-                    <Text style={styles.saveButtonText}>Сохранить</Text>
-                </Pressable>
+                <View style={{marginHorizontal: 20}}>
+                    <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                </View>
             </View>
         </View>
     ), [minParking, showParkingOptions, isFiltersOpen])

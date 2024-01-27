@@ -1,24 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Api from '../../api'
 import axios from '../../api/instance'
-import {resetAppState, setLanguages, setProfile, setServers, setToken} from "./index";
+import {resetAppState, setCurrentServer, setLanguages, setProfile, setServers, setToken} from "./index";
 import {resetUserState, setUserName} from "../user";
-import {Platform} from "react-native";
 import {resetDriversState} from "../drivers";
 import {resetObjectsState} from "../objects";
 import {getUsers} from "../user/usersActions";
+import {getObjectIcons} from "../objects/objectsActions";
+import * as Updates from "expo-updates";
 
 
 export const clearStorage = async () => {
-  const asyncStorageKeys = await AsyncStorage.getAllKeys();
-  if (asyncStorageKeys.length > 0) {
-    if (Platform.OS === 'android') {
-      await AsyncStorage.clear();
-    }
-    if (Platform.OS === 'ios') {
-      await AsyncStorage.multiRemove(asyncStorageKeys);
-    }
-  }
+  await AsyncStorage.removeItem('user');
+  await AsyncStorage.removeItem('token');
 }
 const checkUserDataAndLogout = () => async (dispatch) => {
   const user = await AsyncStorage.getItem('user');
@@ -27,8 +21,9 @@ const checkUserDataAndLogout = () => async (dispatch) => {
   }
 }
 
-export const changeServer = async (server) => {
+export const changeServer = (server) => async (dispatch) => {
   await AsyncStorage.setItem('server', server);
+  dispatch(setCurrentServer('https://' + server))
   axios.defaults.baseURL = 'https://' + server  + '/api'
 }
 
@@ -46,6 +41,7 @@ export const init = () => async (dispatch, getState) => {
       dispatch(setUserName(userName))
     }
     dispatch(setToken(token))
+    dispatch(getObjectIcons())
     dispatch(getUsers())
   }
 };
@@ -101,7 +97,12 @@ export const getToken = (dto) => async (dispatch, getState) => {
     })
     const token = response.data.accessToken
     const userName = response.data.userName
-    await AsyncStorage.setItem('token', token);
+    if (token !== undefined) {
+      await AsyncStorage.setItem('token', token);
+    } else {
+      await AsyncStorage.removeItem('token');
+      await Updates.reloadAsync()
+    }
     await AsyncStorage.setItem('user', JSON.stringify({
       language,
       userName

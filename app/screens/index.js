@@ -10,12 +10,14 @@ import {init} from "../store/app/appActions";
 import ResetPasswordScreen from "./resetpassword/ResetPasswordScreen";
 import SettingsScreen from "./settings/SettingsScreen";
 import ObjectsScreen from "./objects/ObjectsScreen";
-import ObjectsMapScreen from "./objects/ObjectsMapScreen";
 import ObjectItemScreen from "./objects/ObjectItemScreen";
 import ObjectTaskScreen from "./objects/ObjectTaskScreen";
 import ObjectSendCommandScreen from './objects/ObjectSendCommandScreen';
 import DriversScreen from "./drivers/DriversScreen";
 import DriverItemScreen from "./drivers/DriverItemScreen";
+import GasScreen from "./gas/GasScreen";
+import GasItemScreen from "./gas/GasItemScreen";
+import MapScreen from "./map/MapScreen";
 
 export const navigationRef = createNavigationContainerRef();
 const Stack = createStackNavigator();
@@ -53,12 +55,14 @@ export default function Screens() {
                                 <Stack.Screen name="Home" component={HomeScreen} />
                                 <Stack.Screen name="Settings" component={SettingsScreen} />
                                 <Stack.Screen name="Objects" component={ObjectsScreen} />
-                                <Stack.Screen name="ObjectsMap" component={ObjectsMapScreen} />
+                                <Stack.Screen name="Map" component={MapScreen} />
                                 <Stack.Screen name="ObjectItem" component={ObjectItemScreen} />
                                 <Stack.Screen name="ObjectTask" component={ObjectTaskScreen} />
                                 <Stack.Screen name="ObjectSendCommand" component={ObjectSendCommandScreen} />
                                 <Stack.Screen name="Drivers" component={DriversScreen} />
                                 <Stack.Screen name="DriverItem" component={DriverItemScreen} />
+                                <Stack.Screen name="Gas" component={GasScreen} />
+                                <Stack.Screen name="GasItem" component={GasItemScreen} />
                             </Stack.Navigator>
                         )
                 }

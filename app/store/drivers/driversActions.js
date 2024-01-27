@@ -39,6 +39,7 @@ export const getDriverGroups = () => async (dispatch, getState) => {
     const response = await Api.getDriverGroups()
     if(response.status === 200) {
       dispatch(setDriversGroup(response.data))
+      dispatch(getDrivers())
     }
     return {
       response: response.data,
@@ -55,6 +56,37 @@ export const getDriverGroups = () => async (dispatch, getState) => {
 export const getDriverGroupById = (id) => async (dispatch, getState) => {
   try {
     const response = await Api.getDriverGroupById(id)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
+export const getDriverSessionById = (dto) => async (dispatch, getState) => {
+  try {
+    const response = await Api.getDriverSessionById(dto)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    console.log(e)
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
+export const editDriver = (dto) => async (dispatch, getState) => {
+  try {
+    const response = await Api.changeDriver(dto)
     return {
       response: response.data,
       error: null,

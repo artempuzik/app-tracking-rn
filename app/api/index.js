@@ -16,6 +16,8 @@ import {
     getDriverById,
     getDriverGroups,
     getDriverGroupById,
+    getDriverSessionById,
+    changeDriver,
 } from './drivers'
 
 import {
@@ -23,6 +25,8 @@ import {
     getObjectById,
     getObjectStatus,
     getObjectStatusById,
+    getObjectIcons,
+    getTransactions,
 } from './objects'
 
 import {
@@ -47,9 +51,13 @@ export default {
     getDriverById,
     getDriverGroups,
     getDriverGroupById,
+    getDriverSessionById,
+    changeDriver,
     //objects
     getObjects,
     getObjectById,
     getObjectStatus,
     getObjectStatusById,
+    getObjectIcons,
+    getTransactions,
 }
