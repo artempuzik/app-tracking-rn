@@ -12,7 +12,6 @@ const GasItemScreen = ({navigation}) => {
     const route = useRoute();
 
     const transactions = useSelector(state => state.objects.transactions)
-    //const icons = useSelector(state => state.objects.icons)
 
     const transaction = useMemo(() => transactions.find(t => t.objectID == route.params.id), [transactions])
 
@@ -20,7 +19,6 @@ const GasItemScreen = ({navigation}) => {
         if(!transaction) {
             return []
         }
-        //const icon = icons.find((ic) => ic.id === object.main.iconId)
         return {
             position: {
                 lat: transaction.lat,
@@ -45,8 +43,6 @@ const GasItemScreen = ({navigation}) => {
 
         return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     }, [transaction]);
-
-    console.log(points)
 
     return (
         <SafeAreaView style={styles.container}>
@@ -84,7 +80,7 @@ const GasItemScreen = ({navigation}) => {
             </View>
             <View style={styles.mapContainer}>
                 <LeafletView
-                    doDebug={true}
+                    doDebug={false}
                     mapMarkers={points}
                     mapCenterPosition={points?.position}
                 />

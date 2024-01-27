@@ -10,12 +10,16 @@ const api = axios.create({
 });
 
 const refreshToken = async () => {
-    const {language} = await getUserDataFromStorage()
-    const response = await api.post('/token/refresh', {
+    reconnect++
+    try {
+        const {language} = await getUserDataFromStorage()
+        const response = await api.post('/token/refresh', {
             language,
         })
-    console.log('----------', response)
-    return response;
+        return response;
+    } catch (err) {
+        return null
+    }
 };
 
 const getUserDataFromStorage = async () => {
@@ -67,7 +71,6 @@ api.interceptors.response.use((response) => {
     return response
 }, async function (error) {
     const originalRequest = error.config;
-    console.log('originalRequest', error.response.status)
     if(!axios.defaults.baseURL) {
         axios.defaults.baseURL = BASE_URL + '/api';
     }
@@ -78,7 +81,6 @@ api.interceptors.response.use((response) => {
             return Promise.reject(error);
         }
         const access_token = await refreshToken();
-        console.log('---------', access_token)
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
         if (access_token) {
             reconnect = 0
