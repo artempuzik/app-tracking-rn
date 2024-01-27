@@ -8,7 +8,7 @@ import styles from './styles';
 import {LeafletView} from "react-native-leaflet-view";
 import Svg, {Path} from "react-native-svg";
 
-const GasItemScreen = ({navigation}) => {
+const GasStationItemScreen = ({navigation}) => {
     const route = useRoute();
 
     const transactions = useSelector(state => state.objects.transactions)
@@ -19,14 +19,14 @@ const GasItemScreen = ({navigation}) => {
         if(!transaction) {
             return []
         }
-        return {
+        return [{
             position: {
                 lat: transaction.lat,
                 lng: transaction.lng,
             },
             icon: "https://s1.geotek.online/ico/geotek/iconH18.png",
             size: [32, 32]
-        }
+        }]
     }, [transaction])
 
     const duration = useMemo(() => {
@@ -56,7 +56,7 @@ const GasItemScreen = ({navigation}) => {
                             },
                             styles.headerItemButton,
                         ]}
-                        onPress={() => navigation.navigate('Gas')}
+                        onPress={() => navigation.navigate('GasStation')}
                     >
                         <Svg
                             width={20}
@@ -82,7 +82,7 @@ const GasItemScreen = ({navigation}) => {
                 <LeafletView
                     doDebug={false}
                     mapMarkers={points}
-                    mapCenterPosition={points?.position}
+                    mapCenterPosition={points[0]?.position}
                 />
             </View>
             <ScrollView style={{flex: 1}}>
@@ -121,4 +121,4 @@ const GasItemScreen = ({navigation}) => {
     );
 };
 
-export default GasItemScreen;
+export default GasStationItemScreen;

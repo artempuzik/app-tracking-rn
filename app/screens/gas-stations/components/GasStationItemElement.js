@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
-const GasItemElement = ({item}) => {
+const GasStationItemElement = ({item}) => {
     return (
         <View style={styles.gasItemBlock}>
             <View style={{...styles.itemRow, marginBottom: 20}}>
@@ -26,4 +26,4 @@ import styles from '../styles';
 import Svg, {Path} from "react-native-svg";
 import {PRESSED_COLOR} from "../../../config";
 
-export default GasItemElement;
+export default GasStationItemElement;

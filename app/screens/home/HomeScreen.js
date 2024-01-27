@@ -132,7 +132,7 @@ const HomeScreen = ({ navigation }) => {
                             },
                             styles.mainMenuItem,
                         ]}
-                        onPress={() => navigation.navigate('Gas')}
+                        onPress={() => navigation.navigate('GasStation')}
                     >
                         <Svg
                             width={30}

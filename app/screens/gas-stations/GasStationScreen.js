@@ -11,13 +11,13 @@ import SelectList from "../../components/select/SelectList";
 import {getTransactions} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
-import GasItemElement from "./components/GasItemElement";
+import GasStationItemElement from "./components/GasStationItemElement";
 
 const initialFilters = {
     selectedStation: null
 }
 
-const GasScreen = ({navigation}) => {
+const GasStationScreen = ({navigation}) => {
     const dispatch = useDispatch()
 
     const [isLoading, setIsLoading] = useState(false)
@@ -193,9 +193,9 @@ const GasScreen = ({navigation}) => {
                                                 },
                                                 styles.objectsItem,
                                             ]}
-                                            onPress={() => navigation.navigate('GasItem', {id: item.objectID})}
+                                            onPress={() => navigation.navigate('GasStationItem', {id: item.objectID})}
                                         >
-                                            <GasItemElement item={item}/>
+                                            <GasStationItemElement item={item}/>
                                         </Pressable>
                                     )) : <Text style={styles.emptyList}>Empty list</Text>
                                 }
@@ -217,4 +217,4 @@ const GasScreen = ({navigation}) => {
     );
 };
 
-export default GasScreen;
+export default GasStationScreen;

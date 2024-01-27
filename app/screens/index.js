@@ -16,9 +16,9 @@ import ObjectSendCommandScreen from './objects/ObjectSendCommandScreen';
 import DriversScreen from "./drivers/DriversScreen";
 import DriverItemScreen from "./drivers/DriverItemScreen";
 import EventScreen from "./event/EventScreen";
-import GasItemScreen from "./gas/GasItemScreen";
+import GasStationItemScreen from "./gas-stations/GasStationItemScreen";
 import MapScreen from "./map/MapScreen";
-import GasScreen from "./gas/GasScreen";
+import GasStationScreen from "./gas-stations/GasStationScreen";
 
 export const navigationRef = createNavigationContainerRef();
 const Stack = createStackNavigator();
@@ -62,8 +62,8 @@ export default function Screens() {
                                 <Stack.Screen name="ObjectSendCommand" component={ObjectSendCommandScreen} />
                                 <Stack.Screen name="Drivers" component={DriversScreen} />
                                 <Stack.Screen name="DriverItem" component={DriverItemScreen} />
-                                <Stack.Screen name="Gas" component={GasScreen} />
-                                <Stack.Screen name="GasItem" component={GasItemScreen} />
+                                <Stack.Screen name="GasStation" component={GasStationScreen} />
+                                <Stack.Screen name="GasStationItem" component={GasStationItemScreen} />
                                 <Stack.Screen name="Event" component={EventScreen} />
                             </Stack.Navigator>
                         )

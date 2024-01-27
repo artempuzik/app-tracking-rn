@@ -6,11 +6,12 @@ const EventItemElement = ({item}) => {
 
     const statusColor = useMemo(() => {
         switch (item.status) {
-            case 1: return "#ea832e"
-            case 1: return "#f35f5f"
+            case '1': return "#ea832e"
+            case '2': return "#ee0505"
             default: return "transparent"
         }
-    }, [item.status])
+    }, [item])
+
     return (
         <View style={styles.eventItemBlock}>
             <View style={styles.mainRow}>
@@ -30,10 +31,10 @@ const EventItemElement = ({item}) => {
                 </View>
             </View>
             <View style={styles.subRow}>
-                <View style={{padding: 10, backgroundColor: statusColor}}>
+                <View style={{padding: 10, marginRight: 10, backgroundColor: statusColor}}>
                     <Svg
-                        width={30}
-                        height={30}
+                        width={20}
+                        height={20}
                         viewBox="0 0 352.8 341.8"
                     >
                         <Path d="M0 341.8h352.8L176.4 0 0 341.8zm32.8-20L176.4 43.6 320 321.8H32.8z"

@@ -44,28 +44,7 @@ const EventScreen = ({navigation}) => {
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
-    const [error, setError] = useState('')
-
     const [selectedStation, setSelectedStation] = useState(initialFilters.selectedStation)
-
-    const mappedEventsArray = useMemo(() => {
-        if(!events.length || !objects.length) {
-            return []
-        }
-        const mapped = events.map(event => {
-            const obj = objects.find(o => o.main.id === event.trackerid)
-            if(!obj) {
-                return null
-            }
-            const icon = icons.find(i => i.id === obj.main.iconId)
-            return {
-                ...event,
-                main: obj.main,
-                icon
-            }
-        })
-        return mapped.filter((el) => !!el)
-    }, [objects, icons, events])
 
     const filteredArray = useMemo(() => {
         if(!events.length) {
@@ -207,7 +186,7 @@ const EventScreen = ({navigation}) => {
                                             ]}
                                             onPress={() => navigation.navigate('ObjectItem', {id: item.trackerid})}
                                         >
-                                            <EventItemElement item={item}/>
+                                            <EventItemElement item={item} />
                                         </Pressable>
                                     )) : <Text style={styles.emptyList}>Empty list</Text>
                                 }
