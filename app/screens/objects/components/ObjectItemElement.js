@@ -1,11 +1,14 @@
 import React, {useMemo, useState} from 'react';
+import { Image } from 'expo-image';
 import {View, Text, Pressable} from 'react-native';
-const ObjectItemElement = ({item}) => {
+const ObjectItemElement = ({item, icons}) => {
     const isVehicleActive = useMemo(() => !!item?.vehicleSpecifications.enginePower)
 
     const isOnline = useMemo(() => !!item?.vehicleSpecifications.enginePower)
 
     const speed = useMemo(() => item?.vehicleSpecifications.engineVolume)
+
+    const baseUrl = useSelector(state => state.app.currentServer)
 
 
     return (
@@ -89,5 +92,6 @@ const ObjectItemElement = ({item}) => {
 import styles from '../styles';
 import Svg, {Path} from "react-native-svg";
 import {PRESSED_COLOR} from "../../../config";
+import {useSelector} from "react-redux";
 
 export default ObjectItemElement;

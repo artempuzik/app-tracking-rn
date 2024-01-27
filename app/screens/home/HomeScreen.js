@@ -112,6 +112,7 @@ const HomeScreen = ({ navigation }) => {
                             },
                             styles.mainMenuItem,
                         ]}
+                        onPress={() => navigation.navigate('Event')}
                     >
                         <Svg
                             width={30}

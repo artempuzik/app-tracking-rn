@@ -262,7 +262,7 @@ const ObjectsScreen = ({navigation}) => {
                                             ]}
                                             onPress={() => navigation.navigate('ObjectItem', {id: item.main.id})}
                                         >
-                                            <ObjectItemElement item={item}/>
+                                            <ObjectItemElement item={item} icons={icons}/>
                                             <View style={styles.line}></View>
                                         </Pressable>
                                     )) : <Text style={styles.emptyList}>Empty list</Text>

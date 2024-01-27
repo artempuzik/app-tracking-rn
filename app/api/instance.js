@@ -71,6 +71,7 @@ api.interceptors.response.use((response) => {
     return response
 }, async function (error) {
     const originalRequest = error.config;
+    console.log(originalRequest)
     if(!axios.defaults.baseURL) {
         axios.defaults.baseURL = BASE_URL + '/api';
     }

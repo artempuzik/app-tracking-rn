@@ -1,30 +1,40 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {View, Pressable, Text, ScrollView, ActivityIndicator} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RadioForm from 'react-native-simple-radio-button';
 import styles from './styles';
 import SearchInput from "../../components/search/SearchInput";
 import Svg, {Path} from "react-native-svg";
-import {PRESSED_COLOR} from "../../config";
-import {useDispatch} from "react-redux";
+import {MOVE_OPTIONS, PRESSED_COLOR, STATUS_OPTIONS, WITH_IGNITION_OPTIONS} from "../../config";
+import {useDispatch, useSelector} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import SelectList from "../../components/select/SelectList";
-import {getTransactions} from "../../store/objects/objectsActions";
+import {
+    getObjectEvents,
+    getObjectIcons,
+    getObjects,
+    getObjectsStatuses,
+    getTransactions
+} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
-import GasItemElement from "./components/GasItemElement";
+import {getDriverSessionById} from "../../store/drivers/driversActions";
+import EventItemElement from "./components/EventItemElement";
 
 const initialFilters = {
     selectedStation: null
 }
 
-const GasScreen = ({navigation}) => {
+const EventScreen = ({navigation}) => {
     const dispatch = useDispatch()
 
     const [isLoading, setIsLoading] = useState(false)
 
     const [query, setQuery] = useState('')
 
-    const [transactions, setTransactions] = useState([])
+    const [events, setEvents] = useState([])
+    const [objects, setObjects] = useState([])
+    const [icons, setIcons] = useState([])
 
     const [interval, setInterval] = useState({
         from: 0,
@@ -38,22 +48,41 @@ const GasScreen = ({navigation}) => {
 
     const [selectedStation, setSelectedStation] = useState(initialFilters.selectedStation)
 
-    const filteredArray = useMemo(() => {
-        if(!transactions.length) {
+    const mappedEventsArray = useMemo(() => {
+        if(!events.length || !objects.length) {
             return []
         }
-        const withStationFilter = selectedStation ? transactions.filter(t => t.objectID === selectedStation) : transactions
-        return withStationFilter.filter(el => JSON.stringify(el).includes(query))
-    }, [transactions, query])
+        const mapped = events.map(event => {
+            const obj = objects.find(o => o.main.id === event.trackerid)
+            if(!obj) {
+                return null
+            }
+            const icon = icons.find(i => i.id === obj.main.iconId)
+            return {
+                ...event,
+                main: obj.main,
+                icon
+            }
+        })
+        return mapped.filter((el) => !!el)
+    }, [objects, icons, events])
 
-    const formatStation = useMemo(() => {
-        if(!transactions.length) {
+    const filteredArray = useMemo(() => {
+        if(!events.length) {
             return []
         }
-        return transactions.map(item => ({
-            [item.objectID]: item.objectName
-        }))
-    }, [transactions])
+        // const withIconAndMainFilter = selectedStation ? events.filter(e => e.objectID === selectedStation) : mainArray
+        return events.filter(el => JSON.stringify(el).includes(query))
+    }, [events, query])
+
+    // const formatStation = useMemo(() => {
+    //     if(!events.length) {
+    //         return []
+    //     }
+    //     return events.map(item => ({
+    //         [item.objectID]: item.objectName
+    //     }))
+    // }, [events])
 
     const saveFilters = useCallback(() => {
         setIsFiltersOpen(false)
@@ -65,35 +94,36 @@ const GasScreen = ({navigation}) => {
 
     const fetchData = async () => {
         try {
-            setError('')
             setIsLoading(true)
-            await dispatch(getTransactions({
-                from: interval.from,
-                till: interval.till,
-                driverID: 0,
-            })).then((data) => {
+            await dispatch(getObjectEvents()).then((data) => {
                 if(data.response) {
-                    setTransactions(data.response)
+                    setEvents(data.response.events)
                 }
             })
-        } catch (err) {
-            setError(err.message)
+            await dispatch(getObjects()).then(async (data) =>{
+                if(data.response) {
+                    setObjects(data.response)
+                    await dispatch(getObjectIcons()).then((data) => {
+                        if(data.response) {
+                            setIcons(data.response)
+                        }
+                    })
+                }
+            })
         } finally {
             setIsLoading(false)
         }
     }
 
     useEffect(() => {
-        if(interval.from && interval.till) {
-            fetchData().catch(() => {})
-        }
-    }, [interval.from, interval.till])
+       fetchData().catch(() => {})
+    }, [])
 
     const selectElement = useMemo(() => (
         <View style={{...styles.selectContainer, paddingHorizontal: 20}}>
-            <SelectList
-                items={formatStation} onChange={setSelectedStation}
-            />
+            {/*<SelectList*/}
+            {/*    items={formatStation} onChange={setSelectedStation}*/}
+            {/*/>*/}
         </View>
     ), [])
 
@@ -149,24 +179,6 @@ const GasScreen = ({navigation}) => {
                             },
                             styles.headerButton,
                         ]}
-                        onPress={() => setIsCalendarOpen(true)}
-                    >
-                        <Svg
-                            width={25}
-                            height={25}
-                            viewBox="0 0 19 14"
-                        >
-                            <Path d="M5 0h4v4H5zm5 0h4v4h-4zm5 0h4v4h-4zM5 5h4v4H5zM0 5h4v4H0zm10 0h4v4h-4zm-5 5h4v4H5zm-5 0h4v4H0zm10 0h4v4h-4zm5-5h4v4h-4z"
-                                  fill="#2060ae"/>
-                        </Svg>
-                    </Pressable>
-                    <Pressable
-                        style={({pressed}) => [
-                            {
-                                backgroundColor: pressed ? '#c7c7c9' : '#d8d8d9',
-                            },
-                            styles.headerButton,
-                        ]}
                         onPress={() => setIsFiltersOpen(true)}
                     >
                         <Svg
@@ -186,16 +198,16 @@ const GasScreen = ({navigation}) => {
                                 {
                                     filteredArray.length ? filteredArray.map(item => (
                                         <Pressable
-                                            key={item.objectID + item.time}
+                                            key={item.id}
                                             style={({pressed}) => [
                                                 {
                                                     backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
                                                 },
                                                 styles.objectsItem,
                                             ]}
-                                            onPress={() => navigation.navigate('GasItem', {id: item.objectID})}
+                                            onPress={() => navigation.navigate('ObjectItem', {id: item.trackerid})}
                                         >
-                                            <GasItemElement item={item}/>
+                                            <EventItemElement item={item}/>
                                         </Pressable>
                                     )) : <Text style={styles.emptyList}>Empty list</Text>
                                 }
@@ -209,7 +221,6 @@ const GasScreen = ({navigation}) => {
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
             {filtersBlock}
-            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isFiltersOpen && !isCalendarOpen ? listBlock : null
             }
@@ -217,4 +228,4 @@ const GasScreen = ({navigation}) => {
     );
 };
 
-export default GasScreen;
+export default EventScreen;

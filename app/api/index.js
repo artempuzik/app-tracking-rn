@@ -27,6 +27,7 @@ import {
     getObjectStatusById,
     getObjectIcons,
     getTransactions,
+    getObjectEvents,
 } from './objects'
 
 import {
@@ -60,4 +61,5 @@ export default {
     getObjectStatusById,
     getObjectIcons,
     getTransactions,
+    getObjectEvents,
 }

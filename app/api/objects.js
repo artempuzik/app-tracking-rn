@@ -11,6 +11,8 @@ const getObjectIcons = () => axios.get('/objects/icons')
 
 const getTransactions = (dto) => axios.post('/objectsHistory/transactions', dto)
 
+const getObjectEvents = () => axios.get('/objectevents')
+
 export {
     getObjects,
     getObjectById,
@@ -18,4 +20,5 @@ export {
     getObjectStatusById,
     getObjectIcons,
     getTransactions,
+    getObjectEvents,
 }

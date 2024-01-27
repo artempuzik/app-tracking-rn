@@ -26,7 +26,7 @@ export default function AuthScreen({navigation}) {
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [language, setLang] = useState('ru')
+    const [language, setLang] = useState('ru-ru')
     const [error, setError] = useState('')
 
     const [host, setHost] = useState(BASE_URL)

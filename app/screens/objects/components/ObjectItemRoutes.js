@@ -38,7 +38,7 @@ const ObjectItemRoutes = ({object}) => {
                         },
                         styles.headerItemButton,
                     ]}
-                    onPress={() => navigation.navigate('Objects')}
+                    onPress={() => navigation.goBack()}
                 >
                     <Svg
                         width={20}
