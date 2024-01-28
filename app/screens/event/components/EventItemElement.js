@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {View, Text} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import styles from '../styles';
-const EventItemElement = ({item}) => {
+const EventItemElement = ({item, icons, objects}) => {
 
     const statusColor = useMemo(() => {
         switch (item.status) {
@@ -11,6 +11,12 @@ const EventItemElement = ({item}) => {
             default: return "transparent"
         }
     }, [item])
+
+    // const object = useMemo(() => {
+    //     return objects.find(o => 1516 === item.trackerid)
+    // }, [item, objects])
+    //
+    // console.log(object)
 
     return (
         <View style={styles.eventItemBlock}>
@@ -27,7 +33,7 @@ const EventItemElement = ({item}) => {
                 </View>
                 <View>
                     <Text style={styles.idsBlock}>{item.trackerid}</Text>
-                    <Text style={styles.itemText}>{new Date(item.time).toLocaleString()}</Text>
+                    <Text style={styles.itemText}>{new Date(+item.time).toLocaleString()}</Text>
                 </View>
             </View>
             <View style={styles.subRow}>

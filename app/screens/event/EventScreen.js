@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Pressable, Text, ScrollView, ActivityIndicator} from 'react-native';
+import {View, Pressable, Text, ScrollView, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
 import styles from './styles';
@@ -20,6 +20,7 @@ import CustomButton from "../../components/button/Button";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import {getDriverSessionById} from "../../store/drivers/driversActions";
 import EventItemElement from "./components/EventItemElement";
+import ObjectItemElement from "../objects/components/ObjectItemElement";
 
 const initialFilters = {
     selectedStation: null
@@ -53,15 +54,6 @@ const EventScreen = ({navigation}) => {
         // const withIconAndMainFilter = selectedStation ? events.filter(e => e.objectID === selectedStation) : mainArray
         return events.filter(el => JSON.stringify(el).includes(query))
     }, [events, query])
-
-    // const formatStation = useMemo(() => {
-    //     if(!events.length) {
-    //         return []
-    //     }
-    //     return events.map(item => ({
-    //         [item.objectID]: item.objectName
-    //     }))
-    // }, [events])
 
     const saveFilters = useCallback(() => {
         setIsFiltersOpen(false)
@@ -170,31 +162,30 @@ const EventScreen = ({navigation}) => {
                         </Svg>
                     </Pressable>
                 </View>
-                {
-                    isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> :
-                        (
-                            <ScrollView>
+                <FlatList
+                    data={filteredArray}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListEmptyComponent={<Text style={styles.emptyList}>Empty list</Text>}
+                    enableEmptySections={true}
+                    renderItem={({item}) => (
+                        <Pressable
+                            style={({pressed}) => [
                                 {
-                                    filteredArray.length ? filteredArray.map(item => (
-                                        <Pressable
-                                            key={item.id}
-                                            style={({pressed}) => [
-                                                {
-                                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
-                                                },
-                                                styles.objectsItem,
-                                            ]}
-                                            onPress={() => navigation.navigate('ObjectItem', {id: item.trackerid})}
-                                        >
-                                            <EventItemElement item={item} />
-                                        </Pressable>
-                                    )) : <Text style={styles.emptyList}>Empty list</Text>
-                                }
-                            </ScrollView>
-                        )
-                }
+                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                },
+                                styles.objectsItem,
+                            ]}
+                            onPress={() => navigation.navigate('ObjectItem', {id: item.trackerid})}
+                        >
+                            <EventItemElement item={item} icons={icons} objects={objects}/>
+                        </Pressable>
+                    )}
+                    refreshControl={
+                        <RefreshControl refreshing={isLoading} onRefresh={fetchData} />
+                    }
+                />
             </View>
-    ), [filteredArray, isLoading])
+    ), [filteredArray, isLoading, icons, objects])
 
     return (
         <SafeAreaView style={styles.container}>

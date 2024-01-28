@@ -337,7 +337,6 @@ const ObjectsScreen = ({navigation}) => {
                     enableEmptySections={true}
                     renderItem={({item}) => (
                         <Pressable
-                            key={item.main.id}
                             style={({pressed}) => [
                                 {
                                     backgroundColor: pressed ? PRESSED_COLOR : 'transparent',

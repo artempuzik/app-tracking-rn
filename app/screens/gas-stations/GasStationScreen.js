@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Pressable, Text, ScrollView, ActivityIndicator} from 'react-native';
+import {View, Pressable, Text, ScrollView, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import SearchInput from "../../components/search/SearchInput";
@@ -12,6 +12,7 @@ import {getTransactions} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import GasStationItemElement from "./components/GasStationItemElement";
+import EventItemElement from "../event/components/EventItemElement";
 
 const initialFilters = {
     selectedStation: null
@@ -179,29 +180,28 @@ const GasStationScreen = ({navigation}) => {
                         </Svg>
                     </Pressable>
                 </View>
-                {
-                    isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> :
-                        (
-                            <ScrollView>
+                <FlatList
+                    data={filteredArray}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListEmptyComponent={<Text style={styles.emptyList}>Empty list</Text>}
+                    enableEmptySections={true}
+                    renderItem={({item}) => (
+                        <Pressable
+                            style={({pressed}) => [
                                 {
-                                    filteredArray.length ? filteredArray.map(item => (
-                                        <Pressable
-                                            key={item.objectID + item.time}
-                                            style={({pressed}) => [
-                                                {
-                                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
-                                                },
-                                                styles.objectsItem,
-                                            ]}
-                                            onPress={() => navigation.navigate('GasStationItem', {id: item.objectID})}
-                                        >
-                                            <GasStationItemElement item={item}/>
-                                        </Pressable>
-                                    )) : <Text style={styles.emptyList}>Empty list</Text>
-                                }
-                            </ScrollView>
-                        )
-                }
+                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                },
+                                styles.objectsItem,
+                            ]}
+                            onPress={() => navigation.navigate('GasStationItem', {id: item.objectID})}
+                        >
+                            <GasStationItemElement item={item}/>
+                        </Pressable>
+                    )}
+                    refreshControl={
+                        <RefreshControl refreshing={isLoading} onRefresh={fetchData} />
+                    }
+                />
             </View>
     ), [filteredArray, isLoading])
 
