@@ -48,7 +48,13 @@ const AppGeneralSettings = () => {
     }
 
     if(!user) {
-        return null
+        return (
+            <View style={styles.settingsContainer}>
+                <Text style={styles.error}>
+                    Select user
+                </Text>
+            </View>
+        )
     }
 
     return (

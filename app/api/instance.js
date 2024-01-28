@@ -12,9 +12,10 @@ const api = axios.create({
 const refreshToken = async () => {
     reconnect++
     try {
-        const {language} = await getUserDataFromStorage()
+        const {language, id} = await getUserDataFromStorage()
         const response = await api.post('/token/refresh', {
             language,
+            subUserId: id,
         })
         return response;
     } catch (err) {

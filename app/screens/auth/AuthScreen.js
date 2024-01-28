@@ -26,7 +26,7 @@ export default function AuthScreen({navigation}) {
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [language, setLang] = useState('ru-ru')
+    const [language, setLang] = useState('en-us')
     const [error, setError] = useState('')
 
     const [host, setHost] = useState(BASE_URL)
@@ -47,19 +47,19 @@ export default function AuthScreen({navigation}) {
         }
     }, [host]);
 
-    const pressRegistrationBtnHandler = () => {
-        navigation.navigate('Registration')
-    }
-
-    const goToResetPasswordScreen = () => {
-        navigation.navigate('ResetPassword')
-    }
+    // const pressRegistrationBtnHandler = () => {
+    //     navigation.navigate('Registration')
+    // }
+    //
+    // const goToResetPasswordScreen = () => {
+    //     navigation.navigate('ResetPassword')
+    // }
 
     const formatLangArray = useMemo(() => {
         return languages.map(item => ({
             label: Object.values(item)[0], value: Object.keys(item)[0]
         }))
-    }, [])
+    }, [languages])
 
     const formatServerArray = useMemo(() => {
         if(servers.length) {
@@ -89,7 +89,6 @@ export default function AuthScreen({navigation}) {
         } catch (e) {
             setLoading(false)
         }
-
     }
 
     return (
@@ -149,21 +148,21 @@ export default function AuthScreen({navigation}) {
                                     btnColor={'#FFA500'}
                                     onPress={submitHandler}
                                 />
-                                <View style={{ marginTop: 20 }}>
-                                    <Pressable
-                                        onPress={goToResetPasswordScreen}
-                                    >
-                                        <Text style={styles.links}>Забыли пароль?</Text>
-                                    </Pressable>
-                                </View>
-                                <View style={{ marginTop: 20, ...styles.row }}>
-                                    <Text style={styles.text}>Нет аккаунта?</Text>
-                                    <Pressable
-                                        onPress={pressRegistrationBtnHandler}
-                                    >
-                                        <Text style={styles.links}>Зарегистрироваться</Text>
-                                    </Pressable>
-                                </View>
+                                {/*<View style={{ marginTop: 20 }}>*/}
+                                {/*    <Pressable*/}
+                                {/*        onPress={goToResetPasswordScreen}*/}
+                                {/*    >*/}
+                                {/*        <Text style={styles.links}>Забыли пароль?</Text>*/}
+                                {/*    </Pressable>*/}
+                                {/*</View>*/}
+                                {/*<View style={{ marginTop: 20, ...styles.row }}>*/}
+                                {/*    <Text style={styles.text}>Нет аккаунта?</Text>*/}
+                                {/*    <Pressable*/}
+                                {/*        onPress={pressRegistrationBtnHandler}*/}
+                                {/*    >*/}
+                                {/*        <Text style={styles.links}>Зарегистрироваться</Text>*/}
+                                {/*    </Pressable>*/}
+                                {/*</View>*/}
                         <View style={{ marginTop: 20, marginBottom: 50, ...styles.row }}>
                         <Text style={styles.text}>Язык интерфейса:</Text>
                             <RNPickerSelect
@@ -192,6 +191,7 @@ const pickerSelectStylesLanguage = StyleSheet.create({
     },
     inputAndroid: {
         fontSize: 16,
+        minWidth: 150,
         paddingHorizontal: 10,
         paddingRight: 30,
         fontWeight: 'bold',

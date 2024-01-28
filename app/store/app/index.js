@@ -5,9 +5,9 @@ const initialState = {
     subUserId: 0,
     token: null,
     currentServer: BASE_URL,
-    language: 'ru-ru',
+    language: 'en-us',
     profile: null,
-    languages: ['ru-ru'],
+    languages: ['en-us'],
     servers: [BASE_URL]
 }
 

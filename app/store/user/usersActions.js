@@ -1,5 +1,9 @@
+import {setUsers, setCurrentUser} from "./index";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Api from '../../api'
-import {setUsers} from "./index";
+import {setToken} from "../app";
+import axios from "../../api/instance";
+import * as Updates from "expo-updates";
 
 export const recoverPassword = (email) => async (dispatch, getState) => {
   try {
@@ -48,8 +52,36 @@ export const getUsers = () => async (dispatch, getState) => {
     const response = await Api.getUsers()
     if(response.status === 200) {
       dispatch(setUsers(response.data))
+      return response.data
     }
   } catch (e) {
+  }
+};
+
+export const setCurrent = (user) => async (dispatch) => {
+  try {
+      const response = await Api.refreshToken({
+        subUserId: user.id,
+        language: user.language
+      })
+      if(response.status === 200) {
+        const access_token = response.data.accessToken
+        if (access_token !== undefined) {
+          axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
+          dispatch(setToken(access_token))
+          await AsyncStorage.setItem('token', access_token);
+        } else {
+          await AsyncStorage.removeItem('token');
+          await Updates.reloadAsync()
+        }
+      }
+      dispatch(setCurrentUser(user))
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+  } catch (e) {
+    console.log(e,          {
+      subUserId: user.id,
+      language: user.language
+    })
   }
 };
 

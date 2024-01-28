@@ -2,11 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Api from '../../api'
 import axios from '../../api/instance'
 import {resetAppState, setCurrentServer, setLanguages, setProfile, setServers, setToken} from "./index";
-import {resetUserState, setUserName} from "../user";
+import {resetUserState, setCurrentUser} from "../user";
 import {resetDriversState} from "../drivers";
 import {resetObjectsState} from "../objects";
 import {getUsers} from "../user/usersActions";
-import {getObjectIcons} from "../objects/objectsActions";
+import {getObjectIcons, getObjects, getObjectsStatuses} from "../objects/objectsActions";
 import * as Updates from "expo-updates";
 
 
@@ -37,10 +37,12 @@ export const init = () => async (dispatch, getState) => {
     }
     const user = await AsyncStorage.getItem('user');
     if(user) {
-      const {userName} = JSON.parse(user)
-      dispatch(setUserName(userName))
+      const currentUser = JSON.parse(user)
+      dispatch(setCurrentUser(currentUser))
     }
     dispatch(setToken(token))
+    dispatch(getObjects())
+    dispatch(getObjectsStatuses())
     dispatch(getObjectIcons())
     dispatch(getUsers())
   }
@@ -79,10 +81,10 @@ export const getProfileData = () => async (dispatch) => {
 };
 
 export const setLanguage = (language) => async (dispatch, getState) => {
-  const userName = getState().user.userName
+  const currentUser = getState().user.currentUser
   await AsyncStorage.setItem('user', JSON.stringify({
+    ...currentUser,
     language,
-    userName,
   }));
    dispatch(setLanguage(language))
 };
@@ -96,19 +98,24 @@ export const getToken = (dto) => async (dispatch, getState) => {
       password: dto.password.trim(),
     })
     const token = response.data.accessToken
-    const userName = response.data.userName
     if (token !== undefined) {
       await AsyncStorage.setItem('token', token);
     } else {
       await AsyncStorage.removeItem('token');
       await Updates.reloadAsync()
     }
-    await AsyncStorage.setItem('user', JSON.stringify({
-      language,
-      userName
-    }));
+    dispatch(getUsers()).then(async (users) => {
+      if(users) {
+        const matchedUser = users.find(user => user.name === dto.userName.trim())
+        if(matchedUser) {
+          await AsyncStorage.setItem('user', JSON.stringify({
+            ...matchedUser,
+            language,
+          }));
+        }
+      }
+    })
     dispatch(setToken(token))
-    dispatch(setUserName(userName))
     return {
       response,
       error: null,

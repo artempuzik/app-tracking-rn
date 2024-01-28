@@ -26,7 +26,7 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     modalWrapper: {
-        top: isAndroid ? 0 : 90,
+        top: isAndroid ? 45 : 90,
         paddingHorizontal: 0,
         justifyContent: 'flex-start'
     },

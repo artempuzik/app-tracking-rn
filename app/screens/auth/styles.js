@@ -75,5 +75,6 @@ export default StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center',
     }
 });

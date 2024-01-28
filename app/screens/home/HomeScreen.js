@@ -5,12 +5,14 @@ import Svg, {Circle, Path} from "react-native-svg"
 import styles from './styles'
 import {PRESSED_COLOR} from "../../config";
 import AppHeader from "../../components/header/AppHeader";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {getProfileData} from "../../store/app/appActions";
 import {getUsers} from "../../store/user/usersActions";
 
 const HomeScreen = ({ navigation }) => {
     const dispatch = useDispatch()
+
+    const baseUrl = useSelector(state => state.app.currentServer)
 
     useEffect(() => {
         dispatch(getProfileData())
@@ -190,7 +192,7 @@ const HomeScreen = ({ navigation }) => {
                     },
                     styles.footer,
                 ]}
-                onPress={() => Linking.openURL('https://geotek.online/')}
+                onPress={() => Linking.openURL(baseUrl)}
             >
                 <Svg
                     width={25}

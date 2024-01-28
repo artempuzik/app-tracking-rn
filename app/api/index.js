@@ -1,6 +1,7 @@
 import {
     getUserToken,
     getServerList,
+    refreshToken,
 } from './token'
 
 import {
@@ -39,6 +40,7 @@ export default {
     //token
     getUserToken,
     getServerList,
+    refreshToken,
     //users
     resetPassword,
     changeSelfPassword,

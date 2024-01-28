@@ -5,9 +5,9 @@ import {useDispatch, useSelector} from "react-redux";
 
 import AuthScreen from "./auth/AuthScreen";
 import HomeScreen from "./home/HomeScreen";
-import RegistrationScreen from "./registration/RegistrationScreen";
+// import RegistrationScreen from "./registration/RegistrationScreen";
 import {init} from "../store/app/appActions";
-import ResetPasswordScreen from "./resetpassword/ResetPasswordScreen";
+// import ResetPasswordScreen from "./resetpassword/ResetPasswordScreen";
 import SettingsScreen from "./settings/SettingsScreen";
 import ObjectsScreen from "./objects/ObjectsScreen";
 import ObjectItemScreen from "./objects/ObjectItemScreen";
@@ -19,6 +19,7 @@ import EventScreen from "./event/EventScreen";
 import GasStationItemScreen from "./gas-stations/GasStationItemScreen";
 import MapScreen from "./map/MapScreen";
 import GasStationScreen from "./gas-stations/GasStationScreen";
+import UserScreen from "./users/UserScreen";
 
 export const navigationRef = createNavigationContainerRef();
 const Stack = createStackNavigator();
@@ -44,8 +45,8 @@ export default function Screens() {
                                 headerShown: false
                             }}>
                                 <Stack.Screen name="Auth" component={AuthScreen} />
-                                <Stack.Screen name="Registration" component={RegistrationScreen} />
-                                <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+                                {/*<Stack.Screen name="Registration" component={RegistrationScreen} />*/}
+                                {/*<Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />*/}
                             </Stack.Navigator>
                         ) :
                         (
@@ -65,6 +66,7 @@ export default function Screens() {
                                 <Stack.Screen name="GasStation" component={GasStationScreen} />
                                 <Stack.Screen name="GasStationItem" component={GasStationItemScreen} />
                                 <Stack.Screen name="Event" component={EventScreen} />
+                                <Stack.Screen name="User" component={UserScreen} />
                             </Stack.Navigator>
                         )
                 }

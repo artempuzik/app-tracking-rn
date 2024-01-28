@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import styles from './styles'
 import {PRESSED_COLOR} from "../../config";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {logOut} from "../../store/app/appActions";
 
 const logo = require('../../../assets/logo.png')
@@ -14,6 +14,8 @@ const AppHeader = ({ canGoBack }) => {
     const navigation = useNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const dispatch = useDispatch()
+
+    const users = useSelector(state => state.user.users)
     const logoutHandler = () => {
         setIsMenuOpen(false)
         dispatch(logOut())
@@ -21,6 +23,11 @@ const AppHeader = ({ canGoBack }) => {
 
     const goToSettingsScreen = () => {
         navigation.navigate('Settings')
+        setIsMenuOpen(false)
+    }
+
+    const goToUserScreen = () => {
+        navigation.navigate('User')
         setIsMenuOpen(false)
     }
 
@@ -91,10 +98,29 @@ const AppHeader = ({ canGoBack }) => {
                                               </Pressable>
                                         </View>
                                     <View style={styles.block}>
-                                        <Text style={styles.text}>Баланс</Text>
-                                        <Text style={styles.balance}>1000.00 руб</Text>
+                                        <Text style={styles.text}>Колличество пользователей</Text>
+                                        <Text style={styles.balance}>{ users ? users.length : 0}</Text>
                                     </View>
                                 <View style={styles.line}></View>
+                                <Pressable
+                                    onPress={goToUserScreen}
+                                    style={({pressed}) => [
+                                        {
+                                            backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                        },
+                                        styles.logout,
+                                    ]}
+                                >
+                                    <Svg
+                                        width={20}
+                                        height={20}
+                                        viewBox="0 0 16 18"
+                                    >
+                                        <Path d="M8 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" fill="#a7a7aa"/>
+                                        <Path d="M8 10a8 8 0 0 1 8 8H0a8 8 0 0 1 8-8z" fill="#a7a7aa"/>
+                                    </Svg>
+                                    <Text style={{marginLeft: 10}}>Список пользователей</Text>
+                                </Pressable>
                                 <Pressable
                                     onPress={logoutHandler}
                                     style={({pressed}) => [
@@ -109,12 +135,12 @@ const AppHeader = ({ canGoBack }) => {
                                         height={20}
                                         viewBox="0 0 20 20"
                                     >
-                                        <Path class="st0" d="M9 16H0V0h9v2H2v12h7z" fill="#a7a7aa"/>
-                                        <Path class="st0" d="M5 7h10v2H5z" fill="#a7a7aa"/>
-                                        <Path transform="rotate(-45.001 12.522 6.128)" class="st0" d="M11.5 3.6h2v5.1h-2z" fill="#a7a7aa"/>
-                                        <Path transform="rotate(-45.001 12.522 9.522)" class="st0" d="M10 8.5h5.1v2H10z" fill="#a7a7aa"/>
+                                        <Path d="M9 16H0V0h9v2H2v12h7z" fill="#a7a7aa"/>
+                                        <Path d="M5 7h10v2H5z" fill="#a7a7aa"/>
+                                        <Path transform="rotate(-45.001 12.522 6.128)" d="M11.5 3.6h2v5.1h-2z" fill="#a7a7aa"/>
+                                        <Path transform="rotate(-45.001 12.522 9.522)" d="M10 8.5h5.1v2H10z" fill="#a7a7aa"/>
                                     </Svg>
-                                    <Text>Выйти</Text>
+                                    <Text style={{marginLeft: 10}}>Выйти</Text>
                                 </Pressable>
                 </View>
             </Modal>
