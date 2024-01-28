@@ -56,6 +56,7 @@ api.interceptors.response.use((response) => {
     return response
 }, async function (error) {
     const originalRequest = error.config;
+
     if(!axios.defaults.baseURL) {
         axios.defaults.baseURL = BASE_URL + '/api';
     }
@@ -63,6 +64,7 @@ api.interceptors.response.use((response) => {
         originalRequest._retry = true;
         if(reconnect === 5) {
             reconnect = 0
+            await AsyncStorage.removeItem('token');
             await Updates.reloadAsync()
             return Promise.reject(error);
         }

@@ -1,9 +1,9 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, Pressable, ActivityIndicator, ScrollView} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import Svg, {Circle, Path} from "react-native-svg";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ObjectItemInfo from "./components/ObjectItemInfo";
 import AppHeader from "../../components/header/AppHeader";
 import styles from './styles';
@@ -11,25 +11,41 @@ import ObjectItemRoutes from "./components/ObjectItemRoutes";
 import ObjectItemParking from "./components/ObjectItemParking";
 import ObjectItemPhoto from "./components/ObjectItemPhoto";
 import ObjectItemStatistics from "./components/ObjectItemStatistics";
-import {getObjectById, getObjectStatusById} from "../../store/objects/objectsActions";
+import {getObjectById, getObjectIcons, getObjects, getObjectStatusById} from "../../store/objects/objectsActions";
 
 const ObjectItemScreen = ({navigation}) => {
     const route = useRoute();
     const dispatch = useDispatch()
+    const refreshInterval = useSelector(state => state.user.refreshInterval)
+    const interval = useRef(null)
 
     const [object, setObject] = useState(null)
+    const [status, setStatus] = useState(null)
 
     const [isLoading, setIsLoading] = useState(false)
 
     const [icon, setIcon] = useState(0)
+
+    const getObjectsData = useCallback(async () => {
+        await dispatch(getObjectById(route.params.id)).then(async (data) =>{
+            if(data.response) {
+                setObject(data.response)
+            }
+        })
+    }, [route.params.id])
+
+    const getObjectStatusData = useCallback(async () => {
+        await dispatch(getObjectStatusById(route.params.id)).then(async (data) =>{
+            if(data.response) {
+                setStatus(data.response)
+            }
+        })
+    }, [route.params.id])
     const fetchData = async () => {
         try {
             setIsLoading(true)
-            await dispatch(getObjectById(route.params.id)).then(async (data) =>{
-                if(data.response) {
-                    setObject(data.response)
-                }
-            })
+            await getObjectsData()
+            await getObjectStatusData()
         } finally {
             setIsLoading(false)
         }
@@ -39,15 +55,24 @@ const ObjectItemScreen = ({navigation}) => {
         fetchData().catch(() => {})
     }, []);
 
+    useEffect(() => {
+        interval.current = setInterval(async () => await getObjectStatusData(), refreshInterval)
+        return () => {
+            console.log('CLOSE OBJECT ID SCREEN')
+            clearInterval(interval.current)
+            interval.current = null
+        }
+    })
+
     const page = useMemo(() => {
         switch (icon) {
             case 1: return <ObjectItemRoutes object={object}/>
             case 2: return <ObjectItemParking object={object}/>
             case 3: return <ObjectItemStatistics object={object}/>
             case 4: return <ObjectItemPhoto object={object}/>
-            default: return <ObjectItemInfo object={object} />
+            default: return <ObjectItemInfo object={object} status={status}/>
         }
-    }, [icon, object])
+    }, [icon, object, status])
 
     return (
         <SafeAreaView style={styles.container}>

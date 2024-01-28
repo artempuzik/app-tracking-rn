@@ -15,6 +15,7 @@ import CustomButton from "../../components/button/Button";
 import ObjectsMap from "./components/ObjectsMap";
 import {getProfileData} from "../../store/app/appActions";
 import {getUsers, refreshUserToken} from "../../store/user/usersActions";
+import {getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
 
 const initialFilters = {
     withIgnition: null,
@@ -43,6 +44,8 @@ const ObjectsScreen = ({navigation}) => {
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
+    const [isFiltersReset, setIsFiltersReset] = useState(false)
+
     const [items, setItems] = useState([])
 
     const [selectedGroup, setSelectedGroup] = useState(initialFilters.selectedGroup)
@@ -66,21 +69,46 @@ const ObjectsScreen = ({navigation}) => {
     }, [query, objects])
 
     const saveFilters = useCallback(() => {
-        const withGroupFilter = items.filter(el => {
-            if(selectedGroup) {
+        const withGroupFilter = objects.filter(el => {
+            if(selectedGroup !== null) {
                 return el.groups.includes(+selectedGroup)
             }
             return el
         })
-        setItems(withGroupFilter)
+        const withEngineFilter = withGroupFilter.filter(el => {
+            if(withIgnition !== null) {
+                const iopoints = getItemIoPointsByItemId(statuses, el)
+                return withIgnition ? Boolean(iopoints?.value) : !Boolean(iopoints?.value)
+            }
+            return el
+        })
+
+        const withMoveFilter = withEngineFilter.filter(el => {
+            if(isMove !== null) {
+                const point = getItemPointByItemId(statuses, el)
+                return isMove ? Boolean(+point?.speed) : !Boolean(+point?.speed)
+            }
+            return el
+        })
+
+        const withOnlineFilter = withMoveFilter.filter(el => {
+            if(isOnline !== null) {
+                const point = getItemPointByItemId(statuses, el)
+                return isOnline ? Boolean(point?.online) : !Boolean(point?.online)
+            }
+            return el
+        })
+        setItems(withOnlineFilter)
         setIsFiltersOpen(false)
-    }, [items, selectedGroup])
+    }, [items, selectedGroup, statuses, withIgnition, isOnline, isMove])
 
     const resetFilters = useCallback(() => {
         setSelectedGroup(initialFilters.selectedGroup)
         setWithIgnition(initialFilters.withIgnition)
         setIsMove(initialFilters.isMove)
         setIsOnline(initialFilters.isOnline)
+        setIsFiltersReset(true)
+        setTimeout(() => setIsFiltersReset(false))
     },[])
 
     const getObjectStatuses = useCallback(async () => {
@@ -149,6 +177,7 @@ const ObjectsScreen = ({navigation}) => {
     useEffect(() => {
         interval.current = setInterval(async () => await getObjectStatuses(), refreshInterval)
         return () => {
+            console.log('CLOSE OBJECT SCREEN')
             clearInterval(interval.current)
             interval.current = null
         }
@@ -340,7 +369,7 @@ const ObjectsScreen = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
-            {filtersBlock}
+            {!isFiltersReset && filtersBlock}
             {
                 !isFiltersOpen ? listBlock : null
             }

@@ -8,14 +8,9 @@ const ObjectItemElement = ({item, icons, statuses}) => {
         return icons.find(i => i.id === item.main.iconId)
     }, [item, icons])
 
-    const point = useMemo(() => {
-        return statuses.points?.find(p => p.trackerid == item.main.id)
-    }, [item, statuses.points])
+    const point = useMemo(() => getItemPointByItemId(statuses, item), [item, statuses.points])
 
-    const iopoints = useMemo(() => {
-        const engine = item.trends.find(t => t.flags === 'ENGINE')
-        return statuses.iopoints?.find(p => p.trendid == engine?.id)
-    }, [item, statuses.iopoints])
+    const iopoints = useMemo(() => getItemIoPointsByItemId(statuses, item), [item, statuses.iopoints])
 
     return (
         <View>
@@ -49,7 +44,7 @@ const ObjectItemElement = ({item, icons, statuses}) => {
                     </View>
                     <View style={styles.footerElement}>
                         {
-                            !!point?.speed ? (
+                           !Boolean(+point?.speed) ? (
                                 <Svg
                                     width={25}
                                     height={25}
@@ -98,5 +93,6 @@ import styles from '../styles';
 import Svg, {Path} from "react-native-svg";
 import {PRESSED_COLOR} from "../../../config";
 import {useSelector} from "react-redux";
+import {getItemIoPointsByItemId, getItemPointByItemId} from "../../../utils/helpers";
 
 export default ObjectItemElement;

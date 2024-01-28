@@ -54,13 +54,15 @@ const ObjectsMapScreen = ({navigation}) => {
             lat: obj.main.latitude,
             lng: obj.main.longitude,
         },
+        animation: {
+            type: 'spin',
+            duration: icon.rotate ? 5 : 10000,
+        },
         icon: baseUrl + icon.url,
         size: [icon.width, icon.height]
         }
     }
     ), [objects, icons])
-
-    console.log(markers[1])
 
     return (
         <SafeAreaView style={styles.container}>

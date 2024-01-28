@@ -7,48 +7,21 @@ import {useNavigation} from "@react-navigation/native";
 import {getObjectStatusById} from "../../../store/objects/objectsActions";
 import {useDispatch, useSelector} from "react-redux";
 
-const ObjectItemInfo = ({object}) => {
+const ObjectItemInfo = ({object, status}) => {
     const navigation = useNavigation();
-    const dispatch = useDispatch()
-
-    const [isLoading, setIsLoading] = useState(false)
-    const [status, setStatus] = useState(null)
 
     const icons = useSelector(state => state.objects.icons)
     const baseUrl = useSelector(state => state.app.currentServer)
 
-    const fetchData = async () => {
-        try {
-            setIsLoading(true)
-            await dispatch(getObjectStatusById(object.main.id)).then((data) =>{
-                if(data.response) {
-                    setStatus(data.response)
-                }
-            })
-        } finally {
-            setIsLoading(false)
-        }
-    }
+    const point = useMemo(() => {
+        return status?.points[0]
+    }, [object, status])
 
-    useEffect(() => {
-        fetchData().catch(() => {})
-    }, []);
-
-    const isVehicleActive = useMemo(() => !!object?.vehicleSpecifications.enginePower)
-
-    const isOnline = useMemo(() => {
-        if(!status) {
-            return false
-        }
-        return !!status?.points[0]?.online
-    }, [status])
-
-    const speed = useMemo(() => {
-        if(!status) {
-            return 0
-        }
-        return +status?.points[0]?.speed
-    }, [status])
+    const iopoints = useMemo(() => {
+        const engine = object?.trends.find(t => t.flags === 'ENGINE')
+        console.log(engine)
+        return status?.iopoints?.find(p => p.trendid == engine?.id)
+    }, [object, status])
 
     const points = useMemo(() => {
         if(!status) {
@@ -60,14 +33,14 @@ const ObjectItemInfo = ({object}) => {
                 lat: point.lat,
                 lng: point.lng,
             },
+            animation: {
+                type: 'spin',
+                duration: icon.rotate ? 5 : 10000,
+            },
             icon: baseUrl + icon.url,
             size: [icon.width, icon.height]
         }))
     }, [status])
-
-    if(isLoading) {
-        return <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" />
-    }
 
     return (
         <View style={styles.container}>
@@ -130,37 +103,36 @@ const ObjectItemInfo = ({object}) => {
                         viewBox="0 0 25 25"
                     >
                         <Path d="M12.336 0C9.204 0 7.2 2.868 7.2 6c0 .672-.396.996-.204 1.668L0 14.664V18h3.6v-2.4H6v-1.2l1.332-.396 3-3c.6.204.936-.204 1.668-.204 3.132 0 6-2.004 6-5.136A5.664 5.664 0 0 0 12.336 0zm.164 7.8a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"
-                              fill={isVehicleActive ? "#2060ae" : "#a7a7aa"}/>
+                              fill={!!iopoints?.value ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
-                    <Text>{isVehicleActive ? 'Вкл.' : 'Выкл.'}</Text>
+                    <Text>{!!iopoints?.value ? 'Вкл.' : 'Выкл.'}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     {
-                        Boolean(speed) ? (
-                                <Svg
-                                    style={{marginTop: 5}}
-                                    width={25}
-                                    height={25}
-                                    viewBox="0 0 25 25"
-                                >
-                                    <Path className="st0" d="M12.3 16H5.7c-.4 0-.7.5-.7 1s.3 1 .7 1h6.5c.4 0 .7-.5.7-1s-.2-1-.6-1z" fill="#2060ae"/>
-                                    <Path className="st0" d="M16 14.6l-1.6-1.3c1.7-2.1 2-5 .9-7.4-.6-1.2-1.5-2.2-2.6-2.9-1.1-.6-2.4-1-3.7-1-1.3 0-2.6.4-3.7 1.1-1.2.7-2 1.7-2.6 2.9-1.2 2.4-.8 5.3.9 7.4L2 14.6C-.2 12-.6 8.2.9 5.1c.7-1.5 1.9-2.8 3.3-3.7C5.6.5 7.3 0 9 0c1.7 0 3.4.5 4.8 1.4 1.4.9 2.6 2.2 3.3 3.7 1.5 3.1 1.1 6.9-1.1 9.5zM9.7 9.7L8.3 8.3l4-4 1.4 1.4-4 4z" fill="#2060ae"/>
-                                </Svg>
-                            ) :
-                            (
-                                <Svg
-                                    width={25}
-                                    height={25}
-                                    viewBox="0 0 25 25"
-                                >
-                                    <Path d="M14.4 17.7H7.8c-.4 0-.7.5-.7 1 0 .6.3 1 .7 1h6.6c.4 0 .7-.5.7-1 .1-.5-.3-1-.7-1z" fill="#a7a7aa"/>
-                                    <Path d="M18.2 16.3L16.6 15c1.7-2.1 2-5 .9-7.5-.5-1.1-1.5-2.1-2.6-2.8-1.1-.7-2.5-1.1-3.8-1.1-1.3 0-2.6.4-3.8 1.1-1.1.7-2 1.7-2.6 2.9-1.1 2.4-.8 5.4.9 7.5L4 16.3c-2.2-2.7-2.6-6.5-1.1-9.6.8-1.5 1.9-2.8 3.4-3.7 1.5-.9 3.1-1.4 4.8-1.4 1.7 0 3.4.5 4.9 1.4 1.4.9 2.6 2.2 3.3 3.8 1.5 3.1 1.1 6.8-1.1 9.5zm-6.4-5l-1.4-1.4 4-4 1.4 1.4-4 4z" fill="#a7a7aa"/>
-                                    <Path d="M0 3.4L3.4 0 22 18.6 18.6 22 0 3.4z" fill="#a7a7aa"/>
-                                    <Path d="M1 2.4L2.4 1 21 19.6 19.6 21 1 2.4z" fill="#a7a7aa"/>
-                                </Svg>
-                            )
+                        !!point?.speed ? (
+                            <Svg
+                                width={25}
+                                height={25}
+                                viewBox="0 0 25 25"
+                            >
+                                <Path d="M14.4 17.7H7.8c-.4 0-.7.5-.7 1 0 .6.3 1 .7 1h6.6c.4 0 .7-.5.7-1 .1-.5-.3-1-.7-1z" fill="#a7a7aa"/>
+                                <Path d="M18.2 16.3L16.6 15c1.7-2.1 2-5 .9-7.5-.5-1.1-1.5-2.1-2.6-2.8-1.1-.7-2.5-1.1-3.8-1.1-1.3 0-2.6.4-3.8 1.1-1.1.7-2 1.7-2.6 2.9-1.1 2.4-.8 5.4.9 7.5L4 16.3c-2.2-2.7-2.6-6.5-1.1-9.6.8-1.5 1.9-2.8 3.4-3.7 1.5-.9 3.1-1.4 4.8-1.4 1.7 0 3.4.5 4.9 1.4 1.4.9 2.6 2.2 3.3 3.8 1.5 3.1 1.1 6.8-1.1 9.5zm-6.4-5l-1.4-1.4 4-4 1.4 1.4-4 4z" fill="#a7a7aa"/>
+                                <Path d="M0 3.4L3.4 0 22 18.6 18.6 22 0 3.4z" fill="#a7a7aa"/>
+                                <Path d="M1 2.4L2.4 1 21 19.6 19.6 21 1 2.4z" fill="#a7a7aa"/>
+                            </Svg>
+                        ) : (
+                            <Svg
+                                style={{marginTop: 5}}
+                                width={25}
+                                height={25}
+                                viewBox="0 0 25 25"
+                            >
+                                <Path className="st0" d="M12.3 16H5.7c-.4 0-.7.5-.7 1s.3 1 .7 1h6.5c.4 0 .7-.5.7-1s-.2-1-.6-1z" fill="#2060ae"/>
+                                <Path className="st0" d="M16 14.6l-1.6-1.3c1.7-2.1 2-5 .9-7.4-.6-1.2-1.5-2.2-2.6-2.9-1.1-.6-2.4-1-3.7-1-1.3 0-2.6.4-3.7 1.1-1.2.7-2 1.7-2.6 2.9-1.2 2.4-.8 5.3.9 7.4L2 14.6C-.2 12-.6 8.2.9 5.1c.7-1.5 1.9-2.8 3.3-3.7C5.6.5 7.3 0 9 0c1.7 0 3.4.5 4.8 1.4 1.4.9 2.6 2.2 3.3 3.7 1.5 3.1 1.1 6.9-1.1 9.5zM9.7 9.7L8.3 8.3l4-4 1.4 1.4-4 4z" fill="#2060ae"/>
+                            </Svg>
+                        )
                     }
-                    <Text>{speed} km/h</Text>
+                    <Text>{point?.speed} km/h</Text>
                 </View>
                 <View style={styles.footerElement}>
                     <Svg
@@ -170,11 +142,13 @@ const ObjectItemInfo = ({object}) => {
                         viewBox="0 0 25 25"
                     >
                         <Path d="M8.7 17c-2.1 0-4.2-.8-5.9-2.4-.6-.7-.6-1.7 0-2.4l9.4-9.5c.4-.3.8-.5 1.2-.5.4 0 .8.2 1.1.5 3.2 3.2 3.2 8.5 0 11.8-1.6 1.7-3.7 2.5-5.8 2.5zm-4.2-3.6c2.5 2.2 6.3 2.1 8.7-.2 2.3-2.4 2.4-6.2.2-8.7l-8.9 8.9z"
-                              fill={isOnline ? "#31a903" : "#a7a7aa"}/>
+                              fill={!!point?.online ? "#31a903" : "#a7a7aa"}/>
                         <Path d="M.1 6.9c0-.1-.4-2.8 1.3-4.8C2.5.7 4.4 0 6.8 0v2C5 2 3.7 2.5 2.9 3.4 1.8 4.7 2 6.6 2 6.6l-1.9.3zm5.4-.1h-2C3.5 5 5 3.5 6.8 3.5v2c-.7 0-1.3.6-1.3 1.3z"
-                              fill={isOnline ? "#31a903" : "#a7a7aa"}/>
+                              fill={!!point?.online ? "#31a903" : "#a7a7aa"}/>
                     </Svg>
-                    <Text>В сети</Text>
+                    {
+                        !!point?.online ? <Text>В сети</Text> : <Text>Не в сети</Text>
+                    }
                 </View>
             </View>
             <View>
