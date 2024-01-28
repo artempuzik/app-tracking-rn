@@ -20,9 +20,12 @@ import GasStationItemScreen from "./gas-stations/GasStationItemScreen";
 import MapScreen from "./map/MapScreen";
 import GasStationScreen from "./gas-stations/GasStationScreen";
 import UserScreen from "./users/UserScreen";
+import {Platform} from "react-native";
 
 export const navigationRef = createNavigationContainerRef();
 const Stack = createStackNavigator();
+
+const isAndroid = Platform.OS === 'android'
 export default function Screens() {
     const dispatch = useDispatch();
     const token = useSelector(store => store.app.token)
@@ -51,6 +54,7 @@ export default function Screens() {
                         ) :
                         (
                             <Stack.Navigator initialRouteName="Home"
+                                             style={{paddingBottom: isAndroid ? 20 : 0}}
                                              screenOptions={{
                                 headerShown: false
                             }}>

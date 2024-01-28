@@ -69,7 +69,7 @@ export const getProfileData = () => async (dispatch) => {
       dispatch(setProfile(response.data))
     }
     return {
-      response,
+      response: response.data,
       error: null,
     };
   } catch (e) {

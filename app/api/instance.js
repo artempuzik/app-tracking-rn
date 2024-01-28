@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {BASE_URL} from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Platform} from "react-native";
 import * as Updates from "expo-updates";
 let reconnect = 0
 
@@ -26,21 +25,6 @@ const refreshToken = async () => {
 const getUserDataFromStorage = async () => {
     const user = await AsyncStorage.getItem('user');
     return JSON.parse(user)
-}
-
-export const clearStorage = async () => {
-    console.log('CLEAR STORAGE')
-    const asyncStorageKeys = await AsyncStorage.getAllKeys();
-    if (asyncStorageKeys.length > 0) {
-        if (Platform.OS === 'android') {
-            await AsyncStorage.clear();
-        }
-        if (Platform.OS === 'ios') {
-            await AsyncStorage.multiRemove(asyncStorageKeys);
-        }
-    }
-    reconnect = 0
-    await Updates.reloadAsync()
 }
 
 api.interceptors.request.use(
@@ -78,7 +62,8 @@ api.interceptors.response.use((response) => {
     if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         if(reconnect === 5) {
-            await clearStorage();
+            reconnect = 0
+            await Updates.reloadAsync()
             return Promise.reject(error);
         }
         const access_token = await refreshToken();

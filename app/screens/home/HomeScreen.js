@@ -1,23 +1,14 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {View, Text, Pressable, ScrollView, Linking} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, {Circle, Path} from "react-native-svg"
 import styles from './styles'
 import {PRESSED_COLOR} from "../../config";
 import AppHeader from "../../components/header/AppHeader";
-import {useDispatch, useSelector} from "react-redux";
-import {getProfileData} from "../../store/app/appActions";
-import {getUsers} from "../../store/user/usersActions";
+import {useSelector} from "react-redux";
 
 const HomeScreen = ({ navigation }) => {
-    const dispatch = useDispatch()
-
     const baseUrl = useSelector(state => state.app.currentServer)
-
-    useEffect(() => {
-        dispatch(getProfileData())
-        dispatch(getUsers())
-    }, []);
 
     return (
         <SafeAreaView style={styles.container}>

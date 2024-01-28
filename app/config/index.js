@@ -1,14 +1,4 @@
-export const SERVERS = [
-    {
-        label: 's1.geotek.online',
-        value:'https://s1.geotek.online',
-    },
-    {
-        label: 's4.geotek.online',
-        value:'https://s4.geotek.online',
-    },
-]
-
+export const REFRESH_INTERVAL = 15000 // milliseconds
 export const BASE_URL = 'https://s4.geotek.online'
 
 export const PRESSED_COLOR = 'rgb(210, 230, 255)'

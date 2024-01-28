@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Pressable, Text, ScrollView, ActivityIndicator} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {View, Pressable, Text, RefreshControl, FlatList} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
 import styles from './styles';
@@ -13,6 +13,8 @@ import SelectList from "../../components/select/SelectList";
 import {getObjectIcons, getObjects, getObjectsStatuses} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
 import ObjectsMap from "./components/ObjectsMap";
+import {getProfileData} from "../../store/app/appActions";
+import {getUsers, refreshUserToken} from "../../store/user/usersActions";
 
 const initialFilters = {
     withIgnition: null,
@@ -24,12 +26,18 @@ const initialFilters = {
 const ObjectsScreen = ({navigation}) => {
     const dispatch = useDispatch()
 
+    const refreshInterval = useSelector(state => state.user.refreshInterval)
+
     const [isLoading, setIsLoading] = useState(false)
 
     const [query, setQuery] = useState('')
 
+    const interval = useRef(null)
+
     const [objects, setObjects] = useState([])
     const [icons, setIcons] = useState([])
+    const [statuses, setStatuses] = useState([])
+    const [profile, setProfile] = useState(null)
 
     const [isMapOpen, setMapOpen] = useState(false)
 
@@ -41,8 +49,6 @@ const ObjectsScreen = ({navigation}) => {
     const [withIgnition, setWithIgnition] = useState(initialFilters.withIgnition);
     const [isMove, setIsMove] = useState(initialFilters.isMove);
     const [isOnline, setIsOnline] = useState(initialFilters.isOnline);
-
-    const profile = useSelector(state => state.app.profile)
 
     const formatGroups = useMemo(() => {
         if(!profile) {
@@ -77,19 +83,60 @@ const ObjectsScreen = ({navigation}) => {
         setIsOnline(initialFilters.isOnline)
     },[])
 
+    const getObjectStatuses = useCallback(async () => {
+        await dispatch(getObjectsStatuses()).then((data) => {
+            if(data.response) {
+                setStatuses(data.response)
+            }
+        })
+    }, [])
+
+    const getProfile = useCallback(async () => {
+        await dispatch(getProfileData()).then((data) => {
+            if(data.response) {
+                setProfile(data.response)
+            }
+        })
+    }, [])
+
+    const getUserData = useCallback(async () => {
+        await dispatch(getUsers())
+    }, [])
+
+    const refreshToken = useCallback(async () => {
+        await dispatch(refreshUserToken())
+    }, [])
+
+    const onRefresh = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            await getObjectStatuses()
+            await refreshToken()
+        } finally {
+            setIsLoading(false)
+        }
+    })
+
+    const getObjectsData = useCallback(async () => {
+        await dispatch(getObjects()).then(async (data) =>{
+            if(data.response) {
+                setObjects(data.response)
+                await dispatch(getObjectIcons()).then((data) => {
+                    if(data.response) {
+                        setIcons(data.response)
+                    }
+                })
+            }
+        })
+    }, [])
+
     const fetchData = async () => {
         try {
             setIsLoading(true)
-            await dispatch(getObjects()).then(async (data) =>{
-                if(data.response) {
-                    setObjects(data.response)
-                    await dispatch(getObjectIcons()).then((data) => {
-                        if(data.response) {
-                            setIcons(data.response)
-                        }
-                    })
-                }
-            })
+            await getObjectsData()
+            await getProfile()
+            await getObjectStatuses()
+            await getUserData()
         } finally {
             setIsLoading(false)
         }
@@ -98,6 +145,14 @@ const ObjectsScreen = ({navigation}) => {
     useEffect(() => {
         fetchData().catch(() => {})
     }, []);
+
+    useEffect(() => {
+        interval.current = setInterval(async () => await getObjectStatuses(), refreshInterval)
+        return () => {
+            clearInterval(interval.current)
+            interval.current = null
+        }
+    })
 
     const selectElement = useMemo(() => (
         <View style={{...styles.selectContainer, paddingHorizontal: 20}}>
@@ -216,7 +271,7 @@ const ObjectsScreen = ({navigation}) => {
                             },
                             styles.headerButton,
                         ]}
-                        onPress={() => setMapOpen(false)}
+                        onPress={() => setMapOpen(true)}
                     >
                         <Svg
                             width={25}
@@ -246,32 +301,32 @@ const ObjectsScreen = ({navigation}) => {
                         </Svg>
                     </Pressable>
                 </View>
-                {
-                    isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> :
-                        (
-                            <ScrollView>
+                <FlatList
+                    data={items}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListEmptyComponent={<Text style={styles.emptyList}>Empty list</Text>}
+                    enableEmptySections={true}
+                    renderItem={({item}) => (
+                        <Pressable
+                            key={item.main.id}
+                            style={({pressed}) => [
                                 {
-                                    items.length ? items.map(item => (
-                                        <Pressable
-                                            key={item.main.id}
-                                            style={({pressed}) => [
-                                                {
-                                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
-                                                },
-                                                styles.objectsItem,
-                                            ]}
-                                            onPress={() => navigation.navigate('ObjectItem', {id: item.main.id})}
-                                        >
-                                            <ObjectItemElement item={item} icons={icons}/>
-                                            <View style={styles.line}></View>
-                                        </Pressable>
-                                    )) : <Text style={styles.emptyList}>Empty list</Text>
-                                }
-                            </ScrollView>
-                        )
-                }
+                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                },
+                                styles.objectsItem,
+                            ]}
+                            onPress={() => navigation.navigate('ObjectItem', {id: item.main.id})}
+                        >
+                            <ObjectItemElement item={item} icons={icons} statuses={statuses}/>
+                            <View style={styles.line}></View>
+                        </Pressable>
+                    )}
+                    refreshControl={
+                        <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+                    }
+                />
             </View>
-    ), [items, isLoading])
+    ), [items, icons, statuses, isLoading])
 
     if(isMapOpen) {
         return (
