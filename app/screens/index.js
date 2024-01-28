@@ -21,6 +21,7 @@ import MapScreen from "./map/MapScreen";
 import GasStationScreen from "./gas-stations/GasStationScreen";
 import UserScreen from "./users/UserScreen";
 import {Platform} from "react-native";
+import ServiceScreen from "./services/ServiceScreen";
 
 export const navigationRef = createNavigationContainerRef();
 const Stack = createStackNavigator();
@@ -71,6 +72,7 @@ export default function Screens() {
                                 <Stack.Screen name="GasStationItem" component={GasStationItemScreen} />
                                 <Stack.Screen name="Event" component={EventScreen} />
                                 <Stack.Screen name="User" component={UserScreen} />
+                                <Stack.Screen name="Service" component={ServiceScreen} />
                             </Stack.Navigator>
                         )
                 }

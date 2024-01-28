@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Api from '../../api'
 import axios from '../../api/instance'
 import {resetAppState, setCurrentServer, setLanguages, setProfile, setServers, setToken} from "./index";
-import {resetUserState, setCurrentUser} from "../user";
+import {resetUserState, setCurrentUser, setRefreshInterval} from "../user";
 import {resetDriversState} from "../drivers";
 import {resetObjectsState} from "../objects";
 import {getUsers} from "../user/usersActions";
@@ -13,6 +13,7 @@ import * as Updates from "expo-updates";
 export const clearStorage = async () => {
   await AsyncStorage.removeItem('user');
   await AsyncStorage.removeItem('token');
+  await AsyncStorage.removeItem('refresh');
 }
 const checkUserDataAndLogout = () => async (dispatch) => {
   const user = await AsyncStorage.getItem('user');
@@ -40,11 +41,15 @@ export const init = () => async (dispatch, getState) => {
       const currentUser = JSON.parse(user)
       dispatch(setCurrentUser(currentUser))
     }
-    dispatch(setToken(token))
-    dispatch(getObjects())
-    dispatch(getObjectsStatuses())
-    dispatch(getObjectIcons())
-    dispatch(getUsers())
+    const interval = await AsyncStorage.getItem('refresh');
+    if(interval) {
+      dispatch(setRefreshInterval(+interval))
+    }
+    await dispatch(setToken(token))
+    await dispatch(getObjects())
+    await dispatch(getObjectsStatuses())
+    await dispatch(getObjectIcons())
+    await dispatch(getUsers())
   }
 };
 

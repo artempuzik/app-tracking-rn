@@ -1,4 +1,4 @@
-import {setUsers, setCurrentUser} from "./index";
+import {setUsers, setCurrentUser, setRefreshInterval} from "./index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Api from '../../api'
 import axios from "../../api/instance";
@@ -57,6 +57,11 @@ export const getUsers = () => async (dispatch, getState) => {
   } catch (e) {
   }
 };
+
+export const setRefreshStatusInterval = (value) => async (dispatch, getState) => {
+  dispatch(setRefreshInterval(value))
+  await AsyncStorage.setItem('refresh', value);
+}
 
 export const refreshUserToken = () => async (dispatch, getState) => {
   try {

@@ -3,14 +3,16 @@ import {View, Text, ScrollView, Platform, KeyboardAvoidingView} from 'react-nati
 import styles from '../styles'
 import {useDispatch, useSelector} from "react-redux";
 import SelectList from "../../../components/select/SelectList";
-import {CODE_LIST, METRICS_LIST} from "../../../config";
+import {CODE_LIST, METRICS_LIST, REFRESH_INTERVAL} from "../../../config";
 import CustomButton from "../../../components/button/Button";
-import {changeUser} from "../../../store/user/usersActions";
+import {changeUser, setRefreshStatusInterval} from "../../../store/user/usersActions";
+import RangeSlider from "../../../components/Slider/RangeSlider";
 
 const AppGeneralSettings = () => {
     const [language, setLang] = useState('ru')
     const [flags, setFlags] = useState('')
     const [geocoder, setGeocoder] = useState('')
+    const [interval, setInterval] = useState(REFRESH_INTERVAL)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
@@ -41,6 +43,7 @@ const AppGeneralSettings = () => {
                 if(response.error) {
                     setError(response.error)
                 }
+                dispatch(setRefreshStatusInterval(interval))
             })
         } catch (e) {
             setLoading(false)
@@ -77,6 +80,7 @@ const AppGeneralSettings = () => {
                             <Text style={styles.text}>Система измерения</Text>
                             <SelectList items={CODE_LIST} value={geocoder} onChange={setGeocoder}/>
                         </View>
+                        <RangeSlider onChange={setInterval}/>
                         <Text style={styles.error}>
                             {error}
                         </Text>
