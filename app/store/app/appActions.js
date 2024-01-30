@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import i18n from '../../utils/i18'
 import Api from '../../api'
 import axios from '../../api/instance'
-import {resetAppState, setCurrentServer, setLanguages, setProfile, setServers, setToken} from "./index";
+import {resetAppState, setCurrentServer, setLanguage, setLanguages, setProfile, setServers, setToken} from "./index";
 import {resetUserState, setCurrentUser, setRefreshInterval} from "../user";
 import {resetDriversState} from "../drivers";
 import {resetObjectsState} from "../objects";
@@ -39,6 +40,8 @@ export const init = () => async (dispatch, getState) => {
     const user = await AsyncStorage.getItem('user');
     if(user) {
       const currentUser = JSON.parse(user)
+      i18n.locale = currentUser.language
+      console.log(currentUser.language, i18n.locale)
       dispatch(setCurrentUser(currentUser))
     }
     const interval = await AsyncStorage.getItem('refresh');
@@ -85,13 +88,14 @@ export const getProfileData = () => async (dispatch) => {
   }
 };
 
-export const setLanguage = (language) => async (dispatch, getState) => {
+export const setAppLanguage = (language) => async (dispatch, getState) => {
   const currentUser = getState().user.currentUser
   await AsyncStorage.setItem('user', JSON.stringify({
     ...currentUser,
     language,
   }));
-   dispatch(setLanguage(language))
+  i18n.locale = language
+  dispatch(setLanguage(language))
 };
 
 export const getToken = (dto) => async (dispatch, getState) => {

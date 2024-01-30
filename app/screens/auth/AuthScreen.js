@@ -4,7 +4,6 @@ import {
     TextInput,
     View,
     Image,
-    Pressable,
     SafeAreaView,
     Platform,
     ScrollView,
@@ -12,13 +11,13 @@ import {
     StyleSheet
 } from 'react-native';
 import React, {useEffect, useMemo, useState} from "react";
+import i18n from '../../utils/i18'
 import styles from "./styles";
 import {useDispatch, useSelector} from "react-redux";
-import {changeServer, getToken} from "../../store/app/appActions";
+import {changeServer, getToken, setAppLanguage} from "../../store/app/appActions";
 import {BASE_URL} from "../../config";
 import CustomButton from "../../components/button/Button";
 import RNPickerSelect from "react-native-picker-select";
-import {setLanguage} from "../../store/app";
 
 const background = require('../../../assets/bg_auth.png')
 const logo = require('../../../assets/logo.png')
@@ -36,9 +35,10 @@ export default function AuthScreen({navigation}) {
     const servers = useSelector(state => state.app.servers)
 
     const languages = useSelector(state => state.app.languages)
+    const lang = useSelector(state => state.app.language)
 
     useEffect(() => {
-        dispatch(setLanguage(language))
+        dispatch(setAppLanguage(language))
     }, [language]);
 
     useEffect(() => {
@@ -120,7 +120,7 @@ export default function AuthScreen({navigation}) {
                                         onChangeText={setUserName}
                                         autoCorrect={false}
                                         autoCapitalize='none'
-                                        placeholder="Пользователь"
+                                        placeholder={i18n.t('user')}
                                     />
                                     <TextInput
                                         style={styles.input}
@@ -169,7 +169,7 @@ export default function AuthScreen({navigation}) {
                                 onValueChange={(itemValue) => setLang(itemValue)}
                                 items={formatLangArray}
                                 style={pickerSelectStylesLanguage}
-                                value={language}
+                                value={lang}
                             />
                     </View>
                             </KeyboardAvoidingView>
