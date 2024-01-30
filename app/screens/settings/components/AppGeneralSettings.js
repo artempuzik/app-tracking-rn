@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import i18n from '../../../utils/i18'
 import styles from '../styles'
 import {useDispatch, useSelector} from "react-redux";
 import SelectList from "../../../components/select/SelectList";
@@ -69,15 +70,15 @@ const AppGeneralSettings = () => {
                             style={styles.auth}
                         >
                         <View style={styles.block}>
-                            <Text style={styles.text}>Язык интерфейса</Text>
+                            <Text style={styles.text}>{i18n.t('interface_language')}</Text>
                             <SelectList items={languages} value={language} onChange={setLang}/>
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Карта по умолчанию</Text>
+                            <Text style={styles.text}>{i18n.t('default_map')}</Text>
                             <SelectList items={METRICS_LIST} value={flags} onChange={setFlags}/>
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Система измерения</Text>
+                            <Text style={styles.text}>{i18n.t('measuring_system')}</Text>
                             <SelectList items={CODE_LIST} value={geocoder} onChange={setGeocoder}/>
                         </View>
                         <RangeSlider onChange={setInterval}/>
@@ -87,7 +88,7 @@ const AppGeneralSettings = () => {
                         </KeyboardAvoidingView>
                     </ScrollView>
                     <CustomButton
-                        title={'Сохранить'}
+                        title={i18n.t('save')}
                         isLoading={loading}
                         onPress={submitHandler}
                     />

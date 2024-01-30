@@ -169,7 +169,7 @@ const ObjectItemParking = ({object}) => {
                         ]}
                         onPress={resetFilters}
                     >
-                        <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                        <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
                 <View style={{marginHorizontal: 20}}>

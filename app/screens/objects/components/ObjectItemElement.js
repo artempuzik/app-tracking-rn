@@ -1,6 +1,8 @@
 import React, {useMemo} from 'react';
 import { Image } from 'expo-image';
 import {View, Text} from 'react-native';
+import i18n from '../../../utils/i18'
+
 const ObjectItemElement = ({item, icons, statuses}) => {
     const baseUrl = useSelector(state => state.app.currentServer)
 
@@ -40,7 +42,7 @@ const ObjectItemElement = ({item, icons, statuses}) => {
                             <Path d="M12.336 0C9.204 0 7.2 2.868 7.2 6c0 .672-.396.996-.204 1.668L0 14.664V18h3.6v-2.4H6v-1.2l1.332-.396 3-3c.6.204.936-.204 1.668-.204 3.132 0 6-2.004 6-5.136A5.664 5.664 0 0 0 12.336 0zm.164 7.8a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"
                                   fill={!!iopoints?.value ? "#2060ae" : "#a7a7aa"}/>
                         </Svg>
-                        <Text>{!!iopoints?.value ? 'Вкл.' : 'Выкл.'}</Text>
+                        <Text>{!!iopoints?.value ? i18n.t('on') : i18n.t('off')}</Text>
                     </View>
                     <View style={styles.footerElement}>
                         {
@@ -67,7 +69,7 @@ const ObjectItemElement = ({item, icons, statuses}) => {
                                     </Svg>
                                 )
                         }
-                        <Text>{point?.speed} km/h</Text>
+                        <Text>{point?.speed} {i18n.t('speed_text')}</Text>
                     </View>
                     <View style={styles.footerElement}>
                         <Svg
@@ -82,7 +84,7 @@ const ObjectItemElement = ({item, icons, statuses}) => {
                                   fill={!!point?.online ? "#31a903" : "#a7a7aa"}/>
                         </Svg>
                         {
-                            !!point?.online ? <Text>В сети</Text> : <Text>Не в сети</Text>
+                            !!point?.online ? <Text>{i18n.t('online')}</Text> : <Text>{i18n.t('offline')}</Text>
                         }
                     </View>
                 </View>

@@ -22,24 +22,20 @@ import RNPickerSelect from "react-native-picker-select";
 const background = require('../../../assets/bg_auth.png')
 const logo = require('../../../assets/logo.png')
 export default function AuthScreen({navigation}) {
+    const servers = useSelector(state => state.app.servers)
+    const languages = useSelector(state => state.app.languages)
+    const lang = useSelector(state => state.app.language)
+
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [language, setLang] = useState('en-us')
+    const [language, setLang] = useState(lang)
+
     const [error, setError] = useState('')
 
     const [host, setHost] = useState(BASE_URL)
 
     const dispatch = useDispatch();
-
-    const servers = useSelector(state => state.app.servers)
-
-    const languages = useSelector(state => state.app.languages)
-    const lang = useSelector(state => state.app.language)
-
-    useEffect(() => {
-        dispatch(setAppLanguage(language))
-    }, [language]);
 
     useEffect(() => {
         if(host) {
@@ -112,7 +108,7 @@ export default function AuthScreen({navigation}) {
                                 style={styles.auth}
                             >
                                 <Text style={styles.title}>
-                                    Авторизация
+                                    {i18n.t('auth_title')}
                                 </Text>
                                 <View style={styles.inputContainer}>
                                     <TextInput
@@ -127,7 +123,7 @@ export default function AuthScreen({navigation}) {
                                         onChangeText={setPassword}
                                         autoCorrect={false}
                                         autoCapitalize='none'
-                                        placeholder="Пароль"
+                                        placeholder={i18n.t('password')}
                                         secureTextEntry={true}
                                     />
                                 </View>
@@ -143,7 +139,7 @@ export default function AuthScreen({navigation}) {
                                     />
                                 </View>
                                 <CustomButton
-                                    title={'Войти'}
+                                    title={i18n.t('sign_in')}
                                     isLoading={loading}
                                     btnColor={'#FFA500'}
                                     onPress={submitHandler}
@@ -164,9 +160,9 @@ export default function AuthScreen({navigation}) {
                                 {/*    </Pressable>*/}
                                 {/*</View>*/}
                         <View style={{ marginTop: 20, marginBottom: 50, ...styles.row }}>
-                        <Text style={styles.text}>Язык интерфейса:</Text>
+                        <Text style={styles.text}>{i18n.t('interface_language')}</Text>
                             <RNPickerSelect
-                                onValueChange={(itemValue) => setLang(itemValue)}
+                                onValueChange={(itemValue) => dispatch(setAppLanguage(itemValue))}
                                 items={formatLangArray}
                                 style={pickerSelectStylesLanguage}
                                 value={lang}

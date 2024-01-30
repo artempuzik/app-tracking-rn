@@ -6,7 +6,7 @@ import {resetAppState, setCurrentServer, setLanguage, setLanguages, setProfile, 
 import {resetUserState, setCurrentUser, setRefreshInterval} from "../user";
 import {resetDriversState} from "../drivers";
 import {resetObjectsState} from "../objects";
-import {getUsers} from "../user/usersActions";
+import {getUsers, refreshUserToken} from "../user/usersActions";
 import {getObjectIcons, getObjects, getObjectsStatuses} from "../objects/objectsActions";
 import * as Updates from "expo-updates";
 
@@ -15,6 +15,7 @@ export const clearStorage = async () => {
   await AsyncStorage.removeItem('user');
   await AsyncStorage.removeItem('token');
   await AsyncStorage.removeItem('refresh');
+  await AsyncStorage.removeItem('language');
 }
 const checkUserDataAndLogout = () => async (dispatch) => {
   const user = await AsyncStorage.getItem('user');
@@ -29,19 +30,18 @@ export const changeServer = (server) => async (dispatch) => {
   axios.defaults.baseURL = 'https://' + server  + '/api'
 }
 
-export const init = () => async (dispatch, getState) => {
-  const token = getState().app.token
+export const init = () => async (dispatch) => {
   dispatch(getSettings())
-  if(!token) {
-    const token = await AsyncStorage.getItem('token');
-    if(!token) {
-      return
+  const token = await AsyncStorage.getItem('token');
+  if(token) {
+    const language = await AsyncStorage.getItem('language');
+    if(language) {
+      i18n.locale = language
+      dispatch(setLanguage(language))
     }
     const user = await AsyncStorage.getItem('user');
     if(user) {
       const currentUser = JSON.parse(user)
-      i18n.locale = currentUser.language
-      console.log(currentUser.language, i18n.locale)
       dispatch(setCurrentUser(currentUser))
     }
     const interval = await AsyncStorage.getItem('refresh');
@@ -88,21 +88,15 @@ export const getProfileData = () => async (dispatch) => {
   }
 };
 
-export const setAppLanguage = (language) => async (dispatch, getState) => {
-  const currentUser = getState().user.currentUser
-  await AsyncStorage.setItem('user', JSON.stringify({
-    ...currentUser,
-    language,
-  }));
+export const setAppLanguage = (language) => async (dispatch) => {
   i18n.locale = language
+  await AsyncStorage.setItem('language', language);
   dispatch(setLanguage(language))
 };
 
 export const getToken = (dto) => async (dispatch, getState) => {
-  const language = getState().app.language
   try {
     const response = await Api.getUserToken({
-      language,
       userName: dto.userName.trim(),
       password: dto.password.trim(),
     })
@@ -117,10 +111,9 @@ export const getToken = (dto) => async (dispatch, getState) => {
       if(users) {
         const matchedUser = users.find(user => user.name === dto.userName.trim())
         if(matchedUser) {
-          await AsyncStorage.setItem('user', JSON.stringify({
-            ...matchedUser,
-            language,
-          }));
+          await AsyncStorage.setItem('user', JSON.stringify(matchedUser));
+          dispatch(setCurrentUser(matchedUser))
+          dispatch(refreshUserToken())
         }
       }
     })

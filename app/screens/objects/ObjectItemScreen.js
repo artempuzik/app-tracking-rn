@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import Svg, {Circle, Path} from "react-native-svg";
 import {useDispatch, useSelector} from "react-redux";
+import i18n from '../../utils/i18';
 import ObjectItemInfo from "./components/ObjectItemInfo";
 import AppHeader from "../../components/header/AppHeader";
 import styles from './styles';
@@ -11,7 +12,7 @@ import ObjectItemRoutes from "./components/ObjectItemRoutes";
 import ObjectItemParking from "./components/ObjectItemParking";
 import ObjectItemPhoto from "./components/ObjectItemPhoto";
 import ObjectItemStatistics from "./components/ObjectItemStatistics";
-import {getObjectById, getObjectIcons, getObjects, getObjectStatusById} from "../../store/objects/objectsActions";
+import {getObjectById, getObjectStatusById} from "../../store/objects/objectsActions";
 
 const ObjectItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -96,7 +97,7 @@ const ObjectItemScreen = ({navigation}) => {
                               fill={icon === 0 ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
                     {
-                        icon === 0 ? <Text style={styles.iconTitle}>Инфо</Text> : <Text></Text>
+                        icon === 0 ? <Text style={styles.iconTitle}>{i18n.t('info')}</Text> : <Text></Text>
                     }
                 </Pressable>
                 <Pressable
@@ -117,7 +118,7 @@ const ObjectItemScreen = ({navigation}) => {
                               fill={icon === 1 ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
                     {
-                        icon === 1 ? <Text style={styles.iconTitle}>Дороги</Text> : <Text></Text>
+                        icon === 1 ? <Text style={styles.iconTitle}>{i18n.t('roads')}</Text> : <Text></Text>
                     }
                 </Pressable>
                 <Pressable
@@ -138,7 +139,7 @@ const ObjectItemScreen = ({navigation}) => {
                               fill={icon === 2 ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
                     {
-                        icon === 2 ? <Text style={styles.iconTitle}>Парковка</Text> : <Text></Text>
+                        icon === 2 ? <Text style={styles.iconTitle}>{i18n.t('parking')}</Text> : <Text></Text>
                     }
                 </Pressable>
                 <Pressable
@@ -159,7 +160,7 @@ const ObjectItemScreen = ({navigation}) => {
                               fill={icon === 3 ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
                     {
-                        icon === 3 ? <Text style={styles.iconTitle}>Отчет</Text> : <Text></Text>
+                        icon === 3 ? <Text style={styles.iconTitle}>{i18n.t('report')}</Text> : <Text></Text>
                     }
                 </Pressable>
                 <Pressable
@@ -182,7 +183,7 @@ const ObjectItemScreen = ({navigation}) => {
                                 fill={icon === 4 ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
                     {
-                        icon === 4 ? <Text style={styles.iconTitle}>Фото</Text> : <Text></Text>
+                        icon === 4 ? <Text style={styles.iconTitle}>{i18n.t('photo')}</Text> : <Text></Text>
                     }
                 </Pressable>
             </View>

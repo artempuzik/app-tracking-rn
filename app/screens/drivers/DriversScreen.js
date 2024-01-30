@@ -12,6 +12,7 @@ import AppHeader from "../../components/header/AppHeader";
 import SelectList from "../../components/select/SelectList";
 import {getDriverGroups, getDrivers, getDriverSessionById} from "../../store/drivers/driversActions";
 import CustomButton from "../../components/button/Button";
+import i18n from "../../utils/i18";
 
 const initialFilters = {
     isAll: null,
@@ -130,7 +131,7 @@ const DriversScreen = ({navigation}) => {
                             ]}
                             onPress={resetFilters}
                         >
-                            <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                            <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                         </Pressable>
                     </View>
                 </View>

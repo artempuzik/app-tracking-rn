@@ -3,6 +3,7 @@ import {View, Image, Pressable, Text} from 'react-native';
 import Svg, {Circle, Ellipse, Path} from "react-native-svg"
 import { useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
+import i18n from "../../utils/i18";
 import styles from './styles'
 import {PRESSED_COLOR} from "../../config";
 import {useDispatch, useSelector} from "react-redux";
@@ -16,6 +17,7 @@ const AppHeader = ({ canGoBack }) => {
     const dispatch = useDispatch()
 
     const users = useSelector(state => state.user.users)
+    const currentUser = useSelector(state => state.user.currentUser)
     const logoutHandler = () => {
         setIsMenuOpen(false)
         dispatch(logOut())
@@ -82,9 +84,9 @@ const AppHeader = ({ canGoBack }) => {
                 onBackdropPress={() => setIsMenuOpen(false)}
             >
                 <View style={styles.modalItem}>
-                                        <Text style={styles.text}>Ваш профиль</Text>
+                                        <Text style={styles.text}>{i18n.t('profile')}</Text>
                                         <View style={[styles.block, styles.profile]}>
-                                            <Text>Admin</Text>
+                                            <Text>{currentUser?.name}</Text>
                                                 <Pressable
                                                     onPress={goToSettingsScreen}
                                                 >
@@ -98,7 +100,7 @@ const AppHeader = ({ canGoBack }) => {
                                               </Pressable>
                                         </View>
                                     <View style={styles.block}>
-                                        <Text style={styles.text}>Колличество пользователей</Text>
+                                        <Text style={styles.text}>{i18n.t('user_counter')}</Text>
                                         <Text style={styles.balance}>{ users ? users.length : 0}</Text>
                                     </View>
                                 <View style={styles.line}></View>
@@ -119,7 +121,7 @@ const AppHeader = ({ canGoBack }) => {
                                         <Path d="M8 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" fill="#a7a7aa"/>
                                         <Path d="M8 10a8 8 0 0 1 8 8H0a8 8 0 0 1 8-8z" fill="#a7a7aa"/>
                                     </Svg>
-                                    <Text style={{marginLeft: 10}}>Список пользователей</Text>
+                                    <Text style={{marginLeft: 10}}>{i18n.t('user_list')}</Text>
                                 </Pressable>
                                 <Pressable
                                     onPress={logoutHandler}
@@ -140,7 +142,7 @@ const AppHeader = ({ canGoBack }) => {
                                         <Path transform="rotate(-45.001 12.522 6.128)" d="M11.5 3.6h2v5.1h-2z" fill="#a7a7aa"/>
                                         <Path transform="rotate(-45.001 12.522 9.522)" d="M10 8.5h5.1v2H10z" fill="#a7a7aa"/>
                                     </Svg>
-                                    <Text style={{marginLeft: 10}}>Выйти</Text>
+                                    <Text style={{marginLeft: 10}}>{i18n.t('log_out')}</Text>
                                 </Pressable>
                 </View>
             </Modal>

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import { View, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Svg, {Path} from "react-native-svg";
+import i18n from "../../utils/i18"
 
 const SearchInput = ({onChange}) => {
     const [value, setValue] = useState('')
@@ -16,7 +17,7 @@ const SearchInput = ({onChange}) => {
                         style={styles.searchInput}
                         onChangeText={setValue}
                         value={value}
-                        placeholder="Поиск"
+                        placeholder={i18n.t('search')}
                         placeholderTextColor="#999"
                     />
                 </View>

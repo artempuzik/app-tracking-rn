@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, Pressable, Text, RefreshControl, FlatList} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
+import i18n from '../../utils/i18'
 import styles from './styles';
 import SearchInput from "../../components/search/SearchInput";
 import Svg, {Path} from "react-native-svg";
@@ -194,7 +195,7 @@ const ObjectsScreen = ({navigation}) => {
     const radioButtonsBlock = useMemo(() => (
         <View style={{paddingHorizontal: 20 }}>
             <View style={styles.radioButtonsContainer}>
-                <Text>Только объекты с включенным двигателем</Text>
+                <Text>{i18n.t('only_with_engines')}</Text>
                 <RadioForm
                     style={styles.radioButtons}
                     radio_props={WITH_IGNITION_OPTIONS}
@@ -211,7 +212,7 @@ const ObjectsScreen = ({navigation}) => {
                 />
             </View>
             <View style={styles.radioButtonsContainer}>
-                <Text>Отобразить только объекты:</Text>
+                <Text>{i18n.t('only_objects')}</Text>
                 <RadioForm
                     style={styles.radioButtons}
                     radio_props={MOVE_OPTIONS}
@@ -228,7 +229,7 @@ const ObjectsScreen = ({navigation}) => {
                 />
             </View>
             <View style={styles.radioButtonsContainer}>
-                <Text>Отобразить только объекты со статусом:</Text>
+                <Text>{i18n.t('only_with_states')}</Text>
                 <RadioForm
                     style={styles.radioButtons}
                     radio_props={STATUS_OPTIONS}
@@ -252,7 +253,7 @@ const ObjectsScreen = ({navigation}) => {
             <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>
                 <View style={{flex: 1}}>
                     <View style={styles.screenTitle}>
-                        <Text>Фильтры</Text>
+                        <Text>{i18n.t('filters')}</Text>
                         <Pressable
                             style={styles.headerButton}
                             onPress={() => setIsFiltersOpen(false)}
@@ -279,11 +280,11 @@ const ObjectsScreen = ({navigation}) => {
                         ]}
                         onPress={resetFilters}
                     >
-                        <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                        <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
                 <View style={{paddingHorizontal: 20}}>
-                    <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                    <CustomButton title={i18n.t('save')} onPress={saveFilters} />
                 </View>
             </View>
         )
@@ -333,7 +334,7 @@ const ObjectsScreen = ({navigation}) => {
                 <FlatList
                     data={items}
                     keyExtractor={(item, index) => index.toString()}
-                    ListEmptyComponent={<Text style={styles.emptyList}>Empty list</Text>}
+                    ListEmptyComponent={<Text style={styles.emptyList}>{i18n.t('empty_list')}</Text>}
                     enableEmptySections={true}
                     renderItem={({item}) => (
                         <Pressable

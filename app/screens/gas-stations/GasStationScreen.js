@@ -13,6 +13,7 @@ import CustomButton from "../../components/button/Button";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import GasStationItemElement from "./components/GasStationItemElement";
 import EventItemElement from "../event/components/EventItemElement";
+import i18n from "../../utils/i18";
 
 const initialFilters = {
     selectedStation: null
@@ -129,7 +130,7 @@ const GasStationScreen = ({navigation}) => {
                         ]}
                         onPress={resetFilters}
                     >
-                        <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                        <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
                 <View style={{paddingHorizontal: 20}}>
@@ -183,7 +184,7 @@ const GasStationScreen = ({navigation}) => {
                 <FlatList
                     data={filteredArray}
                     keyExtractor={(item, index) => index.toString()}
-                    ListEmptyComponent={<Text style={styles.emptyList}>Empty list</Text>}
+                    ListEmptyComponent={<Text style={styles.emptyList}>{i18n.t('empty_list')}</Text>}
                     enableEmptySections={true}
                     renderItem={({item}) => (
                         <Pressable

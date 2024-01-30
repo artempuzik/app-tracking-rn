@@ -1,5 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {View, Text, TextInput, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import i18n from '../../../utils/i18'
 import styles from '../styles'
 import CustomButton from "../../../components/button/Button";
 import {useDispatch} from "react-redux";
@@ -63,33 +64,33 @@ const AppProfile = () => {
                             style={styles.auth}
                         >
                         <View style={styles.block}>
-                            <Text style={styles.text}>Пароль</Text>
+                            <Text style={styles.text}>{i18n.t('password')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setCurrentPassword}
                                 autoCapitalize='none'
-                                placeholder="Пароль"
+                                placeholder={i18n.t('password')}
                                 keyboardType="visible-password"
                                 secureTextEntry={true}
                             />
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Новый пароль</Text>
+                            <Text style={styles.text}>{i18n.t('new_password')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setNewPassword}
                                 autoCapitalize='none'
-                                placeholder="Новый пароль"
+                                placeholder={i18n.t('new_password')}
                                 keyboardType="visible-password"
                                 secureTextEntry={true}
                             />
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Подтверждение пароля</Text>
+                            <Text style={styles.text}>{i18n.t('confirm_password')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setConfirmPassword}
-                                placeholder="Подтверждение пароля"
+                                placeholder={i18n.t('confirm_password')}
                                 keyboardType="visible-password"
                                 secureTextEntry={true}
                             />
@@ -103,7 +104,7 @@ const AppProfile = () => {
                         </KeyboardAvoidingView>
                     </ScrollView>
                     <CustomButton
-                        title={'Сохранить'}
+                        title={i18n.t('save')}
                         isLoading={loading}
                         onPress={submit}
                     />

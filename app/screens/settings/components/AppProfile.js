@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import i18n from '../../../utils/i18'
 import styles from '../styles'
 import CustomButton from "../../../components/button/Button";
 import {useDispatch, useSelector} from "react-redux";
@@ -61,66 +62,66 @@ const AppProfile = () => {
                             style={styles.auth}
                         >
                         <View style={styles.block}>
-                            <Text style={styles.text}>Пользователь</Text>
+                            <Text style={styles.text}>{i18n.t('user')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setName}
                                 value={name}
                                 autoCapitalize='none'
-                                placeholder="Пользователь"
+                                placeholder={i18n.t('user')}
                                 keyboardType="default"
                             />
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Название фирмы</Text>
+                            <Text style={styles.text}>{i18n.t('company_name')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setOrgName}
                                 value={orgName}
                                 autoCapitalize='none'
-                                placeholder="Название фирмы"
+                                placeholder={i18n.t('company_name')}
                                 keyboardType="default"
                             />
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Номер телефона</Text>
+                            <Text style={styles.text}>{i18n.t('phone_number')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setPhoneNumber}
                                 value={phoneNumber}
-                                placeholder="Номер телефона"
+                                placeholder={i18n.t('phone_number')}
                                 keyboardType="phone-pad"
                             />
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Электронная почта</Text>
+                            <Text style={styles.text}>{i18n.t('email_address')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setEmail}
                                 value={email}
                                 autoCapitalize='none'
-                                placeholder="Электронная почта"
+                                placeholder={i18n.t('email_address')}
                                 keyboardType="email-address"
                             />
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Контакт</Text>
+                            <Text style={styles.text}>{i18n.t('contacts')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setContactName}
                                 value={contactName}
                                 autoCapitalize='none'
-                                placeholder="Контакт"
+                                placeholder={i18n.t('contacts')}
                             />
                         </View>
                         <View style={styles.block}>
-                            <Text style={styles.text}>Адрес</Text>
+                            <Text style={styles.text}>{i18n.t('address')}</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setPostAddress}
                                 value={postAddress}
                                 autoCapitalize='none'
-                                placeholder="Адрес"
+                                placeholder={i18n.t('address')}
                             />
                         </View>
                         <Text style={styles.error}>
@@ -129,7 +130,7 @@ const AppProfile = () => {
                         </KeyboardAvoidingView>
                     </ScrollView>
                     <CustomButton
-                        title={'Сохранить'}
+                        title={i18n.t('save')}
                         isLoading={loading}
                         onPress={submitHandler}
                     />

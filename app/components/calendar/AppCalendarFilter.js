@@ -1,5 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {Pressable, Text, View} from "react-native";
+import i18n from "../../utils/i18";
 import styles from "./styles";
 import Svg, {Path} from "react-native-svg";
 import AppModal from "../modal/AppModal";
@@ -98,7 +99,7 @@ const AppCalendarFilter = ({
     return (
         <View style={{...styles.filtersContainer, display: isCalendarOpen ? 'flex' : 'none'}}>
             <View style={styles.screenTitle}>
-                <Text>Выберите интервал</Text>
+                <Text>{i18n.t('select_interval')}</Text>
                 <Pressable
                     style={styles.headerButton}
                     onPress={() => setIsCalendarOpen(false)}
@@ -221,26 +222,26 @@ const AppCalendarFilter = ({
                     </Pressable>
                     <View style={styles.buttonsDaysBlock}>
                         <View style={{width: '32%'}}>
-                            <CustomButton title={'Today'} onPress={setToday} />
+                            <CustomButton title={i18n.t('today')} onPress={setToday} />
                         </View>
                         <View style={{width: '32%'}}>
-                            <CustomButton title={'Yesterday'} onPress={setYesterday} />
+                            <CustomButton title={i18n.t('yesterday')} onPress={setYesterday} />
                         </View>
                         <View style={{width: '32%'}}>
-                            <CustomButton title={'This week'} onPress={setThisWeek} />
+                            <CustomButton title={i18n.t('this_week')} onPress={setThisWeek} />
                         </View>
                     </View>
                     <View style={styles.buttonsDaysBlock}>
                         <View style={{width: '48%'}}>
-                            <CustomButton title={'This month'} onPress={setMonth} />
+                            <CustomButton title={i18n.t('this_month')} onPress={setMonth} />
                         </View>
                         <View style={{width: '48%'}}>
-                            <CustomButton title={'Previous month'} onPress={setPrevMonth} />
+                            <CustomButton title={i18n.t('previous_month')} onPress={setPrevMonth} />
                         </View>
                     </View>
                 </View>
                 <View style={{paddingHorizontal: 20}}>
-                    <CustomButton title={'Сохранить'} onPress={saveCalendar} />
+                    <CustomButton title={i18n.t('save')} onPress={saveCalendar} />
                 </View>
             </View>
         </View>

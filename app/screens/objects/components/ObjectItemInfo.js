@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, ActivityIndicator} from 'react-native';
+import React, {useMemo} from 'react';
+import {View, Text, Pressable} from 'react-native';
 import Svg, {Path} from "react-native-svg";
+import i18n from '../../../utils/i18'
 import styles from '../styles';
 import {LeafletView} from "react-native-leaflet-view";
 import {useNavigation} from "@react-navigation/native";
-import {getObjectStatusById} from "../../../store/objects/objectsActions";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 
 const ObjectItemInfo = ({object, status}) => {
     const navigation = useNavigation();
@@ -19,7 +19,6 @@ const ObjectItemInfo = ({object, status}) => {
 
     const iopoints = useMemo(() => {
         const engine = object?.trends.find(t => t.flags === 'ENGINE')
-        console.log(engine)
         return status?.iopoints?.find(p => p.trendid == engine?.id)
     }, [object, status])
 
@@ -105,11 +104,11 @@ const ObjectItemInfo = ({object, status}) => {
                         <Path d="M12.336 0C9.204 0 7.2 2.868 7.2 6c0 .672-.396.996-.204 1.668L0 14.664V18h3.6v-2.4H6v-1.2l1.332-.396 3-3c.6.204.936-.204 1.668-.204 3.132 0 6-2.004 6-5.136A5.664 5.664 0 0 0 12.336 0zm.164 7.8a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"
                               fill={!!iopoints?.value ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
-                    <Text>{!!iopoints?.value ? 'Вкл.' : 'Выкл.'}</Text>
+                    <Text>{!!iopoints?.value ? i18n.t('on') : i18n.t('off')}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     {
-                        !!point?.speed ? (
+                        !Boolean(+point?.speed) ? (
                             <Svg
                                 width={25}
                                 height={25}
@@ -132,7 +131,7 @@ const ObjectItemInfo = ({object, status}) => {
                             </Svg>
                         )
                     }
-                    <Text>{point?.speed} km/h</Text>
+                    <Text>{point?.speed} {i18n.t('speed_text')}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     <Svg
@@ -147,30 +146,30 @@ const ObjectItemInfo = ({object, status}) => {
                               fill={!!point?.online ? "#31a903" : "#a7a7aa"}/>
                     </Svg>
                     {
-                        !!point?.online ? <Text>В сети</Text> : <Text>Не в сети</Text>
+                        !!point?.online ? <Text>{i18n.t('online')}</Text> : <Text>{i18n.t('offline')}</Text>
                     }
                 </View>
             </View>
             <View>
                 <View style={styles.infoPropRow}>
-                    <Text>Power</Text>
+                    <Text>{i18n.t('power')}</Text>
                     <Text>{object?.vehicleSpecifications.enginePower} V</Text>
                 </View>
                 <View style={styles.infoPropRow}>
-                    <Text>Engine</Text>
-                    <Text>{!!object?.vehicleSpecifications.enginePower ? 'On' : 'Off'}</Text>
+                    <Text>{i18n.t('engine')}</Text>
+                    <Text>{!!object?.vehicleSpecifications.enginePower ? i18n.t('on') : i18n.t('off')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
-                    <Text>Mileage</Text>
-                    <Text>{status?.stat[0].mileage} km</Text>
+                    <Text>{i18n.t('mileage')}</Text>
+                    <Text>{status?.stat[0].mileage} {i18n.t('km')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
-                    <Text>EngineHours</Text>
-                    <Text>{status?.stat[0].motohours} h</Text>
+                    <Text>{i18n.t('engine_hours')}</Text>
+                    <Text>{status?.stat[0].motohours} {i18n.t('hours')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
-                    <Text>Phone number</Text>
-                    <Text>{object?.main.phone} V</Text>
+                    <Text>{i18n.t('phone_number')}</Text>
+                    <Text>{object?.main.phone}</Text>
                 </View>
             </View>
             <View style={styles.sendBtnContainer}>
@@ -184,7 +183,7 @@ const ObjectItemInfo = ({object, status}) => {
                     onPress={() => navigation.navigate('ObjectSendCommand', {id: object.main.id})}
                 >
                     <Text style={styles.commentText}>{'</>'}</Text>
-                    <Text style={styles.commentText}>Отпр. команду</Text>
+                    <Text style={styles.commentText}>{i18n.t('send_command')}</Text>
                 </Pressable>
                 <Pressable
                     style={({pressed}) => [
@@ -196,7 +195,7 @@ const ObjectItemInfo = ({object, status}) => {
                     onPress={() => navigation.navigate('ObjectTask', {id: object.main.id})}
                 >
                     <Text style={styles.commentText}>{'</>'}</Text>
-                    <Text style={styles.commentText}>Создать задачу</Text>
+                    <Text style={styles.commentText}>{i18n.t('create_command')}</Text>
                 </Pressable>
             </View>
         </View>

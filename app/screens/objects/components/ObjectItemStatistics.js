@@ -3,9 +3,6 @@ import {View, Text, Pressable, TextInput} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation} from "@react-navigation/native";
 import styles from '../styles';
-import AppModal from "../../../components/modal/AppModal";
-import DateTimePicker from "react-native-ui-datepicker";
-import Button from "../../../components/button/Button";
 import SelectList from "../../../components/select/SelectList";
 import {REPORTS_LIST} from "../../../config";
 const ObjectItemStatistics = ({object}) => {
@@ -150,7 +147,7 @@ const ObjectItemStatistics = ({object}) => {
                         ]}
                         onPress={resetFilters}
                     >
-                        <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                        <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
                 <View style={{marginHorizontal: 20}}>
@@ -173,5 +170,6 @@ const ObjectItemStatistics = ({object}) => {
 
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../../components/button/Button";
+import i18n from "../../../utils/i18";
 
 export default ObjectItemStatistics;

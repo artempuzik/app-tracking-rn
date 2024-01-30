@@ -7,6 +7,7 @@ import AppHeader from "../../components/header/AppHeader";
 import styles from './styles';
 import {LeafletView} from "react-native-leaflet-view";
 import Svg, {Path} from "react-native-svg";
+import i18n from "../../utils/i18";
 
 const GasStationItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -88,31 +89,31 @@ const GasStationItemScreen = ({navigation}) => {
             <ScrollView style={{flex: 1}}>
                 <View>
                     <View style={styles.infoPropRow}>
-                        <Text>Date</Text>
+                        <Text>{i18n.t('date')}</Text>
                         <Text>{new Date(transaction?.time).toLocaleString()}</Text>
                     </View>
                     <View style={styles.infoPropRow}>
-                        <Text>Duration</Text>
+                        <Text>{i18n.t('duration')}</Text>
                         <Text>{duration}</Text>
                     </View>
                     <View style={styles.infoPropRow}>
-                        <Text>Station</Text>
+                        <Text>{i18n.t('station')}</Text>
                         <Text>{transaction?.objectName}</Text>
                     </View>
                     <View style={styles.infoPropRow}>
-                        <Text>Pump</Text>
+                        <Text>{i18n.t('pump')}</Text>
                         <Text>{transaction?.pump}</Text>
                     </View>
                     <View style={styles.infoPropRow}>
-                        <Text>Fuel amount</Text>
+                        <Text>{i18n.t('fuel_amount')}</Text>
                         <Text>{transaction?.value}</Text>
                     </View>
                     <View style={styles.infoPropRow}>
-                        <Text>Vehicle</Text>
+                        <Text>{i18n.t('vehicle')}</Text>
                         <Text>{transaction?.keyName}</Text>
                     </View>
                     <View style={styles.infoPropRow}>
-                        <Text>Limit</Text>
+                        <Text>{i18n.t('limit')}</Text>
                         <Text>{transaction?.tagLimit}</Text>
                     </View>
                 </View>

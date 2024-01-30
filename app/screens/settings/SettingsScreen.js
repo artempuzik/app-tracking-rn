@@ -2,6 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, {Path} from "react-native-svg"
+import i18n from "../../utils/i18"
 import styles from './styles'
 import AppHeader from "../../components/header/AppHeader";
 import AppProfile from "./components/AppProfile";
@@ -36,7 +37,7 @@ const SettingsScreen = ({ navigation }) => {
                     />
                 </Svg>
                 {
-                    screen === 0 ? (<Text style={styles.headerText}>Профиль</Text>) : null
+                    screen === 0 ? (<Text style={styles.headerText}>{i18n.t('profile')}</Text>) : null
                 }
             </Pressable>
             <Pressable
@@ -54,7 +55,7 @@ const SettingsScreen = ({ navigation }) => {
                     />
                 </Svg>
                 {
-                    screen === 1 ? (<Text style={styles.headerText}>Настройки</Text>) : null
+                    screen === 1 ? (<Text style={styles.headerText}>{i18n.t('settings')}</Text>) : null
                 }
             </Pressable>
             <Pressable
@@ -72,7 +73,7 @@ const SettingsScreen = ({ navigation }) => {
                     />
                 </Svg>
                 {
-                    screen === 2 ? (<Text style={styles.headerText}>Безопасность</Text>) : null
+                    screen === 2 ? (<Text style={styles.headerText}>{i18n.t('security')}</Text>) : null
                 }
             </Pressable>
         </View>

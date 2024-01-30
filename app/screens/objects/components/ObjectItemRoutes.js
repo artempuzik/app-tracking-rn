@@ -9,6 +9,7 @@ import styles from '../styles';
 import Button from "../../../components/button/Button";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../../components/button/Button";
+import i18n from "../../../utils/i18";
 
 const ObjectItemRoutes = ({object}) => {
     const navigation = useNavigation();
@@ -161,7 +162,7 @@ const ObjectItemRoutes = ({object}) => {
                             ]}
                             onPress={resetFilters}
                         >
-                            <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                            <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                         </Pressable>
                     </View>
                     <View style={{marginHorizontal: 20}}>
