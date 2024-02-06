@@ -29,6 +29,7 @@ import {
     getObjectIcons,
     getTransactions,
     getObjectEvents,
+    sendCustomCommand,
 } from './objects'
 
 import {
@@ -64,4 +65,5 @@ export default {
     getObjectIcons,
     getTransactions,
     getObjectEvents,
+    sendCustomCommand,
 }

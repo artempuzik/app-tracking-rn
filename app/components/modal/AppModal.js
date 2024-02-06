@@ -1,10 +1,17 @@
 import Modal from "react-native-modal";
 import styles from "./styles";
-import React from "react";
+import React, {useCallback} from "react";
 import {View} from "react-native";
 import CustomButton from "../button/Button";
+import i18n from "../../utils/i18";
 
-const AppModal = ({isModalOpen, setIsModalOpen, children}) => {
+const AppModal = ({isModalOpen, setIsModalOpen, children, onPress, buttonTitle = 'save'}) => {
+    const pressHandler = useCallback(() => {
+        if(onPress) {
+            onPress()
+        }
+        setIsModalOpen(false)
+    }, [onPress])
     return (
         <Modal
             style={styles.modalWrapper}
@@ -16,7 +23,7 @@ const AppModal = ({isModalOpen, setIsModalOpen, children}) => {
         >
             <View style={styles.modalItem}>
                 {children}
-                <CustomButton title={'Сохранить'} onPress={() => setIsModalOpen(false)}/>
+                <CustomButton title={i18n.t(buttonTitle)} onPress={pressHandler}/>
             </View>
         </Modal>
     )

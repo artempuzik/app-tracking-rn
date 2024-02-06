@@ -13,6 +13,8 @@ const getTransactions = (dto) => axios.post('/objectsHistory/transactions', dto)
 
 const getObjectEvents = () => axios.get('/objectevents')
 
+const sendCustomCommand = (dto) => axios.post('/objects/commands', dto)
+
 export {
     getObjects,
     getObjectById,
@@ -21,4 +23,5 @@ export {
     getObjectIcons,
     getTransactions,
     getObjectEvents,
+    sendCustomCommand,
 }

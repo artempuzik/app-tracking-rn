@@ -1,27 +1,52 @@
-import React, {useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView} from 'react-native';
+import React, {useCallback, useMemo, useState} from 'react';
+import {View, Text, Pressable, ScrollView, TextInput} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import Svg, {Path} from "react-native-svg";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Checkbox from 'expo-checkbox';
 import styles from './styles';
 import AppHeader from "../../components/header/AppHeader";
 import CustomButton from "../../components/button/Button";
+import i18n from "../../utils/i18";
+import AppModal from "../../components/modal/AppModal";
+import {sendCustomCommand} from "../../store/objects/objectsActions";
 
 const ObjectSendCommandScreen = ({navigation}) => {
     const route = useRoute();
-
+    const dispatch = useDispatch()
     const [sendSmsMessages, setSendSmsMessages] = useState(false)
+    const [message, setMessages] = useState('')
+    const [isModalShow, setIsModalShow] = useState(false)
 
     const profile = useSelector(state => state.app.profile)
+
     const element = useMemo(() => profile.objects.find(el => el.id == route.params.id, [profile]))
+
+    const sendCommand = useCallback(() => {
+        dispatch(sendCustomCommand({
+            objectID: element.id,
+            templateID: "",
+            cmd: message
+
+        }))
+    })
+
+    const sendTemplateCommand = useCallback((template) => {
+        dispatch(sendCustomCommand({
+            objectID: element.id,
+            templateID: template.id,
+            cmd: template.cmd
+
+        }))
+    })
+    console.log(element)
 
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
             <View style={styles.screenTitle}>
-                <Text>Отправить команду</Text>
+                <Text>{i18n.t('send_command')}</Text>
                 <Pressable
                     style={styles.headerButton}
                     onPress={() => navigation.navigate('ObjectItem', {id: route.params.id})}
@@ -37,7 +62,7 @@ const ObjectSendCommandScreen = ({navigation}) => {
             </View>
             <View style={{...styles.pageItemHeader, justifyContent: 'space-between'}}>
                 <View style={styles.leftBlock}>
-                    <Text style={styles.subText}>Объект: </Text>
+                    <Text style={styles.subText}>{i18n.t('object')}:</Text>
                     <Svg
                         width={30}
                         height={30}
@@ -61,8 +86,24 @@ const ObjectSendCommandScreen = ({navigation}) => {
                         onValueChange={setSendSmsMessages}
                         style={styles.checkbox}
                     />
-                    <Text style={styles.label}>Отправлять команды СМС сообщениями</Text>
+                    <Text style={styles.label}>{i18n.t('send_command_by_sms')}</Text>
                 </View>
+                {
+                    profile && profile.commandtemplates.map((command) => (
+                        <Pressable
+                            style={({pressed}) => [
+                                {
+                                    backgroundColor: pressed ? '#c7c7c9' : 'transparent',
+                                },
+                                styles.sendCommentButton,
+                                {width: '100%', marginVertical: 5}
+                            ]}
+                            onPress={() => sendTemplateCommand(command)}
+                        >
+                            <Text style={styles.commentText}>{command.name}</Text>
+                        </Pressable>
+                    ))
+                }
                 <Pressable
                     style={({pressed}) => [
                         {
@@ -71,26 +112,32 @@ const ObjectSendCommandScreen = ({navigation}) => {
                         styles.sendCommentButton,
                         {width: '100%', marginVertical: 5}
                     ]}
-                    onPress={() => {}}
+                    onPress={() => setIsModalShow(true)}
                 >
-                    <Text style={styles.commentText}>Заправка</Text>
-                </Pressable>
-                <Pressable
-                    style={({pressed}) => [
-                        {
-                            backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                        },
-                        styles.sendCommentButton,
-                        {width: '100%', marginVertical: 5}
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text style={styles.commentText}>Своя команда</Text>
+                    <Text style={styles.commentText}>{i18n.t('custom_command')}</Text>
                 </Pressable>
             </ScrollView>
             <View style={{paddingHorizontal: 20}}>
-                <CustomButton title={'Применить'} onPress={() => {}} />
+                <CustomButton
+                    title={i18n.t('save')}
+                    onPress={() => {}} />
             </View>
+            <AppModal
+                isModalOpen={isModalShow}
+                setIsModalOpen={setIsModalShow}
+                onPress={sendCommand}
+            >
+                <View style={{paddingHorizontal: 20}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>{i18n.t('typed_command')}</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setMessages}
+                        value={message}
+                        autoCorrect={false}
+                        autoCapitalize='none'
+                    />
+                </View>
+            </AppModal>
         </SafeAreaView>
     );
 };

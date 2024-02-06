@@ -70,6 +70,10 @@ const translations = {
     fuel_amount: "Fuel amount",
     vehicle: "Vehicle",
     limit: "Limit",
+    object: "Object",
+    send_command_by_sms: "Send command by SMS",
+    custom_command: "Custom command",
+    typed_command: "Typed command",
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -139,6 +143,10 @@ const translations = {
     fuel_amount: "Количество топлива",
     vehicle: "Транспортное средство",
     limit: "Лимит",
+    object: "Объект",
+    send_command_by_sms: "Отправлять команды СМС сообщениями",
+    custom_command: "Своя команда",
+    typed_command: "Введите команду",
   }
 }
 

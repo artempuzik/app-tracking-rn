@@ -17,10 +17,13 @@ const ObjectItemInfo = ({object, status}) => {
         return status?.points[0]
     }, [object, status])
 
+    const engine = useMemo(() => {
+        return object?.trends.find(t => t.flags === 'POINTBYEVT ENGINE')
+    }, [object])
+
     const iopoints = useMemo(() => {
-        const engine = object?.trends.find(t => t.flags === 'ENGINE')
         return status?.iopoints?.find(p => p.trendid == engine?.id)
-    }, [object, status])
+    }, [object, engine])
 
     const points = useMemo(() => {
         if(!status) {
@@ -93,7 +96,8 @@ const ObjectItemInfo = ({object, status}) => {
                     mapCenterPosition={points[0]?.position}
                 />
             </View>
-            <View style={{...styles.footer, marginTop: 20, paddingHorizontal: 20}}>
+            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{new Date(+point?.time).toLocaleString()}</Text>
+            <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     <Svg
                         style={{marginTop: 5}}
@@ -102,9 +106,9 @@ const ObjectItemInfo = ({object, status}) => {
                         viewBox="0 0 25 25"
                     >
                         <Path d="M12.336 0C9.204 0 7.2 2.868 7.2 6c0 .672-.396.996-.204 1.668L0 14.664V18h3.6v-2.4H6v-1.2l1.332-.396 3-3c.6.204.936-.204 1.668-.204 3.132 0 6-2.004 6-5.136A5.664 5.664 0 0 0 12.336 0zm.164 7.8a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"
-                              fill={!!iopoints?.value ? "#2060ae" : "#a7a7aa"}/>
+                              fill={!!engine?.dataType ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
-                    <Text>{!!iopoints?.value ? i18n.t('on') : i18n.t('off')}</Text>
+                    <Text>{!!engine?.dataType ? i18n.t('on') : i18n.t('off')}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     {
@@ -153,19 +157,19 @@ const ObjectItemInfo = ({object, status}) => {
             <View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('power')}</Text>
-                    <Text>{object?.vehicleSpecifications.enginePower} V</Text>
+                    <Text>{iopoints?.value} V</Text>
                 </View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('engine')}</Text>
-                    <Text>{!!object?.vehicleSpecifications.enginePower ? i18n.t('on') : i18n.t('off')}</Text>
+                    <Text>{!!engine?.dataType ? i18n.t('on') : i18n.t('off')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('mileage')}</Text>
-                    <Text>{status?.stat[0].mileage} {i18n.t('km')}</Text>
+                    <Text>{Number(status?.stat[0].mileage).toFixed(2)} {i18n.t('km')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('engine_hours')}</Text>
-                    <Text>{status?.stat[0].motohours} {i18n.t('hours')}</Text>
+                    <Text>{Math.floor(Number(status?.stat[0].totalenginetime/360000))} {i18n.t('hours')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('phone_number')}</Text>
