@@ -187,11 +187,11 @@ const ObjectItemScreen = ({navigation}) => {
                     }
                 </Pressable>
             </View>
-            <ScrollView style={{flex: 1}}>
+            <View style={{flex: 1}}>
                 {
                     isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : page
                 }
-            </ScrollView>
+            </View>
         </SafeAreaView>
     );
 };

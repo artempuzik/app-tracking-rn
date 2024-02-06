@@ -8,6 +8,7 @@ import styles from './styles';
 import {LeafletView} from "react-native-leaflet-view";
 import Svg, {Path} from "react-native-svg";
 import i18n from "../../utils/i18";
+import {getDuration} from "../../utils/helpers";
 
 const GasStationItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -31,18 +32,10 @@ const GasStationItemScreen = ({navigation}) => {
     }, [transaction])
 
     const duration = useMemo(() => {
-        const milliseconds = transaction?.finishTime - transaction?.time;
-
-        const totalSeconds = Math.floor(milliseconds / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-
-        const formattedHours = String(hours).padStart(2, '0');
-        const formattedMinutes = String(minutes).padStart(2, '0');
-        const formattedSeconds = String(seconds).padStart(2, '0');
-
-        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+        if(!transaction) {
+            return ''
+        }
+        return getDuration(transaction?.time, transaction?.finishTime);
     }, [transaction]);
 
     return (

@@ -11,6 +11,8 @@ const getObjectIcons = () => axios.get('/objects/icons')
 
 const getTransactions = (dto) => axios.post('/objectsHistory/transactions', dto)
 
+const getObjectHistory = (dto) => axios.post('/objectsHistory', dto)
+
 const getObjectEvents = () => axios.get('/objectevents')
 
 const sendCustomCommand = (dto) => axios.post('/objects/commands', dto)
@@ -24,4 +26,5 @@ export {
     getTransactions,
     getObjectEvents,
     sendCustomCommand,
+    getObjectHistory,
 }

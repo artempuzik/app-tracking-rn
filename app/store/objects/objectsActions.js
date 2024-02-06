@@ -121,6 +121,21 @@ export const getObjectEvents = () => async (dispatch, getState) => {
   }
 };
 
+export const getObjectHistory = (dto) => async () => {
+  try {
+    const response = await Api.getObjectHistory(dto)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
 export const sendCustomCommand = (dto) => async () => {
   try {
     const response = await Api.sendCustomCommand(dto)

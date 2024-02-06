@@ -30,6 +30,7 @@ import {
     getTransactions,
     getObjectEvents,
     sendCustomCommand,
+    getObjectHistory,
 } from './objects'
 
 import {
@@ -66,4 +67,5 @@ export default {
     getTransactions,
     getObjectEvents,
     sendCustomCommand,
+    getObjectHistory,
 }

@@ -67,6 +67,33 @@ export default StyleSheet.create({
     objectsItem: {
         paddingHorizontal: 20,
     },
+    parkingItem: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        flexDirection: 'row',
+        width: '100%',
+    },
+    total: {
+        backgroundColor: '#2060ae',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    parkingRowBlock: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        margin: 5,
+        width: '90%',
+    },
+    parkingNumber: {
+        backgroundColor: '#2060ae',
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 2,
+    },
     footer: {
         flexDirection: 'row'
     },

@@ -189,18 +189,18 @@ const ObjectItemInfo = ({object, status}) => {
                     <Text style={styles.commentText}>{'</>'}</Text>
                     <Text style={styles.commentText}>{i18n.t('send_command')}</Text>
                 </Pressable>
-                <Pressable
-                    style={({pressed}) => [
-                        {
-                            backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                        },
-                        styles.sendCommentButton,
-                    ]}
-                    onPress={() => navigation.navigate('ObjectTask', {id: object.main.id})}
-                >
-                    <Text style={styles.commentText}>{'</>'}</Text>
-                    <Text style={styles.commentText}>{i18n.t('create_command')}</Text>
-                </Pressable>
+                {/*<Pressable*/}
+                {/*    style={({pressed}) => [*/}
+                {/*        {*/}
+                {/*            backgroundColor: pressed ? '#c7c7c9' : 'transparent',*/}
+                {/*        },*/}
+                {/*        styles.sendCommentButton,*/}
+                {/*    ]}*/}
+                {/*    onPress={() => navigation.navigate('ObjectTask', {id: object.main.id})}*/}
+                {/*>*/}
+                {/*    <Text style={styles.commentText}>{'</>'}</Text>*/}
+                {/*    <Text style={styles.commentText}>{i18n.t('create_command')}</Text>*/}
+                {/*</Pressable>*/}
             </View>
         </View>
     );

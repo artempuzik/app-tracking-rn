@@ -1,18 +1,23 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {View, Text, Pressable, TextInput} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View, Text, Pressable, TextInput, ScrollView} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import AppModal from '../../../components/modal/AppModal'
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
 import Button from "../../../components/button/Button";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../../components/button/Button";
 import i18n from "../../../utils/i18";
+import {getObjectHistory} from "../../../store/objects/objectsActions";
+import {useDispatch} from "react-redux";
+import {getDuration} from "../../../utils/helpers";
 
 const ObjectItemRoutes = ({object}) => {
     const navigation = useNavigation();
+    const route = useRoute();
+    const dispatch = useDispatch();
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
@@ -29,8 +34,67 @@ const ObjectItemRoutes = ({object}) => {
         setMaxDrive('')
     },[])
 
+    const [isLoading, setIsLoading] = useState(false)
+    const [interval, setInterval] = useState({
+        from: 0,
+        till: 0,
+    })
+
+    const [history, setHistory] = useState([])
+
+    const getHistory = useCallback(async () => {
+        await dispatch(getObjectHistory({
+            from: interval.from,
+            till: interval.till,
+            objectID: route.params.id,
+        })).then(async (data) =>{
+            if(data.response) {
+                setHistory(data.response)
+            }
+        })
+    }, [route.params.id, interval])
+
+    const routes = useMemo(() => {
+        const minTimeFilter = minDrive * 1000 * 60
+        const int = history?.track ? history?.track.intervals : []
+        return int.filter(i => {
+            if(!minTimeFilter) {
+                return true
+            }
+            return (Number(i.till) - Number(i.from)) > minTimeFilter ? true : false
+        })
+    }, [history, minDrive])
+
+    const fetchData = async () => {
+        try {
+            setIsLoading(true)
+            await getHistory()
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchData().catch(() => {})
+    }, [interval])
+
+    const total = useMemo(() => {
+        const time = routes.reduce( (acc, p) => {
+            acc += Number(p.till) - Number(p.from)
+            return acc
+        }, 0)
+        return getDuration(0, time)
+    }, [routes])
+
+    const getIndex = (index) => {
+        return index < 9 ? `0${index + 1}` : index +1
+    }
+
+    console.log(routes)
+
     const pageBlock = useMemo(() => (
-        <View style={styles.pageItemHeader}>
+        <View style={{flex: 1}}>
+            <View style={styles.pageItemHeader}>
             <View style={styles.rightBlock}>
                 <Pressable
                     style={({pressed}) => [
@@ -111,7 +175,78 @@ const ObjectItemRoutes = ({object}) => {
                 </Pressable>
             </View>
         </View>
-    ), [])
+            <ScrollView>
+                {
+                    routes.map((h, index) => (
+                        <View
+                            key={h.from + index}
+                            style={styles.parkingItem}
+                        >
+                            <View style={styles.parkingNumber}>
+                                <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 20}}>
+                                    {getIndex(index)}
+                                </Text>
+                            </View>
+                            <View>
+                                <View style={styles.parkingRowBlock}>
+                                    <View>
+                                        <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
+                                            {i18n.t('from')}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text>
+                                            {new Date(+h.from).toLocaleString()}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.parkingRowBlock}>
+                                    <View>
+                                        <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
+                                            {i18n.t('to')}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text>
+                                            {new Date(+h.till).toLocaleString()}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.parkingRowBlock}>
+                                    <View>
+                                        <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
+                                            {i18n.t('duration')}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text>
+                                            {new Date(+h.till).toLocaleString()}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={[styles.parkingRowBlock, {backgroundColor: '#d3d1d1', padding: 5}]}>
+                                    <View>
+                                        <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
+                                            {i18n.t('total')}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text>
+                                            {getDuration(h.from, h.till)}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    ))
+                }
+            </ScrollView>
+        <View style={styles.total}>
+            <Text style={{color: '#fff', fontWeight: 'bold'}}>{i18n.t('total')}:</Text>
+            <Text style={{color: '#fff', fontWeight: 'bold'}}>{total}</Text>
+        </View>
+        </View>
+    ), [routes])
 
     const filtersBlock = useMemo(() => (
             <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>
@@ -175,7 +310,7 @@ const ObjectItemRoutes = ({object}) => {
     return (
         <View style={styles.container}>
             {filtersBlock}
-            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={(data) => console.log(data)}/>
+            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isFiltersOpen && !isCalendarOpen ? pageBlock : null
             }

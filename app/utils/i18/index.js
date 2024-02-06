@@ -74,6 +74,9 @@ const translations = {
     send_command_by_sms: "Send command by SMS",
     custom_command: "Custom command",
     typed_command: "Typed command",
+    from: 'From',
+    to: 'To',
+    total: 'Total',
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -147,6 +150,9 @@ const translations = {
     send_command_by_sms: "Отправлять команды СМС сообщениями",
     custom_command: "Своя команда",
     typed_command: "Введите команду",
+    from: 'От',
+    to: 'До',
+    total: "Итого"
   }
 }
 
