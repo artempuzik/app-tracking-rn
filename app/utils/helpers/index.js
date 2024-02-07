@@ -22,3 +22,21 @@ export const getDuration = (start, end) => {
 
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
+
+export const parsePointString = (str) => {
+    if(!str) return
+    const array = str.split(' ');
+    const parsed = [];
+    while(array.length) {
+        const element = []
+        for (let i = 0; i < 7; i++) {
+            element.push(array.pop())
+        }
+        parsed.push(element.reverse())
+    }
+    return parsed.map(el => ({
+        time: el[0],
+        lat: el[1],
+        lng: el[2],
+    }))
+}
