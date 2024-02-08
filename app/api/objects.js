@@ -13,6 +13,8 @@ const getTransactions = (dto) => axios.post('/objectsHistory/transactions', dto)
 
 const getObjectHistory = (dto) => axios.post('/objectsHistory', dto)
 
+const getObjectHistoryDriversSession = (dto) => axios.post('/objectsHistory/DriverSessions', dto)
+
 const getObjectEvents = () => axios.get('/objectevents')
 
 const sendCustomCommand = (dto) => axios.post('/objects/commands', dto)
@@ -27,4 +29,5 @@ export {
     getObjectEvents,
     sendCustomCommand,
     getObjectHistory,
+    getObjectHistoryDriversSession,
 }

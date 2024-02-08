@@ -18,7 +18,6 @@ export const METRICS_LIST = [
 export const REPORTS_LIST = [
     {'general': 'General reports'},
     {'fuel': 'Fuel reports'},
-    {'graphs': 'Graphs'},
 ]
 
 export const CODE_LIST = [

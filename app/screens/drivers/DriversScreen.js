@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Pressable, Text, ScrollView, ActivityIndicator} from 'react-native';
+import {View, Pressable, Text, ScrollView, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
 import styles from './styles';
@@ -13,6 +13,7 @@ import SelectList from "../../components/select/SelectList";
 import {getDriverGroups, getDrivers, getDriverSessionById} from "../../store/drivers/driversActions";
 import CustomButton from "../../components/button/Button";
 import i18n from "../../utils/i18";
+import ObjectItemElement from "../objects/components/ObjectItemElement";
 
 const initialFilters = {
     isAll: null,
@@ -74,6 +75,10 @@ const DriversScreen = ({navigation}) => {
     useEffect(() => {
         fetchData().catch(() => {})
     }, []);
+
+    const onRefresh = useCallback(() => {
+        fetchData().catch(() => {})
+    }, [])
 
     const radioButtonsBlock = useMemo(() => (
         <View>
@@ -143,7 +148,7 @@ const DriversScreen = ({navigation}) => {
     }, [selectedGroup, resetFilters, radioButtonsBlock])
 
     const listBlock = useMemo(() => (
-        <View>
+        <View style={{flex: 1}}>
             <View style={styles.pageHeader}>
                 <SearchInput onChange={setQuery}/>
                 <Pressable
@@ -165,29 +170,29 @@ const DriversScreen = ({navigation}) => {
                     </Svg>
                 </Pressable>
             </View>
-            {
-                isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> :
-                    (
-            <ScrollView>
-                {
-                    items.length ? items.map(item => (
-                        <Pressable
-                            key={item.id}
-                            style={({pressed}) => [
-                                {
-                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
-                                },
-                                styles.objectsItem,
-                            ]}
-                            onPress={() => navigation.navigate('DriverItem', {id: item.id})}
-                        >
-                            <DriverItemElement item={item}/>
-                        </Pressable>
-                    )) : <Text style={styles.emptyList}>Empty list</Text>
+            <FlatList
+                data={items}
+                keyExtractor={(item, index) => index.toString()}
+                ListEmptyComponent={<Text style={styles.emptyList}>{i18n.t('empty_list')}</Text>}
+                enableEmptySections={true}
+                renderItem={({item}) => (
+                    <Pressable
+                        key={item.id}
+                        style={({pressed}) => [
+                            {
+                                backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                            },
+                            styles.objectsItem,
+                        ]}
+                        onPress={() => navigation.navigate('DriverItem', {id: item.id})}
+                    >
+                        <DriverItemElement item={item}/>
+                    </Pressable>
+                )}
+                refreshControl={
+                    <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
                 }
-            </ScrollView>
-                    )
-            }
+            />
         </View>
 ), [items, isLoading])
 

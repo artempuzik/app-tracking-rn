@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Pressable, Text, View} from "react-native";
 import i18n from "../../utils/i18";
 import styles from "./styles";
@@ -50,13 +50,13 @@ const AppCalendarFilter = ({
     }, [maxTime])
 
     const getMonday = (d) => {
+
         const day = d.getDay();
         const diff = d.getDate() - day + (day == 0 ? -6:1);
         d.setDate(diff);
         d.setHours(0,0,0,0);
         return d;
     }
-
     const setToday = useCallback(() => {
         setMinDate(new Date())
         setMaxDate(new Date())
@@ -94,6 +94,11 @@ const AppCalendarFilter = ({
         setMaxDate(new Date().setDate(-1))
         setMinTime(new Date(new Date(prevMonth).setDate(1)).setHours(0,0))
         setMaxTime(new Date(new Date().setDate(-1)).setHours(23,59))
+    }, [])
+
+    useEffect(() => {
+        setThisWeek()
+        saveCalendar()
     }, [])
 
     return (

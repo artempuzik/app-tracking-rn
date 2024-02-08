@@ -237,7 +237,7 @@ const ObjectItemParking = ({object}) => {
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{total}</Text>
             </View>
         </View>
-    ), [parkings])
+    ), [parkings, interval, history])
 
     const filtersBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>

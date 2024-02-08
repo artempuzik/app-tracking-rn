@@ -1,31 +1,223 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {View, Text, Pressable, TextInput} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View, Text, Pressable, ScrollView} from 'react-native';
 import Svg, {Path} from "react-native-svg";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
 import SelectList from "../../../components/select/SelectList";
+import {getFuelReport} from '../../../store/objects/objectsActions';
 import {REPORTS_LIST} from "../../../config";
+import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
+import CustomButton from "../../../components/button/Button";
+import i18n from "../../../utils/i18";
+import {Image} from "expo-image";
+import {useDispatch, useSelector} from "react-redux";
+import {getDuration} from "../../../utils/helpers";
+
 const ObjectItemStatistics = ({object}) => {
     const navigation = useNavigation();
-
+    const route = useRoute();
+    const dispatch = useDispatch();
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
-    const [report, setReport] = useState('')
+    const [reportType, setReportType] = useState('general')
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [report, setReport] = useState(null)
+    const [interval, setInterval] = useState({
+        from: 0,
+        till: 0,
+    })
 
     const icons = useSelector(state => state.objects.icons)
     const baseUrl = useSelector(state => state.app.currentServer)
+
     const icon = useMemo(() => {
         return icons.find((ic) => ic.id === object?.main.iconId)
     }, [object, icons])
+
+    const getReport = useCallback(async () => {
+        await dispatch(getFuelReport({
+            from: interval.from,
+            till: interval.till,
+            objectID: route.params.id,
+            trendID: object?.trends[1].id
+        })).then(async (data) =>{
+            if(data.response) {
+                setReport(data.response)
+            }
+        })
+    }, [route.params.id, interval])
+
+    const fetchData = async () => {
+        try {
+            setIsLoading(true)
+            await getReport()
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchData().catch(() => {})
+    }, [interval])
 
     const saveFilters = useCallback(() => {
         setIsFiltersOpen(false)
     }, [])
 
     const resetFilters = useCallback(() => {
-        setReport('')
+        setReportType('')
     },[])
+
+    const fuelReport = useMemo(() =>(
+        <View style={{paddingHorizontal: 20}}>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('mileage')}</Text>
+                <Text>
+                    {Number(report?.track?.mileage).toFixed(2)}
+                    {` ${i18n.t('km')}`}
+                </Text>
+            </View>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('time')}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('engine_hours')}</Text>
+                <Text>{getDuration(0, +report?.workingtime)}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('idle')}</Text>
+                <Text>{getDuration(0, +report?.idletime)}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('drive')}</Text>
+                <Text>{getDuration(0, +report?.track.movingtime)}</Text>
+            </View>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('fuel')}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('level_at_the_beginning')}</Text>
+                <Text>{report?.fuel.startvolume}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('level_at_the_ending')}</Text>
+                <Text>{report?.fuel.finishvolume}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('fuel_consumption')}</Text>
+                <Text>{report?.fuel.usedvolume}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('consumption_for_100_km')}</Text>
+                <Text>{report?.fuel.valueperkm}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('consumption_for_one_hour')}</Text>
+                <Text>{report?.fuel.valueperh}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('consumption_on_the_move')}</Text>
+                <Text>{report?.fuel.workingvolume}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('idle_consumption')}</Text>
+                <Text>{report?.fuel.idlevolume}</Text>
+            </View>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('gas')}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('total_refills')}</Text>
+                <Text>{report?.fuel.fuelingtotal}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('total_drains')}</Text>
+                <Text>{report?.fuel.draintotal}</Text>
+            </View>
+            {
+                report?.actions?.length
+                && report?.actions.map(action => (
+                    <View style={{borderBottomColor: '#a7a7aa', borderBottomWidth: 1}}>
+                        <View style={styles.subStatRow}>
+                            <Text>{i18n.t(action.type.toLowerCase())}</Text>
+                        </View>
+                        <View style={styles.subStatRow}>
+                            <Text>{i18n.t('volume')}</Text>
+                            <Text>{action?.volume}</Text>
+                        </View>
+                        <View style={styles.subStatRow}>
+                            <Text>{i18n.t('time')}</Text>
+                            <Text>{new Date(+action?.time).toLocaleString()}</Text>
+                        </View>
+                    </View>
+                ))
+            }
+        </View>
+    ), [report])
+
+    const totalReport = useMemo(() =>(
+        <View style={{paddingHorizontal: 20}}>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('mileage')}</Text>
+                <Text>{report?.track?.mileage}</Text>
+            </View>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('time')}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('engine_hours')}</Text>
+                <Text>{getDuration(0, +report?.workingtime)}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('idle')}</Text>
+                <Text>{getDuration(0, +report?.idletime)}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('parking')}</Text>
+                <Text>{getDuration(0, +report?.track.parkingtime)}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('drive')}</Text>
+                <Text>{getDuration(0, +report?.track.movingtime)}</Text>
+            </View>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('fuel')}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('fuel_consumption')}</Text>
+                <Text>{report?.fuel.usedvolume}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('consumption_for_100_km')}</Text>
+                <Text>{report?.fuel.valueperkm}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('consumption_for_one_hour')}</Text>
+                <Text>{report?.fuel.valueperh}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('consumption_on_the_move')}</Text>
+                <Text>{report?.fuel.workingvolume}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('idle_consumption')}</Text>
+                <Text>{report?.fuel.idlevolume}</Text>
+            </View>
+            <View style={styles.mainStatRow}>
+                <Text>{i18n.t('gas')}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('total_refills')}</Text>
+                <Text>{report?.fuel.fuelingtotal}</Text>
+            </View>
+            <View style={styles.subStatRow}>
+                <Text>{i18n.t('total_drains')}</Text>
+                <Text>{report?.fuel.draintotal}</Text>
+            </View>
+        </View>
+    ), [report])
 
     const pageBlock = useMemo(() => (
         <View>
@@ -109,14 +301,11 @@ const ObjectItemStatistics = ({object}) => {
                     </Pressable>
                 </View>
             </View>
-            <View style={{paddingHorizontal: 20}}>
-                <View style={styles.mainStatRow}>
-                    <Text>1</Text>
-                    <Text>2</Text>
-                </View>
-            </View>
+            <ScrollView>
+                {report && reportType === 'fuel' ? fuelReport : totalReport}
+            </ScrollView>
         </View>
-), [])
+), [report, reportType])
 
     const filtersBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>
@@ -140,7 +329,9 @@ const ObjectItemStatistics = ({object}) => {
                 <View style={{paddingHorizontal: 20}}>
                     <View style={styles.selectContainer}>
                         <SelectList
-                            items={REPORTS_LIST} onChange={setReport}
+                            items={REPORTS_LIST}
+                            onChange={setReportType}
+                            value={reportType}
                         />
                     </View>
                     <Pressable
@@ -165,18 +356,12 @@ const ObjectItemStatistics = ({object}) => {
     return (
         <View style={styles.container}>
             {filtersBlock}
-            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={(data) => console.log(data)}/>
+            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isFiltersOpen && !isCalendarOpen ? pageBlock : null
             }
         </View>
     );
 };
-
-import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
-import CustomButton from "../../../components/button/Button";
-import i18n from "../../../utils/i18";
-import {Image} from "expo-image";
-import {useSelector} from "react-redux";
 
 export default ObjectItemStatistics;

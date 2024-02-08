@@ -157,7 +157,7 @@ export default StyleSheet.create({
         opacity: 0.6,
     },
     sendCommentButton: {
-        width: '48%',
+        width: '100%',
         borderColor: '#2060ae',
         borderWidth: 2,
         marginVertical: 20,
@@ -271,6 +271,7 @@ export default StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 10,
         marginVertical: 5,
+        opacity: 0.6,
     },
     image: {
         marginLeft: 10,

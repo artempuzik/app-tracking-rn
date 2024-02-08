@@ -10,7 +10,7 @@ import Svg, {Path} from "react-native-svg";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../components/button/Button";
 import SelectList from "../../components/select/SelectList";
-import {getToken} from "../../store/app/appActions";
+import {getObjectHistoryDriversSession} from "../../store/objects/objectsActions";
 
 const DriverItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -19,7 +19,8 @@ const DriverItemScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
-    const [sessions, setSessions] = useState([])
+    const [sessions, setSessions] = useState(null)
+    const [history, setHistory] = useState(null)
     const [interval, setInterval] = useState({
         from: 0,
         till: 0,
@@ -78,6 +79,24 @@ const DriverItemScreen = ({navigation}) => {
         }
     }
 
+    const fetchHistoryData = async () => {
+        try {
+            setError('')
+            setLoading(true)
+            await dispatch(getObjectHistoryDriversSession({
+                from: interval.from,
+                till: interval.till,
+                objectID: route.params.id,
+            })).then((data) => {
+                if(data.response) {
+                    setHistory(data.response)
+                }
+            })
+        } catch (err) {
+            setError(err.message)
+        }
+    }
+
     const fetchData = async () => {
         try {
             setError('')
@@ -99,8 +118,11 @@ const DriverItemScreen = ({navigation}) => {
     useEffect(() => {
         if(interval.from && interval.till) {
             fetchSessionData().catch(() => {})
+            fetchHistoryData().catch(() => {})
         }
     }, [interval.from, interval.till])
+
+    console.log(interval, history, sessions)
 
     useEffect(() => {
         if(driver) {

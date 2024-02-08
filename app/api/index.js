@@ -31,11 +31,16 @@ import {
     getObjectEvents,
     sendCustomCommand,
     getObjectHistory,
+    getObjectHistoryDriversSession,
 } from './objects'
 
 import {
     getProfile,
 } from './profile'
+
+import {
+    getFuelReport
+} from './reports'
 
 
 export default {
@@ -68,4 +73,7 @@ export default {
     getObjectEvents,
     sendCustomCommand,
     getObjectHistory,
+    getObjectHistoryDriversSession,
+    //reports
+    getFuelReport,
 }

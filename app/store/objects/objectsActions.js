@@ -136,9 +136,39 @@ export const getObjectHistory = (dto) => async () => {
   }
 };
 
+export const getObjectHistoryDriversSession = (dto) => async () => {
+  try {
+    const response = await Api.getObjectHistoryDriversSession(dto)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
 export const sendCustomCommand = (dto) => async () => {
   try {
     const response = await Api.sendCustomCommand(dto)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
+export const getFuelReport = (dto) => async () => {
+  try {
+    const response = await Api.getFuelReport(dto)
     return {
       response: response.data,
       error: null,
