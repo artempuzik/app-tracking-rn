@@ -96,6 +96,15 @@ const translations = {
     fueling: "Fueling",
     drain: "Drain",
     volume: "Volume",
+    report_interval: "Report interval",
+    general: "General",
+    max_speed: "Max speed",
+    average_speed: "Average speed",
+    speed: "Speed",
+    l: "l",
+    number_of_violations: "Number of violations",
+    fines: "Fines",
+
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -191,6 +200,14 @@ const translations = {
     fueling: "Заправка",
     drain: "Слив",
     volume: "Объем",
+    report_interval: "Отчет за период",
+    general: "Основное",
+    max_speed: "Максимальная скорость",
+    average_speed: "Средняя скорость",
+    speed: "Средняя",
+    l: "л",
+    number_of_violations: "Количество нарушений",
+    fines: "Штрафы",
   }
 }
 

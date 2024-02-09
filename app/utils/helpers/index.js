@@ -12,7 +12,7 @@ export const getItemIoPointsByItemId = (statuses, item) => {
 }
 
 export const getDuration = (start, end) => {
-    const milliseconds = end - start;
+    const milliseconds = +end - +start;
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);

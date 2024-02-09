@@ -11,6 +11,8 @@ import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../components/button/Button";
 import SelectList from "../../components/select/SelectList";
 import {getObjectHistoryDriversSession} from "../../store/objects/objectsActions";
+import i18n from "../../utils/i18";
+import {convertDate, getDuration, getMileage} from "../../utils/helpers";
 
 const DriverItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -71,7 +73,6 @@ const DriverItemScreen = ({navigation}) => {
             })).then((data) => {
                 if(data.response) {
                     setSessions(data.response)
-                    console.log(data.response)
                 }
             })
         } catch (err) {
@@ -122,8 +123,6 @@ const DriverItemScreen = ({navigation}) => {
         }
     }, [interval.from, interval.till])
 
-    console.log(interval, history, sessions)
-
     useEffect(() => {
         if(driver) {
             setName(driver.name)
@@ -167,6 +166,21 @@ const DriverItemScreen = ({navigation}) => {
             setLoading(false)
         }
     }
+
+    const totalMileage = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.length, 0), [sessions])
+    const totalIdle = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.idletime, 0), [sessions])
+    const totalFuel = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.driverpenalty, 0), [sessions])
+    const totalEngineH = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.enginehours, 0), [sessions])
+    const violationcount = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.violationcount, 0), [sessions])
+    const driverpenalty = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.driverpenalty, 0), [sessions])
+    const maxspeed = useMemo(() => {
+        const result = sessions?.driversessions?.map((s) => +s.maxspeed)
+        return Math.max.apply(Math, result);
+    }, [sessions])
+    const avgspeed = useMemo(() => {
+        const result = sessions?.driversessions?.map((s) => +s.avgspeed)
+        return result ? result.reduce((acc, s) => acc +=+s, 0)/result.length : 0
+    }, [sessions])
 
     const editBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isEditBlockOpen ? 'flex' : 'none'}}>
@@ -247,8 +261,10 @@ const DriverItemScreen = ({navigation}) => {
                             <Text>Группы в которых состоит водитель</Text>
                             <View>
                                 {
-                                    driverGroups.map(g =>(
-                                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}} key={g.id}>
+                                    driverGroups.map((g, index) =>(
+                                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}
+                                              key={`${index}`}
+                                        >
                                             <Text>{g.name}</Text>
                                             <Pressable
                                                 style={({pressed}) => [
@@ -316,6 +332,49 @@ const DriverItemScreen = ({navigation}) => {
             </View>
         </View>
     ), [ isEditBlockOpen, isGroupModalOpen, selectedGroup, driverGroups, name, phone, license, rank, category])
+
+    const report = useMemo(() => (
+        <View style={{...styles.container, padding: 20}}>
+            <View style={styles.subInfoRow}><Text>{i18n.t('report_interval')}:</Text></View>
+            <View style={styles.subInfoRow}><Text>{convertDate(interval.from)}-{convertDate(interval.till)}</Text></View>
+            <View style={styles.mainInfoRow}><Text>{i18n.t('general')}</Text></View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('mileage')}</Text>
+                <Text>{getMileage(totalMileage)}{` ${i18n.t('km')}`}</Text>
+            </View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('engine_hours')}</Text>
+                <Text>{getDuration(0, totalEngineH)}</Text>
+            </View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('idle')}</Text>
+                <Text>{getDuration(0, totalIdle)}</Text>
+            </View>
+            <View style={styles.mainInfoRow}><Text>{i18n.t('speed')}</Text></View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('max_speed')}</Text>
+                <Text>{maxspeed}{` ${i18n.t('speed_text')}`}</Text>
+            </View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('average_speed')}</Text>
+                <Text>{avgspeed}{` ${i18n.t('speed_text')}`}</Text>
+            </View>
+            <View style={styles.mainInfoRow}><Text>{i18n.t('fuel')}</Text></View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('fuel_consumption')}</Text>
+                <Text>{totalFuel}{` ${i18n.t('l')}`}</Text>
+            </View>
+            <View style={styles.mainInfoRow}><Text>{i18n.t('drive')}</Text></View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('number_of_violations')}</Text>
+                <Text>{violationcount}</Text>
+            </View>
+            <View style={styles.subInfoRow}>
+                <Text>{i18n.t('fines')}</Text>
+                <Text>{driverpenalty}</Text>
+            </View>
+        </View>
+    ), [sessions, interval])
 
     const pageBlock = useMemo(() => (
         <View style={styles.container}>
@@ -393,8 +452,11 @@ const DriverItemScreen = ({navigation}) => {
                     </Pressable>
                 </View>
             </View>
+            <ScrollView>
+                {sessions?.driversessions && report}
+            </ScrollView>
         </View>
-    ), [driver])
+    ), [driver, sessions, interval])
 
     return (
         <SafeAreaView style={styles.container}>

@@ -189,4 +189,18 @@ export default StyleSheet.create({
         padding: 15,
         marginBottom: 10,
     },
+    mainInfoRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: '#ceced0',
+        padding: 5,
+        marginVertical: 5,
+        opacity: 0.6,
+    },
+    subInfoRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 5,
+        opacity: 0.6,
+    },
 });

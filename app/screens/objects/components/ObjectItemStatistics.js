@@ -48,8 +48,6 @@ const ObjectItemStatistics = ({object}) => {
             }
         })
     }, [route.params.id, interval])
-
-    console.log(report)
     const fetchData = async () => {
         try {
             setIsLoading(true)
