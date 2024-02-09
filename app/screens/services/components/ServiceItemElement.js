@@ -4,6 +4,7 @@ import Svg, {Path} from "react-native-svg";
 import styles from '../styles';
 import {Image} from "expo-image";
 import {useSelector} from "react-redux";
+import {convertDate} from "../../../utils/helpers";
 const ServiceItemElement = ({item, icons}) => {
     const baseUrl = useSelector(state => state.app.currentServer)
 
@@ -33,7 +34,7 @@ const ServiceItemElement = ({item, icons}) => {
                 </View>
                 <View>
                     <Text style={styles.idsBlock}>{item.main.name}</Text>
-                    <Text style={styles.itemText}>{new Date(+item.service.installedAt).toLocaleString()}</Text>
+                    <Text style={styles.itemText}>{convertDate(item.service.installedAt)}</Text>
                 </View>
             </View>
             <View style={styles.subRow}>

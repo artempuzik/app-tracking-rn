@@ -16,7 +16,7 @@ const AppHeader = ({ canGoBack }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const dispatch = useDispatch()
 
-    const users = useSelector(state => state.user.users)
+    const objects = useSelector(state => state.objects.objects)
     const currentUser = useSelector(state => state.user.currentUser)
     const logoutHandler = () => {
         setIsMenuOpen(false)
@@ -100,8 +100,8 @@ const AppHeader = ({ canGoBack }) => {
                                               </Pressable>
                                         </View>
                                     <View style={styles.block}>
-                                        <Text style={styles.text}>{i18n.t('user_counter')}</Text>
-                                        <Text style={styles.balance}>{ users ? users.length : 0}</Text>
+                                        <Text style={styles.text}>{i18n.t('object_counter')}</Text>
+                                        <Text style={styles.balance}>{ objects ? objects.length : 0}</Text>
                                     </View>
                                 <View style={styles.line}></View>
                                 <Pressable

@@ -12,12 +12,14 @@ const refreshToken = async () => {
     reconnect++
     try {
         const {language, id} = await getUserDataFromStorage()
+        console.log('refreshToken interceptors', language, id)
         const response = await api.post('/token/refresh', {
-                language,
-                subUserId: id,
+            language,
+            subUserId: id,
         })
         return response;
     } catch (err) {
+        console.log('refreshToken error', err)
         return null
     }
 };
@@ -64,7 +66,7 @@ api.interceptors.response.use((response) => {
         if(reconnect === 5) {
             reconnect = 0
             await AsyncStorage.removeItem('token');
-            console.log(error.response.status)
+            console.log('interceptors', error.response)
             await Updates.reloadAsync()
             return Promise.reject(error);
         }

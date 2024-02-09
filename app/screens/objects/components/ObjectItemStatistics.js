@@ -11,7 +11,7 @@ import CustomButton from "../../../components/button/Button";
 import i18n from "../../../utils/i18";
 import {Image} from "expo-image";
 import {useDispatch, useSelector} from "react-redux";
-import {getDuration} from "../../../utils/helpers";
+import {convertDate, getDuration, getMileage} from "../../../utils/helpers";
 
 const ObjectItemStatistics = ({object}) => {
     const navigation = useNavigation();
@@ -49,6 +49,7 @@ const ObjectItemStatistics = ({object}) => {
         })
     }, [route.params.id, interval])
 
+    console.log(report)
     const fetchData = async () => {
         try {
             setIsLoading(true)
@@ -59,7 +60,9 @@ const ObjectItemStatistics = ({object}) => {
     }
 
     useEffect(() => {
-        fetchData().catch(() => {})
+        if(interval.from && interval.till) {
+            fetchData().catch(() => {})
+        }
     }, [interval])
 
     const saveFilters = useCallback(() => {
@@ -75,7 +78,7 @@ const ObjectItemStatistics = ({object}) => {
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('mileage')}</Text>
                 <Text>
-                    {Number(report?.track?.mileage).toFixed(2)}
+                    {getMileage(report?.track?.mileage)}
                     {` ${i18n.t('km')}`}
                 </Text>
             </View>
@@ -149,7 +152,7 @@ const ObjectItemStatistics = ({object}) => {
                         </View>
                         <View style={styles.subStatRow}>
                             <Text>{i18n.t('time')}</Text>
-                            <Text>{new Date(+action?.time).toLocaleString()}</Text>
+                            <Text>{convertDate(action?.time)}</Text>
                         </View>
                     </View>
                 ))
@@ -161,7 +164,10 @@ const ObjectItemStatistics = ({object}) => {
         <View style={{paddingHorizontal: 20}}>
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('mileage')}</Text>
-                <Text>{report?.track?.mileage}</Text>
+                <Text>
+                    {getMileage(report?.track?.mileage)}
+                    {` ${i18n.t('km')}`}
+                </Text>
             </View>
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('time')}</Text>
@@ -257,8 +263,10 @@ const ObjectItemStatistics = ({object}) => {
                             contentFit="fill"
                         />
                         <View style={styles.mainInfo}>
-                            <Text style={{...styles.objectItemTitle, fontWeight: 'normal', fontSize: 12}}>{object?.main.name}</Text>
-                            <Text style={{...styles.subText, fontSize: 12}}>{object?.main.comment}</Text>
+                            <Text style={{...styles.objectItemTitle, fontWeight: 'normal'}}>{object?.main.name}</Text>
+                            {
+                                object?.main.comment && <Text style={{...styles.subText, fontSize: 12}}>{object?.main.comment}</Text>
+                            }
                         </View>
                     </View>
                 </View>

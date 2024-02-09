@@ -25,6 +25,7 @@ const checkUserDataAndLogout = () => async (dispatch) => {
 }
 
 export const changeServer = (server) => async (dispatch) => {
+  console.log('change server')
   await AsyncStorage.setItem('server', server);
   dispatch(setCurrentServer('https://' + server))
   axios.defaults.baseURL = 'https://' + server  + '/api'
@@ -33,22 +34,33 @@ export const changeServer = (server) => async (dispatch) => {
 export const init = () => async (dispatch) => {
   dispatch(getSettings())
   const token = await AsyncStorage.getItem('token');
+  const server = await AsyncStorage.getItem('server');
+  console.log('server server', server)
+  if(server){
+    dispatch(setCurrentServer(server))
+    axios.defaults.baseURL = server  + '/api'
+  }
+  console.log('TOKEN', token);
   if(token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    dispatch(setToken(token))
     const language = await AsyncStorage.getItem('language');
     if(language) {
       i18n.locale = language
-      dispatch(setLanguage(language))
+      await dispatch(setLanguage(language))
     }
     const user = await AsyncStorage.getItem('user');
     if(user) {
       const currentUser = JSON.parse(user)
-      dispatch(setCurrentUser(currentUser))
+      await dispatch(setCurrentUser(currentUser))
+      console.log('user', currentUser)
+      await dispatch(refreshUserToken())
     }
     const interval = await AsyncStorage.getItem('refresh');
     if(interval) {
-      dispatch(setRefreshInterval(+interval))
+      await dispatch(setRefreshInterval(+interval))
     }
-    await dispatch(setToken(token))
+    console.log('interval', interval)
     await dispatch(getObjects())
     await dispatch(getObjectsStatuses())
     await dispatch(getObjectIcons())
@@ -71,7 +83,6 @@ export const getSettings = () => async (dispatch) => {
 
 export const getProfileData = () => async (dispatch) => {
   try {
-    dispatch(checkUserDataAndLogout());
     const response = await Api.getProfile()
     if(response.status === 200) {
       dispatch(setProfile(response.data))
@@ -94,7 +105,7 @@ export const setAppLanguage = (language) => async (dispatch) => {
   dispatch(setLanguage(language))
 };
 
-export const getToken = (dto) => async (dispatch, getState) => {
+export const getToken = (dto) => async (dispatch) => {
   try {
     const response = await Api.getUserToken({
       userName: dto.userName.trim(),

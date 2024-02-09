@@ -26,18 +26,20 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     modalWrapper: {
-        top: isAndroid ? 45 : 90,
+        top: isAndroid ? 48 : 93,
         paddingHorizontal: 0,
         justifyContent: 'flex-start'
     },
     modalItem: {
-        marginLeft: -18,
+        marginLeft: -20,
         paddingHorizontal: 20,
         paddingTop: 20,
         paddingBottom: 5,
+        borderWidth: 1,
+        borderColor: '#a7a7aa',
         width: width,
         position: 'absolute',
-        backgroundColor: 'white',
+        backgroundColor: 'rgb(238,238,238)',
     },
     text: {
         color: 'black',

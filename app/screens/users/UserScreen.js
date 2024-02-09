@@ -1,6 +1,6 @@
 import styles from "./styles";
 import AppHeader from "../../components/header/AppHeader";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Pressable, SafeAreaView, ScrollView, Text, View} from "react-native";
 import SearchInput from "../../components/search/SearchInput";
 import {useDispatch, useSelector} from "react-redux";
@@ -18,7 +18,10 @@ const UserScreen = ({navigation}) => {
 
     const filteredUserArray = useMemo(() => users.filter(u => u.name.includes(query)), [users, query])
 
-    const selectCurrentUserHandler = (user) => dispatch(setCurrent(user))
+    const selectCurrentUserHandler = useCallback((user) => {
+        dispatch(setCurrent(user))
+        navigation.navigate('Objects')
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>

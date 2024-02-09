@@ -7,6 +7,7 @@ import {LeafletView} from "react-native-leaflet-view";
 import {useNavigation} from "@react-navigation/native";
 import {useSelector} from "react-redux";
 import {Image} from "expo-image";
+import {convertDate} from "../../../utils/helpers";
 
 const ObjectItemInfo = ({object, status}) => {
     const navigation = useNavigation();
@@ -99,7 +100,7 @@ const ObjectItemInfo = ({object, status}) => {
                     mapCenterPosition={points[0]?.position}
                 />
             </View>
-            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{new Date(+point?.time).toLocaleString()}</Text>
+            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{convertDate(point?.time)}</Text>
             <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     <Svg

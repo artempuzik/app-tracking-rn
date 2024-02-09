@@ -8,7 +8,7 @@ import CustomButton from "../../../components/button/Button";
 import i18n from "../../../utils/i18";
 import {getObjectHistory} from "../../../store/objects/objectsActions";
 import {useDispatch, useSelector} from "react-redux";
-import {getDuration, parsePointString} from "../../../utils/helpers";
+import {calculateDistance, convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
 import {LeafletView} from "react-native-leaflet-view";
 
@@ -62,7 +62,9 @@ const ObjectItemRoutes = ({object}) => {
 
     const routes = useMemo(() => {
         const minTimeFilter = minDrive * 1000 * 60
-        const int = history?.track ? history?.track.intervals : []
+        const int = history?.track ?
+            history?.track.intervals.filter( el => el.points)
+            : []
         return int.filter(i => {
             if(!minTimeFilter) {
                 return true
@@ -81,7 +83,9 @@ const ObjectItemRoutes = ({object}) => {
     }
 
     useEffect(() => {
-        fetchData().catch(() => {})
+        if(interval.from && interval.till) {
+            fetchData().catch(() => {})
+        }
     }, [interval])
 
     const total = useMemo(() => {
@@ -100,19 +104,26 @@ const ObjectItemRoutes = ({object}) => {
         if (idx === null) {
             return null
         }
-        const array = parsePointString(routes[idx]?.point)
+        const array = parsePointString(routes[idx]?.points)
         return array.map( el => ({
             position: {
                 lat: el.lat,
                 lng: el.lng,
             },
             icon: '📍',
-            size: [30, 30]
+            size: [20, 20]
         }))
     }, [routes, idx])
 
+    const totalMileage = useMemo(() => {
+        let result = 0
+        for (const point of routes) {
+            result += calculateDistance(point)
+        }
+        return result.toFixed(2)
+    }, [routes])
+
     const renderMapScreen = useMemo(() => {
-        console.log(idx === null || !markers)
         if(idx === null || !markers) return
         return (
         <View style={styles.container}>
@@ -221,7 +232,7 @@ const ObjectItemRoutes = ({object}) => {
                                         onPress={() => setIdx(index)}
                                     >
                                         <View style={styles.parkingNumber}>
-                                            <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 20}}>
+                                            <Text style={{color: '#fff', fontWeight: 'bold'}}>
                                                 {getIndex(index)}
                                             </Text>
                                         </View>
@@ -234,7 +245,7 @@ const ObjectItemRoutes = ({object}) => {
                                                 </View>
                                                 <View>
                                                     <Text>
-                                                        {new Date(+h.from).toLocaleString()}
+                                                        {convertDate(h.from)}
                                                     </Text>
                                                 </View>
                                             </View>
@@ -246,7 +257,7 @@ const ObjectItemRoutes = ({object}) => {
                                                 </View>
                                                 <View>
                                                     <Text>
-                                                        {new Date(+h.till).toLocaleString()}
+                                                        {convertDate(h.till)}
                                                     </Text>
                                                 </View>
                                             </View>
@@ -258,7 +269,7 @@ const ObjectItemRoutes = ({object}) => {
                                                 </View>
                                                 <View>
                                                     <Text>
-                                                        {new Date(+h.till).toLocaleString()}
+                                                        {getDuration(h.from, h.till)}
                                                     </Text>
                                                 </View>
                                             </View>
@@ -270,7 +281,8 @@ const ObjectItemRoutes = ({object}) => {
                                                 </View>
                                                 <View>
                                                     <Text>
-                                                        {getDuration(h.from, h.till)}
+                                                        {calculateDistance(h)}
+                                                        {` ${i18n.t('km')}`}
                                                     </Text>
                                                 </View>
                                             </View>
@@ -284,6 +296,7 @@ const ObjectItemRoutes = ({object}) => {
             <View style={styles.total}>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{i18n.t('total')}:</Text>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{total}</Text>
+                <Text style={{color: '#fff', fontWeight: 'bold'}}>{totalMileage}{` ${i18n.t('km')}`}</Text>
             </View>
         </View>
     ), [routes, markers, idx])

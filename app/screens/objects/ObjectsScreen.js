@@ -335,6 +335,7 @@ const ObjectsScreen = ({navigation}) => {
                     data={items}
                     keyExtractor={(item, index) => index.toString()}
                     ListEmptyComponent={<Text style={styles.emptyList}>{i18n.t('empty_list')}</Text>}
+                    ListFooterComponent={() => (<View style={{height: 130}}></View>)}
                     enableEmptySections={true}
                     renderItem={({item}) => (
                         <Pressable

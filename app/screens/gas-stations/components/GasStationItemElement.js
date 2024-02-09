@@ -5,7 +5,7 @@ const GasStationItemElement = ({item}) => {
         <View style={styles.gasItemBlock}>
             <View style={{...styles.itemRow, marginBottom: 20}}>
                 <Text style={styles.idsBlock}>{item.objectID}</Text>
-                <Text style={styles.itemText}>{new Date(item.time).toLocaleString()}</Text>
+                <Text style={styles.itemText}>{convertDate(item.time)}</Text>
             </View>
             <View style={styles.itemRow}>
                 <Text style={styles.itemText}>{i18n.t('station')}</Text>
@@ -26,5 +26,6 @@ import styles from '../styles';
 import Svg, {Path} from "react-native-svg";
 import {PRESSED_COLOR} from "../../../config";
 import i18n from "../../../utils/i18";
+import {convertDate} from "../../../utils/helpers";
 
 export default GasStationItemElement;

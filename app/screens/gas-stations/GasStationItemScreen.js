@@ -8,7 +8,7 @@ import styles from './styles';
 import {LeafletView} from "react-native-leaflet-view";
 import Svg, {Path} from "react-native-svg";
 import i18n from "../../utils/i18";
-import {getDuration} from "../../utils/helpers";
+import {convertDate, getDuration} from "../../utils/helpers";
 
 const GasStationItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -83,7 +83,7 @@ const GasStationItemScreen = ({navigation}) => {
                 <View>
                     <View style={styles.infoPropRow}>
                         <Text>{i18n.t('date')}</Text>
-                        <Text>{new Date(transaction?.time).toLocaleString()}</Text>
+                        <Text>{convertDate(transaction?.time)}</Text>
                     </View>
                     <View style={styles.infoPropRow}>
                         <Text>{i18n.t('duration')}</Text>

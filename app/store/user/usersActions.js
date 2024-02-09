@@ -47,7 +47,7 @@ export const changeSelfPassword = (dto) => async (dispatch, getState) => {
   }
 };
 
-export const getUsers = () => async (dispatch, getState) => {
+export const getUsers = () => async (dispatch) => {
   try {
     const response = await Api.getUsers()
     if(response.status === 200) {
@@ -58,14 +58,16 @@ export const getUsers = () => async (dispatch, getState) => {
   }
 };
 
-export const setRefreshStatusInterval = (value) => async (dispatch, getState) => {
+export const setRefreshStatusInterval = (value) => async (dispatch) => {
   dispatch(setRefreshInterval(value))
-  await AsyncStorage.setItem('refresh', value);
+  await AsyncStorage.setItem('refresh', value.toString());
 }
 
 export const refreshUserToken = () => async (dispatch, getState) => {
   try {
     const user = getState().user.currentUser
+    const server = getState().app.currentServer
+    console.log('refreshUserToken', user)
     if(!user) {
       return {
         response: null,
@@ -88,7 +90,7 @@ export const refreshUserToken = () => async (dispatch, getState) => {
       }
     }
   } catch (e) {
-
+    console.log('refreshUserToken error', e)
   }
 }
 

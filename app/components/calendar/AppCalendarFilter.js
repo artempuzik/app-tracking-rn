@@ -12,11 +12,11 @@ const AppCalendarFilter = ({
                                setIsCalendarOpen,
                                setCalendarProperties,
 }) => {
-    const [minDate, setMinDate] = useState(new Date())
-    const [maxDate, setMaxDate] = useState(new Date())
+    const [minDate, setMinDate] = useState(0)
+    const [maxDate, setMaxDate] = useState(0)
 
-    const [minTime, setMinTime] = useState(new Date())
-    const [maxTime, setMaxTime] = useState(new Date())
+    const [minTime, setMinTime] = useState(0)
+    const [maxTime, setMaxTime] = useState(0)
 
     const [isOpenMinDateModal, setIsOpenMinDateModal] = useState(false)
     const [isOpenMaxDateModal, setIsOpenMaxDateModal] = useState(false)
@@ -97,8 +97,11 @@ const AppCalendarFilter = ({
     }, [])
 
     useEffect(() => {
-        setThisWeek()
-        saveCalendar()
+        setToday()
+        setCalendarProperties({
+            from: new Date().setHours(0,0),
+            till: +new Date(),
+        })
     }, [])
 
     return (

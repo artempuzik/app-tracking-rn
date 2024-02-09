@@ -2,6 +2,7 @@ import React, {useMemo} from 'react';
 import {View, Text} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import styles from '../styles';
+import {convertDate} from "../../../utils/helpers";
 const EventItemElement = ({item, icons, objects}) => {
 
     const statusColor = useMemo(() => {
@@ -33,7 +34,7 @@ const EventItemElement = ({item, icons, objects}) => {
                 </View>
                 <View>
                     <Text style={styles.idsBlock}>{item.trackerid}</Text>
-                    <Text style={styles.itemText}>{new Date(+item.time).toLocaleString()}</Text>
+                    <Text style={styles.itemText}>{convertDate(item.time)}</Text>
                 </View>
             </View>
             <View style={styles.subRow}>

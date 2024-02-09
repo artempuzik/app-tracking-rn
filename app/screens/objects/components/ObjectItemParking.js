@@ -5,13 +5,14 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import i18n from "../../../utils/i18";
 import styles from '../styles';
 import RadioForm from "react-native-simple-radio-button";
-import {PARKING_OPTIONS} from "../../../config";
+import {PARKING_OPTIONS, PRESSED_COLOR} from "../../../config";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../../components/button/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {getObjectHistory} from "../../../store/objects/objectsActions";
-import {getDuration} from "../../../utils/helpers";
+import {convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
+import {LeafletView} from "react-native-leaflet-view";
 
 const initialFilters = {
     minParking: '',
@@ -33,7 +34,7 @@ const ObjectItemParking = ({object}) => {
     const [minParking, setMinParking] = useState(initialFilters.minParking)
 
     const [showParkingOptions, setShowParkingOptions] = useState(initialFilters.showParkingOptions);
-
+    const [idx, setIdx] = useState(null)
     const icons = useSelector(state => state.objects.icons)
     const baseUrl = useSelector(state => state.app.currentServer)
     const icon = useMemo(() => {
@@ -54,7 +55,9 @@ const ObjectItemParking = ({object}) => {
 
     const parkings = useMemo(() => {
         const minTimeFilter = minParking * 1000 * 60
-        const int = history?.trends ? history.trends.map(t => t.intervals).flat() : []
+        const int = history?.track ?
+            history?.track.intervals.filter( el => el.point)
+            : []
         return int.filter(i => {
             if(!minTimeFilter) {
                 return true
@@ -73,7 +76,9 @@ const ObjectItemParking = ({object}) => {
     }
 
     useEffect(() => {
-        fetchData().catch(() => {})
+        if(interval.from && interval.till) {
+            fetchData().catch(() => {})
+        }
     }, [interval])
 
     const saveFilters = useCallback(() => {
@@ -92,6 +97,33 @@ const ObjectItemParking = ({object}) => {
         return getDuration(0, time)
     }, [parkings])
 
+    const markers = useMemo(() => {
+        if (idx === null) {
+            return null
+        }
+        const array = parsePointString(parkings[idx]?.point)
+        return array.map( el => ({
+            position: {
+                lat: el.lat,
+                lng: el.lng,
+            },
+            icon: '📍',
+            size: [30, 30]
+        }))
+    }, [parkings, idx])
+
+    const renderMapScreen = useMemo(() => {
+        if(idx === null || !markers) return
+        return (
+            <View style={styles.container}>
+                <LeafletView
+                    doDebug={false}
+                    mapMarkers={markers}
+                    mapCenterPosition={markers[0]?.position}
+                />
+            </View>
+        )}, [markers, idx])
+
     const getIndex = (index) => {
         return index < 9 ? `0${index + 1}` : index +1
     }
@@ -107,7 +139,7 @@ const ObjectItemParking = ({object}) => {
                             },
                             styles.headerItemButton,
                         ]}
-                        onPress={() => navigation.goBack()}
+                        onPress={() => idx !== null ? setIdx(null) :  navigation.goBack()}
                     >
                         <Svg
                             width={20}
@@ -139,105 +171,120 @@ const ObjectItemParking = ({object}) => {
                         </View>
                     </View>
                 </View>
-                <View style={styles.rightBlock}>
-                    <Pressable
-                        style={({pressed}) => [
-                            {
-                                backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                            },
-                            styles.headerRightButton,
-                        ]}
-                        onPress={() => setIsFiltersOpen(true)}
-                    >
-                        <Svg
-                            width={20}
-                            height={20}
-                            viewBox="0 0 20 20"
-                        >
-                            <Path d="M7.527 9.45c.21.23.325.527.325.836v9.095c0 .547.66.825 1.052.44l2.537-2.907c.34-.408.526-.61.526-1.013v-5.613c0-.308.118-.607.325-.835l7.28-7.9C20.118.962 19.698 0 18.892 0H.927a.926.926 0 0 0-.681 1.554l7.28 7.897z"
-                                  fill="#a7a7aa"/>
-                        </Svg>
-                    </Pressable>
-                    <Pressable
-                        style={({pressed}) => [
-                            {
-                                backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                            },
-                            styles.headerRightButton,
-                        ]}
-                        onPress={() => setIsCalendarOpen(true)}
-                    >
-                        <Svg
-                            width={20}
-                            height={20}
-                            viewBox="0 0 19 14"
-                        >
-                            <Path d="M5 0h4v4H5zm5 0h4v4h-4zm5 0h4v4h-4zM5 5h4v4H5zM0 5h4v4H0zm10 0h4v4h-4zm-5 5h4v4H5zm-5 0h4v4H0zm10 0h4v4h-4zm5-5h4v4h-4z"
-                                  fill="#2060ae"/>
-                        </Svg>
-                    </Pressable>
-                </View>
-            </View>
-                <ScrollView>
-                    {
-                        parkings.map((h, index) => (
-                            <View
-                                key={h.from + index}
-                                style={styles.parkingItem}
+                {
+                    idx === null ? (
+                        <View style={styles.rightBlock}>
+                            <Pressable
+                                style={({pressed}) => [
+                                    {
+                                        backgroundColor: pressed ? '#c7c7c9' : 'transparent',
+                                    },
+                                    styles.headerRightButton,
+                                ]}
+                                onPress={() => setIsFiltersOpen(true)}
                             >
-                                <View style={styles.parkingNumber}>
-                                    <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 20}}>
-                                        {getIndex(index)}
-                                    </Text>
-                                </View>
-                                <View>
-                                    <View style={styles.parkingRowBlock}>
-                                        <View>
-                                            <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
-                                                {i18n.t('from')}
+                                <Svg
+                                    width={20}
+                                    height={20}
+                                    viewBox="0 0 20 20"
+                                >
+                                    <Path d="M7.527 9.45c.21.23.325.527.325.836v9.095c0 .547.66.825 1.052.44l2.537-2.907c.34-.408.526-.61.526-1.013v-5.613c0-.308.118-.607.325-.835l7.28-7.9C20.118.962 19.698 0 18.892 0H.927a.926.926 0 0 0-.681 1.554l7.28 7.897z"
+                                          fill="#a7a7aa"/>
+                                </Svg>
+                            </Pressable>
+                            <Pressable
+                                style={({pressed}) => [
+                                    {
+                                        backgroundColor: pressed ? '#c7c7c9' : 'transparent',
+                                    },
+                                    styles.headerRightButton,
+                                ]}
+                                onPress={() => setIsCalendarOpen(true)}
+                            >
+                                <Svg
+                                    width={20}
+                                    height={20}
+                                    viewBox="0 0 19 14"
+                                >
+                                    <Path d="M5 0h4v4H5zm5 0h4v4h-4zm5 0h4v4h-4zM5 5h4v4H5zM0 5h4v4H0zm10 0h4v4h-4zm-5 5h4v4H5zm-5 0h4v4H0zm10 0h4v4h-4zm5-5h4v4h-4z"
+                                          fill="#2060ae"/>
+                                </Svg>
+                            </Pressable>
+                        </View>
+                    ) : null
+                }
+            </View>
+            {
+                idx === null ?
+                    (
+                        <ScrollView>
+                            {
+                                parkings.map((h, index) => (
+                                    <Pressable
+                                        key={h.from + index}
+                                        style={({pressed}) => [
+                                            {
+                                                backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                            },
+                                            styles.parkingItem,
+                                        ]}
+                                        onPress={() => setIdx(index)}
+                                    >
+                                        <View style={styles.parkingNumber}>
+                                            <Text style={{color: '#fff', fontWeight: 'bold'}}>
+                                                {getIndex(index)}
                                             </Text>
                                         </View>
                                         <View>
-                                            <Text>
-                                                {new Date(+h.from).toLocaleString()}
-                                            </Text>
+                                            <View style={styles.parkingRowBlock}>
+                                                <View>
+                                                    <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
+                                                        {i18n.t('from')}
+                                                    </Text>
+                                                </View>
+                                                <View>
+                                                    <Text>
+                                                        {convertDate(h.from)}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={styles.parkingRowBlock}>
+                                                <View>
+                                                    <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
+                                                        {i18n.t('to')}
+                                                    </Text>
+                                                </View>
+                                                <View>
+                                                    <Text>
+                                                        {convertDate(h.till)}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={[styles.parkingRowBlock, {backgroundColor: '#d3d1d1', padding: 5}]}>
+                                                <View>
+                                                    <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
+                                                        {i18n.t('duration')}
+                                                    </Text>
+                                                </View>
+                                                <View>
+                                                    <Text>
+                                                        {getDuration(h.from, h.till)}
+                                                    </Text>
+                                                </View>
+                                            </View>
                                         </View>
-                                    </View>
-                                    <View style={styles.parkingRowBlock}>
-                                        <View>
-                                            <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
-                                                {i18n.t('to')}
-                                            </Text>
-                                        </View>
-                                        <View>
-                                            <Text>
-                                                {new Date(+h.till).toLocaleString()}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View style={[styles.parkingRowBlock, {backgroundColor: '#d3d1d1', padding: 5}]}>
-                                        <View>
-                                            <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
-                                                {i18n.t('duration')}
-                                            </Text>
-                                        </View>
-                                        <View>
-                                            <Text>
-                                                {getDuration(h.from, h.till)}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        ))
-                    }
-                </ScrollView>
+                                    </Pressable>
+                                ))
+                            }
+                        </ScrollView>
+                    ) : renderMapScreen
+            }
             <View style={styles.total}>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{i18n.t('total')}:</Text>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{total}</Text>
             </View>
         </View>
-    ), [parkings, interval, history])
+    ), [parkings, interval, history, idx])
 
     const filtersBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>

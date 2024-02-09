@@ -88,8 +88,8 @@ export default StyleSheet.create({
     },
     parkingNumber: {
         backgroundColor: '#2060ae',
-        width: 50,
-        height: 50,
+        width: 23,
+        height: 23,
         alignItems: 'center',
         justifyContent: 'center',
         margin: 2,

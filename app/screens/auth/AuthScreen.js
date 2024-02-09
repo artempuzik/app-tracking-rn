@@ -29,7 +29,6 @@ export default function AuthScreen({navigation}) {
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [language, setLang] = useState(lang)
 
     const [error, setError] = useState('')
 
@@ -58,9 +57,6 @@ export default function AuthScreen({navigation}) {
     }, [languages])
 
     const formatServerArray = useMemo(() => {
-        if(servers.length) {
-            setHost(servers[0])
-        }
         return servers.map(item => ({
             label: item, value: item
         }))

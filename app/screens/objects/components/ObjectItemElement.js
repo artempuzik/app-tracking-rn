@@ -12,7 +12,9 @@ const ObjectItemElement = ({item, icons, statuses}) => {
 
     const point = useMemo(() => getItemPointByItemId(statuses, item), [item, statuses.points])
 
-    const iopoints = useMemo(() => getItemIoPointsByItemId(statuses, item), [item, statuses.iopoints])
+    const engine = useMemo(() => {
+        return item?.trends.find(t => t.flags === 'POINTBYEVT ENGINE' || t.flags === 'ENGINE')
+    }, [item])
 
     return (
         <View>
@@ -27,7 +29,7 @@ const ObjectItemElement = ({item, icons, statuses}) => {
                         />
                         <View style={styles.mainInfo}>
                             <Text style={styles.objectItemTitle}>{item.main.name}</Text>
-                            <Text style={styles.subText}>{new Date(+point?.time).toLocaleString()}</Text>
+                            <Text style={styles.subText}>{convertDate(point?.time)}</Text>
                         </View>
                     </View>
                 </View>
@@ -40,9 +42,9 @@ const ObjectItemElement = ({item, icons, statuses}) => {
                             viewBox="0 0 25 25"
                         >
                             <Path d="M12.336 0C9.204 0 7.2 2.868 7.2 6c0 .672-.396.996-.204 1.668L0 14.664V18h3.6v-2.4H6v-1.2l1.332-.396 3-3c.6.204.936-.204 1.668-.204 3.132 0 6-2.004 6-5.136A5.664 5.664 0 0 0 12.336 0zm.164 7.8a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"
-                                  fill={!!iopoints?.value ? "#2060ae" : "#a7a7aa"}/>
+                                  fill={!!engine?.dataType ? "#2060ae" : "#a7a7aa"}/>
                         </Svg>
-                        <Text>{!!iopoints?.value ? i18n.t('on') : i18n.t('off')}</Text>
+                        <Text>{!!engine?.dataType ? i18n.t('on') : i18n.t('off')}</Text>
                     </View>
                     <View style={styles.footerElement}>
                         {
@@ -95,6 +97,6 @@ import styles from '../styles';
 import Svg, {Path} from "react-native-svg";
 import {PRESSED_COLOR} from "../../../config";
 import {useSelector} from "react-redux";
-import {getItemIoPointsByItemId, getItemPointByItemId} from "../../../utils/helpers";
+import {convertDate, getItemIoPointsByItemId, getItemPointByItemId} from "../../../utils/helpers";
 
 export default ObjectItemElement;
