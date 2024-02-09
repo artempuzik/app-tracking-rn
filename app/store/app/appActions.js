@@ -25,10 +25,11 @@ const checkUserDataAndLogout = () => async (dispatch) => {
 }
 
 export const changeServer = (server) => async (dispatch) => {
-  console.log('change server')
-  await AsyncStorage.setItem('server', server);
-  dispatch(setCurrentServer('https://' + server))
-  axios.defaults.baseURL = 'https://' + server  + '/api'
+  const value = 'https://' + server.replace('https://', '')
+  console.log('change server', value)
+  await AsyncStorage.setItem('server', value);
+  dispatch(setCurrentServer(value))
+  axios.defaults.baseURL = value  + '/api'
 }
 
 export const init = () => async (dispatch) => {

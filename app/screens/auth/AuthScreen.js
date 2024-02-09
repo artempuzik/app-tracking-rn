@@ -23,6 +23,7 @@ const background = require('../../../assets/bg_auth.png')
 const logo = require('../../../assets/logo.png')
 export default function AuthScreen({navigation}) {
     const servers = useSelector(state => state.app.servers)
+    const currentServer = useSelector(state => state.app.currentServer)
     const languages = useSelector(state => state.app.languages)
     const lang = useSelector(state => state.app.language)
 
@@ -32,7 +33,7 @@ export default function AuthScreen({navigation}) {
 
     const [error, setError] = useState('')
 
-    const [host, setHost] = useState(BASE_URL)
+    const [host, setHost] = useState()
 
     const dispatch = useDispatch();
 
@@ -41,6 +42,12 @@ export default function AuthScreen({navigation}) {
             dispatch(changeServer(host))
         }
     }, [host]);
+
+    useEffect(() => {
+        if(currentServer) {
+            setHost(currentServer.replace('https://', ''))
+        }
+    }, []);
 
     // const pressRegistrationBtnHandler = () => {
     //     navigation.navigate('Registration')
