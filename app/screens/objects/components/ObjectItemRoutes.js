@@ -10,6 +10,8 @@ import {getObjectHistory} from "../../../store/objects/objectsActions";
 import {useDispatch, useSelector} from "react-redux";
 import {calculateDistance, convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
+
+import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import {LeafletView} from "react-native-leaflet-view";
 
 const ObjectItemRoutes = ({object}) => {
@@ -19,6 +21,7 @@ const ObjectItemRoutes = ({object}) => {
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+    const [isShowMap, setIsShowMap] = useState(false)
 
     const [minDrive, setMinDrive] = useState('')
     const [maxDrive, setMaxDrive] = useState('')
@@ -60,6 +63,18 @@ const ObjectItemRoutes = ({object}) => {
         return icons.find((ic) => ic.id === object?.main.iconId)
     }, [object, icons])
 
+    const generateRedShade = useCallback(() => {
+        const red = Math.round(Math.random() * 255);
+        const green = Math.round(Math.random() * 255);
+        const blue = Math.round(Math.random() * 255);
+
+        const redHex = red.toString(16).padStart(2, '0');
+        const greenHex = green.toString(16).padStart(2, '0');
+        const blueHex = blue.toString(16).padStart(2, '0');
+
+        return `#${redHex}${greenHex}${blueHex}`;
+    }, []);
+
     const routes = useMemo(() => {
         const minTimeFilter = minDrive * 1000 * 60
         const int = history?.track ?
@@ -100,21 +115,6 @@ const ObjectItemRoutes = ({object}) => {
         return index < 9 ? `0${index + 1}` : index +1
     }
 
-    const markers = useMemo(() => {
-        if (idx === null) {
-            return null
-        }
-        const array = parsePointString(routes[idx]?.points)
-        return array.map( el => ({
-            position: {
-                lat: el.lat,
-                lng: el.lng,
-            },
-            icon: '📍',
-            size: [20, 20]
-        }))
-    }, [routes, idx])
-
     const totalMileage = useMemo(() => {
         let result = 0
         for (const point of routes) {
@@ -124,16 +124,85 @@ const ObjectItemRoutes = ({object}) => {
     }, [routes])
 
     const renderMapScreen = useMemo(() => {
-        if(idx === null || !markers) return
+            let coordinates = [];
+            if (idx !== null) {
+                const array = parsePointString(routes[idx]?.points);
+                coordinates = array.map(point => ({
+                    position: {
+                        lat: point.lat,
+                        lng: point.lng,
+                    },
+                    icon: '📍',
+                    size: [30, 30]
+                }));
+            } else {
+                const array = routes.map(rout => parsePointString(rout.points)).flat();
+                coordinates = array.map(point => ({
+                    position: {
+                        lat: point.lat,
+                        lng: point.lng,
+                    },
+                    icon: '📍',
+                    size: [30, 30]
+                }));
+            }
         return (
-        <View style={styles.container}>
-            <LeafletView
-                doDebug={false}
-                mapMarkers={markers}
-                mapCenterPosition={markers[0]?.position}
-            />
-        </View>
-    )}, [markers, idx])
+            <View style={styles.container}>
+                <LeafletView
+                    doDebug={false}
+                    mapMarkers={coordinates}
+                    mapCenterPosition={coordinates[0]?.position}
+                />
+            </View>
+        )}, [idx, isShowMap, routes])
+
+    // const renderMapScreen = useMemo(() => {
+    //     const lines = [];
+    //     if (idx !== null) {
+    //         const array = parsePointString(routes[idx]?.points);
+    //         const coordinates = array.map(point => ({
+    //             latitude: point.lat,
+    //             longitude: point.lng,
+    //         }));
+    //         lines.push(coordinates);
+    //     } else {
+    //         const array = routes.map(rout => parsePointString(rout.points));
+    //         array.forEach(el => {
+    //             const coordinates = el.map(point => ({
+    //                 latitude: point.lat,
+    //                 longitude: point.lng,
+    //             }));
+    //             lines.push(coordinates)
+    //         })
+    //     }
+    //
+    //     return (
+    //         <View style={styles.container}>
+    //             <MapView
+    //                 provider={PROVIDER_GOOGLE}
+    //                 style={{ flex: 1 }}
+    //                 initialRegion={{
+    //                     latitude: lines.length ? lines[0][0].latitude : 0,
+    //                     longitude: lines.length ? lines[0][0].longitude : 0,
+    //                     latitudeDelta: 0.5,
+    //                     longitudeDelta: 0.1,
+    //                 }}
+    //             >
+    //                 {lines.map((l, index) => {
+    //                     const color = generateRedShade()
+    //                     return (
+    //                         <Polyline
+    //                             key={index}
+    //                             coordinates={l}
+    //                             strokeColor={color}
+    //                             strokeWidth={5}
+    //                         />
+    //                     )
+    //                 })}
+    //             </MapView>
+    //         </View>
+    //     );
+    // }, [idx, isShowMap, routes]);
 
     const pageBlock = useMemo(() => (
         <View style={{flex: 1}}>
@@ -146,7 +215,13 @@ const ObjectItemRoutes = ({object}) => {
                             },
                             styles.headerItemButton,
                         ]}
-                        onPress={() => idx !== null ? setIdx(null) :  navigation.goBack()}
+                        onPress={
+                        isShowMap   ?
+                            () => {
+                            setIsShowMap(false)
+                            setIdx(null)
+                            } :
+                            () => navigation.goBack()}
                     >
                         <Svg
                             width={20}
@@ -179,7 +254,7 @@ const ObjectItemRoutes = ({object}) => {
                     </View>
                 </View>
                 {
-                    idx === null ? (<View style={styles.rightBlock}>
+                    !isShowMap ? (<View style={styles.rightBlock}>
                     <Pressable
                         style={({pressed}) => [
                             {
@@ -222,14 +297,17 @@ const ObjectItemRoutes = ({object}) => {
                 }
             </View>
                 {
-                    idx === null ? (
+                    !isShowMap ? (
                         <ScrollView>
                             {
                                 routes.map((h, index) => (
                                     <Pressable
                                         key={h.from + index}
                                         style={styles.parkingItem}
-                                        onPress={() => setIdx(index)}
+                                        onPress={() => {
+                                            setIsShowMap(true)
+                                            setIdx(index)
+                                        }}
                                     >
                                         <View style={styles.parkingNumber}>
                                             <Text style={{color: '#fff', fontWeight: 'bold'}}>
@@ -276,7 +354,7 @@ const ObjectItemRoutes = ({object}) => {
                                             <View style={[styles.parkingRowBlock, {backgroundColor: '#d3d1d1', padding: 5}]}>
                                                 <View>
                                                     <Text style={{opacity: 0.6, fontWeight: 'bold'}}>
-                                                        {i18n.t('total')}
+                                                        {i18n.t('mileage')}
                                                     </Text>
                                                 </View>
                                                 <View>
@@ -293,13 +371,21 @@ const ObjectItemRoutes = ({object}) => {
                         </ScrollView>
                     ) : renderMapScreen
                 }
-            <View style={styles.total}>
+            <Pressable
+                onPress={() => {setIsShowMap(prev => !prev)}}
+                style={({pressed}) => [
+                    {
+                        backgroundColor: pressed ? 'rgba(32,96,174,0.41)' : '#2060ae',
+                    },
+                    styles.total,
+                ]}
+            >
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{i18n.t('total')}:</Text>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{total}</Text>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{totalMileage}{` ${i18n.t('km')}`}</Text>
-            </View>
+            </Pressable>
         </View>
-    ), [routes, markers, idx])
+    ), [routes, idx, isShowMap])
 
     const filtersBlock = useMemo(() => (
             <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>

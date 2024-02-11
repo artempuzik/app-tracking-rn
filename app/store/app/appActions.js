@@ -63,6 +63,8 @@ export const init = () => async (dispatch) => {
     }
     console.log('interval', interval)
     await dispatch(getObjects())
+    await dispatch(getObjectIcons())
+    await dispatch(getProfileData())
     await dispatch(getObjectsStatuses())
     await dispatch(getObjectIcons())
     await dispatch(getUsers())
@@ -112,6 +114,7 @@ export const getToken = (dto) => async (dispatch) => {
       userName: dto.userName.trim(),
       password: dto.password.trim(),
     })
+    await AsyncStorage.setItem('login', JSON.stringify(dto));
     const token = response.data.accessToken
     if (token !== undefined) {
       await AsyncStorage.setItem('token', token);

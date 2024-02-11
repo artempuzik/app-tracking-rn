@@ -158,6 +158,8 @@ const ObjectItemStatistics = ({object}) => {
         </View>
     ), [report])
 
+    console.log(reportType, report?.fuel)
+
     const totalReport = useMemo(() =>(
         <View style={{paddingHorizontal: 20}}>
             <View style={styles.mainStatRow}>

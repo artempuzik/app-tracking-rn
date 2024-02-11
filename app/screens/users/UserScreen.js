@@ -19,8 +19,9 @@ const UserScreen = ({navigation}) => {
     const filteredUserArray = useMemo(() => users.filter(u => u.name.includes(query)), [users, query])
 
     const selectCurrentUserHandler = useCallback((user) => {
-        dispatch(setCurrent(user))
-        navigation.navigate('Objects')
+        dispatch(setCurrent(user)).then(() =>{
+            navigation.navigate('Objects')
+        })
     }, [])
 
     return (

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNavigationContainerRef, NavigationContainer} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {useDispatch, useSelector} from "react-redux";
@@ -20,8 +20,9 @@ import GasStationItemScreen from "./gas-stations/GasStationItemScreen";
 import MapScreen from "./map/MapScreen";
 import GasStationScreen from "./gas-stations/GasStationScreen";
 import UserScreen from "./users/UserScreen";
-import {Platform} from "react-native";
+import {ActivityIndicator, Platform, View} from "react-native";
 import ServiceScreen from "./services/ServiceScreen";
+import Loading from "../components/loading/Loading";
 
 export const navigationRef = createNavigationContainerRef();
 const Stack = createStackNavigator();
@@ -30,8 +31,14 @@ const isAndroid = Platform.OS === 'android'
 export default function Screens() {
     const dispatch = useDispatch();
     const token = useSelector(store => store.app.token)
+    const [isLoading, setIsLoading] = useState(false)
     const initApp = async () => {
-        await dispatch(init())
+        try {
+            setIsLoading(true)
+            await dispatch(init())
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -39,6 +46,14 @@ export default function Screens() {
             console.log(err)
         })
     }, [])
+
+    console.log(isLoading)
+
+    if(isLoading) {
+        return (
+            <Loading isLoading={isLoading} />
+        )
+    }
     return (
             <NavigationContainer ref={navigationRef}>
                 {

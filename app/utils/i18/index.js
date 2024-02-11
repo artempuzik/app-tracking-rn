@@ -104,7 +104,8 @@ const translations = {
     l: "l",
     number_of_violations: "Number of violations",
     fines: "Fines",
-
+    only_important: "Only important",
+    all: "All"
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -208,6 +209,8 @@ const translations = {
     l: "л",
     number_of_violations: "Количество нарушений",
     fines: "Штрафы",
+    only_important: "Только важные",
+    all: "Все"
   }
 }
 

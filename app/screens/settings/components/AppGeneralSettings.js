@@ -15,6 +15,7 @@ const AppGeneralSettings = () => {
     const [geocoder, setGeocoder] = useState('')
     const [interval, setInterval] = useState(REFRESH_INTERVAL)
     const [loading, setLoading] = useState(false)
+
     const [error, setError] = useState('')
 
     const dispatch = useDispatch()
@@ -69,22 +70,22 @@ const AppGeneralSettings = () => {
                             enabled={Platform.OS === 'ios'}
                             style={styles.auth}
                         >
-                        <View style={styles.block}>
-                            <Text style={styles.text}>{i18n.t('interface_language')}</Text>
-                            <SelectList items={languages} value={language} onChange={setLang}/>
-                        </View>
-                        <View style={styles.block}>
-                            <Text style={styles.text}>{i18n.t('default_map')}</Text>
-                            <SelectList items={METRICS_LIST} value={flags} onChange={setFlags}/>
-                        </View>
-                        <View style={styles.block}>
-                            <Text style={styles.text}>{i18n.t('measuring_system')}</Text>
-                            <SelectList items={CODE_LIST} value={geocoder} onChange={setGeocoder}/>
-                        </View>
-                        <RangeSlider onChange={setInterval}/>
-                        <Text style={styles.error}>
-                            {error}
-                        </Text>
+                            <View style={styles.block}>
+                                <Text style={styles.text}>{i18n.t('interface_language')}</Text>
+                                <SelectList items={languages} value={language} onChange={setLang}/>
+                            </View>
+                            <View style={styles.block}>
+                                <Text style={styles.text}>{i18n.t('default_map')}</Text>
+                                <SelectList items={METRICS_LIST} value={flags} onChange={setFlags}/>
+                            </View>
+                            <View style={styles.block}>
+                                <Text style={styles.text}>{i18n.t('measuring_system')}</Text>
+                                <SelectList items={CODE_LIST} value={geocoder} onChange={setGeocoder}/>
+                            </View>
+                            <RangeSlider onChange={setInterval}/>
+                            <Text style={styles.error}>
+                                {error}
+                            </Text>
                         </KeyboardAvoidingView>
                     </ScrollView>
                     <CustomButton

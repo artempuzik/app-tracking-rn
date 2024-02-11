@@ -21,6 +21,9 @@
     },
     "android": {
       "userInterfaceStyle": "light",
+      "googleMaps": {
+        "apiKey": ""
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"

@@ -25,6 +25,8 @@ const ObjectItemParking = ({object}) => {
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isShowMap, setIsShowMap] = useState(false)
+
     const [interval, setInterval] = useState({
         from: 0,
         till: 0,
@@ -99,21 +101,31 @@ const ObjectItemParking = ({object}) => {
 
     const markers = useMemo(() => {
         if (idx === null) {
-            return null
+            const array = parkings.map(p => parsePointString(p?.point)).flat()
+            return array.map( el => ({
+                position: {
+                    lat: el.lat,
+                    lng: el.lng,
+                },
+                icon: '📍',
+                size: [30, 30]
+            }))
+        } else {
+            const array = parsePointString(parkings[idx]?.point)
+            return array.map( el => ({
+                position: {
+                    lat: el.lat,
+                    lng: el.lng,
+                },
+                icon: '📍',
+                size: [30, 30]
+            }))
         }
-        const array = parsePointString(parkings[idx]?.point)
-        return array.map( el => ({
-            position: {
-                lat: el.lat,
-                lng: el.lng,
-            },
-            icon: '📍',
-            size: [30, 30]
-        }))
-    }, [parkings, idx])
+    }, [parkings, idx, isShowMap])
 
     const renderMapScreen = useMemo(() => {
-        if(idx === null || !markers) return
+        if(!markers) return
+        console.log(markers)
         return (
             <View style={styles.container}>
                 <LeafletView
@@ -122,11 +134,13 @@ const ObjectItemParking = ({object}) => {
                     mapCenterPosition={markers[0]?.position}
                 />
             </View>
-        )}, [markers, idx])
+        )}, [markers, idx, isShowMap])
 
     const getIndex = (index) => {
         return index < 9 ? `0${index + 1}` : index +1
     }
+
+    console.log(idx)
 
     const pageBlock = useMemo(() => (
         <View style={{flex: 1}}>
@@ -139,7 +153,13 @@ const ObjectItemParking = ({object}) => {
                             },
                             styles.headerItemButton,
                         ]}
-                        onPress={() => idx !== null ? setIdx(null) :  navigation.goBack()}
+                        onPress={
+                            isShowMap   ?
+                                () => {
+                                    setIsShowMap(false)
+                                    setIdx(null)
+                                } :
+                                () => navigation.goBack()}
                     >
                         <Svg
                             width={20}
@@ -172,7 +192,7 @@ const ObjectItemParking = ({object}) => {
                     </View>
                 </View>
                 {
-                    idx === null ? (
+                    !isShowMap ? (
                         <View style={styles.rightBlock}>
                             <Pressable
                                 style={({pressed}) => [
@@ -215,7 +235,7 @@ const ObjectItemParking = ({object}) => {
                 }
             </View>
             {
-                idx === null ?
+                !isShowMap ?
                     (
                         <ScrollView>
                             {
@@ -228,7 +248,10 @@ const ObjectItemParking = ({object}) => {
                                             },
                                             styles.parkingItem,
                                         ]}
-                                        onPress={() => setIdx(index)}
+                                        onPress={() => {
+                                            setIsShowMap(true)
+                                            setIdx(index)
+                                        }}
                                     >
                                         <View style={styles.parkingNumber}>
                                             <Text style={{color: '#fff', fontWeight: 'bold'}}>
@@ -279,12 +302,20 @@ const ObjectItemParking = ({object}) => {
                         </ScrollView>
                     ) : renderMapScreen
             }
-            <View style={styles.total}>
+            <Pressable
+                onPress={() => {setIsShowMap(prev => !prev)}}
+                style={({pressed}) => [
+                    {
+                        backgroundColor: pressed ? 'rgba(32,96,174,0.41)' : '#2060ae',
+                    },
+                    styles.total,
+                ]}
+            >
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{i18n.t('total')}:</Text>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>{total}</Text>
-            </View>
+            </Pressable>
         </View>
-    ), [parkings, interval, history, idx])
+    ), [parkings, interval, history, idx, isShowMap])
 
     const filtersBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>

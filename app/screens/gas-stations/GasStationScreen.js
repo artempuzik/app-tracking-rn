@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Pressable, Text, ScrollView, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+import {View, Pressable, Text, FlatList, RefreshControl} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import SearchInput from "../../components/search/SearchInput";
@@ -12,7 +12,6 @@ import {getTransactions} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import GasStationItemElement from "./components/GasStationItemElement";
-import EventItemElement from "../event/components/EventItemElement";
 import i18n from "../../utils/i18";
 
 const initialFilters = {
@@ -34,6 +33,7 @@ const GasStationScreen = ({navigation}) => {
     })
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+    const [isFiltersReset, setIsFiltersReset] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
     const [error, setError] = useState('')
@@ -44,17 +44,22 @@ const GasStationScreen = ({navigation}) => {
         if(!transactions.length) {
             return []
         }
-        const withStationFilter = selectedStation ? transactions.filter(t => t.objectID === selectedStation) : transactions
+        const withStationFilter = selectedStation ? transactions.filter(t => +t.objectID === +selectedStation) : transactions
         return withStationFilter.filter(el => JSON.stringify(el).includes(query))
-    }, [transactions, query])
+    }, [transactions, query, selectedStation])
 
     const formatStation = useMemo(() => {
         if(!transactions.length) {
             return []
         }
-        return transactions.map(item => ({
-            [item.objectID]: item.objectName
-        }))
+        const stations = {}
+        transactions.forEach(item => {
+            if(!stations[item.objectID]) {
+                stations[item.objectID] = item.objectName
+            }
+        })
+
+        return Object.keys(stations).map(key => ({[key]: stations[key]}))
     }, [transactions])
 
     const saveFilters = useCallback(() => {
@@ -63,6 +68,8 @@ const GasStationScreen = ({navigation}) => {
 
     const resetFilters = useCallback(() => {
         setSelectedStation(initialFilters.selectedStation)
+        setIsFiltersReset(true)
+        setTimeout(() => setIsFiltersReset(false))
     },[])
 
     const fetchData = async () => {
@@ -97,7 +104,7 @@ const GasStationScreen = ({navigation}) => {
                 items={formatStation} onChange={setSelectedStation}
             />
         </View>
-    ), [])
+    ), [formatStation])
 
     const filtersBlock = useMemo(() => {
         return (
@@ -210,7 +217,7 @@ const GasStationScreen = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
-            {filtersBlock}
+            {!isFiltersReset && filtersBlock}
             <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isFiltersOpen && !isCalendarOpen ? listBlock : null

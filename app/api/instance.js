@@ -11,11 +11,12 @@ const api = axios.create({
 const refreshToken = async () => {
     reconnect++
     try {
-        const {language, id} = await getUserDataFromStorage()
-        console.log('refreshToken interceptors', language, id)
-        const response = await api.post('/token/refresh', {
-            language,
-            subUserId: id,
+        const {user, login} = await getUserDataFromStorage()
+        const response = await api.post('/token', {
+            language: user.language,
+            subUserId: user.id,
+            userName: login.userName,
+            password: login.password,
         })
         return response;
     } catch (err) {
@@ -26,7 +27,11 @@ const refreshToken = async () => {
 
 const getUserDataFromStorage = async () => {
     const user = await AsyncStorage.getItem('user');
-    return JSON.parse(user)
+    const login = await AsyncStorage.getItem('login');
+    return {
+        user: JSON.parse(user),
+        login: JSON.parse(login)
+    }
 }
 
 api.interceptors.request.use(

@@ -4,7 +4,7 @@ const GasStationItemElement = ({item}) => {
     return (
         <View style={styles.gasItemBlock}>
             <View style={{...styles.itemRow, marginBottom: 20}}>
-                <Text style={styles.idsBlock}>{item.objectID}</Text>
+                <Text style={styles.idsBlock}>{item.innerID}</Text>
                 <Text style={styles.itemText}>{convertDate(item.time)}</Text>
             </View>
             <View style={styles.itemRow}>

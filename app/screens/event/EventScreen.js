@@ -1,66 +1,73 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Pressable, Text, ScrollView, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+import {View, Pressable, Text, FlatList, RefreshControl} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import RadioForm from 'react-native-simple-radio-button';
 import styles from './styles';
 import SearchInput from "../../components/search/SearchInput";
 import Svg, {Path} from "react-native-svg";
 import {MOVE_OPTIONS, PRESSED_COLOR, STATUS_OPTIONS, WITH_IGNITION_OPTIONS} from "../../config";
 import {useDispatch, useSelector} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
-import SelectList from "../../components/select/SelectList";
 import {
     getObjectEvents,
-    getObjectIcons,
-    getObjects,
-    getObjectsStatuses,
-    getTransactions
 } from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
-import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
-import {getDriverSessionById} from "../../store/drivers/driversActions";
 import EventItemElement from "./components/EventItemElement";
-import ObjectItemElement from "../objects/components/ObjectItemElement";
+import i18n from "../../utils/i18";
+import CalendarFilter from "./components/CalendarFilter";
+import RadioForm from "react-native-simple-radio-button";
+import SelectList from "../../components/select/SelectList";
 
 const initialFilters = {
-    selectedStation: null
+    selectedObject: null,
+    showAll: true,
+    date: null,
 }
 
 const EventScreen = ({navigation}) => {
     const dispatch = useDispatch()
+
+    const profile = useSelector(state => state.app.profile)
+    const icons = useSelector(state => state.objects.icons)
 
     const [isLoading, setIsLoading] = useState(false)
 
     const [query, setQuery] = useState('')
 
     const [events, setEvents] = useState([])
-    const [objects, setObjects] = useState([])
-    const [icons, setIcons] = useState([])
-
-    const [interval, setInterval] = useState({
-        from: 0,
-        till: 0,
-    })
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+    const [isFiltersReset, setIsFiltersReset] = useState(false)
 
-    const [selectedStation, setSelectedStation] = useState(initialFilters.selectedStation)
+    const [date, setDate] = useState(initialFilters.date)
+    const [selectedObject, setSelectedObject] = useState(initialFilters.selectedObject)
+    const [showAll, setShowAll] = useState(initialFilters.showAll)
 
     const filteredArray = useMemo(() => {
         if(!events.length) {
             return []
         }
-        // const withIconAndMainFilter = selectedStation ? events.filter(e => e.objectID === selectedStation) : mainArray
-        return events.filter(el => JSON.stringify(el).includes(query))
-    }, [events, query])
+        const withObjects = selectedObject !== null ? events.filter(e => selectedObject === e.trackerid) : events
+        const withStatus = showAll !== null ? withObjects.filter(e => !showAll ? e.status === '0' : true) : withObjects
+        const withDate = date ? withStatus.filter(e => +e.time <= +date + 3600000 && +e.time >= +date - 3600000) : withStatus
+        return withDate.filter(el => JSON.stringify(el).includes(query))
+    }, [events, query, date, showAll, selectedObject])
+    const formatObjects = useMemo(() => {
+        if(!profile?.objects.length) {
+            return []
+        }
+        return profile?.objects.map( obj => ({[obj.id]: obj.name}))
+    }, [profile])
 
     const saveFilters = useCallback(() => {
         setIsFiltersOpen(false)
     }, [])
 
     const resetFilters = useCallback(() => {
-        setSelectedStation(initialFilters.selectedStation)
+        setDate(initialFilters.date)
+        setSelectedObject(initialFilters.selectedObject)
+        setShowAll(initialFilters.showAll)
+        setIsFiltersReset(true)
+        setTimeout(() => setIsFiltersReset(false))
     },[])
 
     const fetchData = async () => {
@@ -69,16 +76,6 @@ const EventScreen = ({navigation}) => {
             await dispatch(getObjectEvents()).then((data) => {
                 if(data.response) {
                     setEvents(data.response.events)
-                }
-            })
-            await dispatch(getObjects()).then(async (data) =>{
-                if(data.response) {
-                    setObjects(data.response)
-                    await dispatch(getObjectIcons()).then((data) => {
-                        if(data.response) {
-                            setIcons(data.response)
-                        }
-                    })
                 }
             })
         } finally {
@@ -92,18 +89,45 @@ const EventScreen = ({navigation}) => {
 
     const selectElement = useMemo(() => (
         <View style={{...styles.selectContainer, paddingHorizontal: 20}}>
-            {/*<SelectList*/}
-            {/*    items={formatStation} onChange={setSelectedStation}*/}
-            {/*/>*/}
+            <SelectList
+                items={formatObjects} onChange={setSelectedObject}
+            />
         </View>
     ), [])
+
+    const radioButtonsBlock = useMemo(() => (
+        <View style={{paddingHorizontal: 20 }}>
+            <View style={styles.radioButtonsContainer}>
+                <RadioForm
+                    style={styles.radioButtons}
+                    radio_props={[
+                        {
+                            label: i18n.t('all'), value: true,
+                        },
+                        {
+                            label: i18n.t('only_important'), value: false,
+                        }
+                    ]}
+                    onPress={(value) => {
+                        setShowAll(value);
+                    }}
+                    labelHorizontal={true}
+                    initial={showAll}
+                    selectedButtonColor={showAll !== null ? '#f8642f' : '#a7a7aa'}
+                    buttonColor={'#a7a7aa'}
+                    buttonSize={15}
+                    animation={true}
+                />
+            </View>
+        </View>
+    ),[showAll])
 
     const filtersBlock = useMemo(() => {
         return (
             <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>
                 <View style={{flex: 1}}>
                     <View style={styles.screenTitle}>
-                        <Text>Фильтры</Text>
+                        <Text>{i18n.t('filters')}</Text>
                         <Pressable
                             style={styles.headerButton}
                             onPress={() => setIsFiltersOpen(false)}
@@ -119,6 +143,8 @@ const EventScreen = ({navigation}) => {
                         </Pressable>
                     </View>
                     {selectElement}
+                    <CalendarFilter setCalendarProperties={setDate}/>
+                    {radioButtonsBlock}
                     <Pressable
                         style={({pressed}) => [
                             {
@@ -129,11 +155,11 @@ const EventScreen = ({navigation}) => {
                         ]}
                         onPress={resetFilters}
                     >
-                        <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                        <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
                 <View style={{paddingHorizontal: 20}}>
-                    <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                    <CustomButton title={i18n.t('save')} onPress={saveFilters} />
                 </View>
             </View>
         )
@@ -165,6 +191,7 @@ const EventScreen = ({navigation}) => {
                 <FlatList
                     data={filteredArray}
                     keyExtractor={(item, index) => index.toString()}
+                    ListFooterComponent={() => (<View style={{height: 130}}></View>)}
                     ListEmptyComponent={<Text style={styles.emptyList}>Empty list</Text>}
                     enableEmptySections={true}
                     renderItem={({item}) => (
@@ -177,7 +204,7 @@ const EventScreen = ({navigation}) => {
                             ]}
                             onPress={() => navigation.navigate('ObjectItem', {id: item.trackerid})}
                         >
-                            <EventItemElement item={item} icons={icons} objects={objects}/>
+                            <EventItemElement item={item} icons={icons} profile={profile}/>
                         </Pressable>
                     )}
                     refreshControl={
@@ -185,14 +212,14 @@ const EventScreen = ({navigation}) => {
                     }
                 />
             </View>
-    ), [filteredArray, isLoading, icons, objects])
+    ), [filteredArray, isLoading])
 
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
-            {filtersBlock}
+            {!isFiltersReset && filtersBlock}
             {
-                !isFiltersOpen && !isCalendarOpen ? listBlock : null
+                !isFiltersOpen ? listBlock : null
             }
         </SafeAreaView>
     );

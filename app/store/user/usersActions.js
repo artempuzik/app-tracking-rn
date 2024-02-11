@@ -96,9 +96,9 @@ export const refreshUserToken = () => async (dispatch, getState) => {
 
 export const setCurrent = (user) => async (dispatch) => {
   try {
-    dispatch(setCurrentUser(user))
+    await dispatch(setCurrentUser(user))
     await AsyncStorage.setItem('user', JSON.stringify(user));
-    dispatch(refreshUserToken())
+    return await dispatch(refreshUserToken())
   } catch (e) {
   }
 };

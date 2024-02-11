@@ -74,7 +74,6 @@ export default StyleSheet.create({
         width: '100%',
     },
     total: {
-        backgroundColor: '#2060ae',
         paddingVertical: 15,
         paddingHorizontal: 20,
         flexDirection: 'row',

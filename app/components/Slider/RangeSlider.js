@@ -2,9 +2,11 @@ import React, {useEffect, useState} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {REFRESH_INTERVAL} from "../../config";
+import {useSelector} from "react-redux";
 
 const RangeSlider = ({onChange}) => {
-    const [value, setValue] = useState(REFRESH_INTERVAL/1000);
+    const refreshInterval = useSelector(state => state.user.refreshInterval)
+    const [value, setValue] = useState(refreshInterval/1000);
 
     useEffect(() => {
         onChange(value*1000)
@@ -14,7 +16,7 @@ const RangeSlider = ({onChange}) => {
         <View style={styles.container}>
             <Slider
                 style={styles.slider}
-                minimumValue={0}
+                minimumValue={5}
                 maximumValue={100}
                 value={value}
                 onValueChange={(newValue) => setValue(newValue)}

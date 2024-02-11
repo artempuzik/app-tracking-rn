@@ -1,5 +1,3 @@
-import i18n from "../i18";
-
 export const emailValidator = (email) => /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email) && email;
 
 export const getItemPointByItemId = (statuses, item) => {
