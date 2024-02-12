@@ -18,6 +18,14 @@ const refreshToken = async () => {
             userName: login.userName,
             password: login.password,
         })
+        const access_token = response.data.accessToken
+        if (access_token !== undefined) {
+            await AsyncStorage.setItem('token', access_token);
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token
+        } else {
+            await AsyncStorage.removeItem('token');
+            await Updates.reloadAsync()
+        }
         return response;
     } catch (err) {
         console.log('refreshToken error', err)

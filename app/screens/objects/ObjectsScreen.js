@@ -17,7 +17,6 @@ import ObjectsMap from "./components/ObjectsMap";
 import {getProfileData} from "../../store/app/appActions";
 import {getUsers, refreshUserToken} from "../../store/user/usersActions";
 import {getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
-import Loading from "../../components/loading/Loading";
 
 const initialFilters = {
     withIgnition: null,
@@ -153,7 +152,6 @@ const ObjectsScreen = ({navigation}) => {
                 setObjects(data.response)
                 await dispatch(getObjectIcons()).then((data) => {
                     if(data.response) {
-                        console.log(data.response)
                         setIcons(data.response)
                     }
                 })
@@ -184,7 +182,7 @@ const ObjectsScreen = ({navigation}) => {
             clearInterval(interval.current)
             interval.current = null
         }
-    })
+    }, [])
 
     const selectElement = useMemo(() => (
         <View style={{...styles.selectContainer, paddingHorizontal: 20}}>

@@ -63,17 +63,17 @@ const ObjectItemRoutes = ({object}) => {
         return icons.find((ic) => ic.id === object?.main.iconId)
     }, [object, icons])
 
-    const generateRedShade = useCallback(() => {
-        const red = Math.round(Math.random() * 255);
-        const green = Math.round(Math.random() * 255);
-        const blue = Math.round(Math.random() * 255);
-
-        const redHex = red.toString(16).padStart(2, '0');
-        const greenHex = green.toString(16).padStart(2, '0');
-        const blueHex = blue.toString(16).padStart(2, '0');
-
-        return `#${redHex}${greenHex}${blueHex}`;
-    }, []);
+    // const generateRedShade = useCallback(() => {
+    //     const red = Math.round(Math.random() * 255);
+    //     const green = Math.round(Math.random() * 255);
+    //     const blue = Math.round(Math.random() * 255);
+    //
+    //     const redHex = red.toString(16).padStart(2, '0');
+    //     const greenHex = green.toString(16).padStart(2, '0');
+    //     const blueHex = blue.toString(16).padStart(2, '0');
+    //
+    //     return `#${redHex}${greenHex}${blueHex}`;
+    // }, []);
 
     const routes = useMemo(() => {
         const minTimeFilter = minDrive * 1000 * 60
@@ -127,82 +127,44 @@ const ObjectItemRoutes = ({object}) => {
             let coordinates = [];
             if (idx !== null) {
                 const array = parsePointString(routes[idx]?.points);
-                coordinates = array.map(point => ({
-                    position: {
-                        lat: point.lat,
-                        lng: point.lng,
-                    },
-                    icon: '📍',
-                    size: [30, 30]
-                }));
+                for(let i = 1; i < array.length - 1; i++) {
+                    const prev = array[i -1]
+                    const next = array[i]
+                    coordinates.push({
+                            shapeType: 'Polyline',
+                            color: "red",
+                            id: i,
+                            positions: [
+                                { lat: prev.lat, lng: prev.lng },
+                                { lat: next.lat, lng: next.lng },
+                            ]
+                        })
+                }
             } else {
                 const array = routes.map(rout => parsePointString(rout.points)).flat();
-                coordinates = array.map(point => ({
-                    position: {
-                        lat: point.lat,
-                        lng: point.lng,
-                    },
-                    icon: '📍',
-                    size: [30, 30]
-                }));
+                for(let i = 1; i < array.length - 1; i++) {
+                    const prev = array[i -1]
+                    const next = array[i]
+                    coordinates.push({
+                        shapeType: 'Polyline',
+                        color: "red",
+                        id: i,
+                        positions: [
+                            { lat: prev.lat, lng: prev.lng },
+                            { lat: next.lat, lng: next.lng },
+                        ]
+                    })
+                }
             }
         return (
             <View style={styles.container}>
                 <LeafletView
                     doDebug={false}
-                    mapMarkers={coordinates}
-                    mapCenterPosition={coordinates[0]?.position}
+                    mapShapes={coordinates}
+                    mapCenterPosition={coordinates[0]?.positions[0]}
                 />
             </View>
         )}, [idx, isShowMap, routes])
-
-    // const renderMapScreen = useMemo(() => {
-    //     const lines = [];
-    //     if (idx !== null) {
-    //         const array = parsePointString(routes[idx]?.points);
-    //         const coordinates = array.map(point => ({
-    //             latitude: point.lat,
-    //             longitude: point.lng,
-    //         }));
-    //         lines.push(coordinates);
-    //     } else {
-    //         const array = routes.map(rout => parsePointString(rout.points));
-    //         array.forEach(el => {
-    //             const coordinates = el.map(point => ({
-    //                 latitude: point.lat,
-    //                 longitude: point.lng,
-    //             }));
-    //             lines.push(coordinates)
-    //         })
-    //     }
-    //
-    //     return (
-    //         <View style={styles.container}>
-    //             <MapView
-    //                 provider={PROVIDER_GOOGLE}
-    //                 style={{ flex: 1 }}
-    //                 initialRegion={{
-    //                     latitude: lines.length ? lines[0][0].latitude : 0,
-    //                     longitude: lines.length ? lines[0][0].longitude : 0,
-    //                     latitudeDelta: 0.5,
-    //                     longitudeDelta: 0.1,
-    //                 }}
-    //             >
-    //                 {lines.map((l, index) => {
-    //                     const color = generateRedShade()
-    //                     return (
-    //                         <Polyline
-    //                             key={index}
-    //                             coordinates={l}
-    //                             strokeColor={color}
-    //                             strokeWidth={5}
-    //                         />
-    //                     )
-    //                 })}
-    //             </MapView>
-    //         </View>
-    //     );
-    // }, [idx, isShowMap, routes]);
 
     const pageBlock = useMemo(() => (
         <View style={{flex: 1}}>
