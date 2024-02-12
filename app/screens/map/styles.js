@@ -9,6 +9,7 @@ export default StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
+        position: 'relative',
     },
     headerButton: {
         padding: 14,
@@ -47,4 +48,31 @@ export default StyleSheet.create({
         marginLeft: 10,
         opacity: 0.6,
     },
+    modalWrapper: {
+        marginLeft: 0,
+        height: '100%',
+        width: '100%',
+        justifyContent: 'flex-start',
+    },
+    searchModal: {
+        width: '100%',
+        maxHeight: 200,
+        backgroundColor: 'white',
+    },
+    searchElement: {
+        padding: 10,
+        height: 50,
+        borderBottomColor: '#d8d8d9',
+        borderBottomWidth: 1,
+    },
+    locationPoint: {
+        width: 50,
+        height: 50,
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        zIndex: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 });

@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, Text, ActivityIndicator, Pressable, TouchableWithoutFeedback} from 'react-native';
+import {View, Text, ActivityIndicator, Pressable, ScrollView} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Location from 'expo-location';
 import {LeafletView} from 'react-native-leaflet-view';
 import {Image} from "expo-image";
 import styles from './styles';
@@ -11,21 +12,24 @@ import SearchInput from "../../components/search/SearchInput";
 import Svg, {Circle, Path} from "react-native-svg";
 import i18n from "../../utils/i18";
 import {convertDate, getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
+import Modal from "react-native-modal";
+import {PRESSED_COLOR} from "../../config";
 
 const ObjectsMapScreen = ({navigation}) => {
     const dispatch = useDispatch()
     const refreshInterval = useSelector(state => state.user.refreshInterval)
+    const [location, setLocation] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState(null);
 
     const map = useRef(null)
 
+    const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
+    const [isTitleOpen, setIsTitleOpen] = useState(false)
     const [query, setQuery] = useState('')
     const [isGeozoneOpen, setIsGeozoneOpen] = useState(false)
     const [current, setCurrent] = useState(null)
-    const [currentTauch, setCurrentTauch] = useState(null)
-    const [center, setCenter] = useState(null)
 
     const [statuses, setStatuses] = useState([])
     const [icons, setIcons] = useState([]);
@@ -64,6 +68,10 @@ const ObjectsMapScreen = ({navigation}) => {
         })
     }, [])
 
+    const searchList = useMemo(() => {
+        return objects.filter(object => object.main.name.toLowerCase().includes(query.toLowerCase()))
+    }, [query]);
+
     const fetchData = async () => {
         try {
             setIsLoading(true)
@@ -73,6 +81,19 @@ const ObjectsMapScreen = ({navigation}) => {
             setIsLoading(false)
         }
     }
+
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+        })();
+    }, []);
 
     useEffect(() => {
         fetchData().catch(() => {})
@@ -98,6 +119,9 @@ const ObjectsMapScreen = ({navigation}) => {
                 return {}
             }
             const url = baseUrl + icon.url
+            if(idx === 0) {
+                setCurrent(obj.main.id)
+            }
             return {
                 id: obj.main.id,
                 position: {
@@ -119,6 +143,9 @@ const ObjectsMapScreen = ({navigation}) => {
     const markerTitle = useMemo(() => {
         if(current === null || !map.current || !statuses || !objects || !icons) {
             return null
+        }
+        if(location?.timestamp === current) {
+            return
         }
         const item = objects.find(obj => obj?.main.id === current)
 
@@ -230,35 +257,206 @@ const ObjectsMapScreen = ({navigation}) => {
 
     }, [current, map, statuses, objects, icons])
 
+    const selectSearchItem = useCallback((item) => {
+        setCurrent(item.main.id)
+        setIsSearchModalOpen(false)
+    }, [])
+
     const centerPosition = useMemo(() => {
+        if(location?.timestamp === current) {
+            return {
+                position: {
+                    lat: location.coords.latitude,
+                    lng: location.coords.longitude,
+                }
+            }
+        }
         if(!markers) {
             return null
         }
-        if(current === null) {
-            return markers[0].position
-        }
-        return markers.find(m => m.id === current)
-    }, [current, markers]);
+        return current ? markers.find(m => m.id === current) : markers[0]
+    }, [current, markers, location]);
 
     const markerClickHandler = useCallback((message) => {
-        const {payload} = message;
+        const {payload, event} = message;
         if(!payload) {
-            setCurrent(null)
             return
         }
-        const id = payload.mapMarkerID
-        if(typeof id === 'number') {
-            setCurrent(id)
+        if(event === 'onMapMarkerClicked') {
+            setIsTitleOpen(true)
+            const id = payload.mapMarkerID
+            if(typeof id === 'number') {
+                setCurrent(id)
+            }
         } else {
-            setCurrent(null)
+            setIsTitleOpen(false)
         }
-    }, [markers])
+    }, [markers, isTitleOpen])
+
+    const renderMap = useMemo(() => (
+        isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : (
+            <View
+                onLayout={(event) => {
+                    map.current = event.nativeEvent.layout;
+                }}
+                style={styles.container}>
+                {
+                    location &&  <Pressable
+                    style={({pressed}) => [
+                        {
+                            backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                        },
+                        styles.locationPoint,
+                    ]}
+                    onPress={() => {
+                        setCurrent(location.timestamp)
+                    }}
+                >
+                    <Svg
+                        width={30}
+                        height={30}
+                        viewBox="0 0 16 16"
+                    >
+                        <Path
+                            d="M8.5.5a.5.5 0 0 0-1 0v.518A7 7 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7 7 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7 7 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7 7 0 0 0 8.5 1.018zm-6.48 7A6 6 0 0 1 7.5 2.02v.48a.5.5 0 0 0 1 0v-.48a6 6 0 0 1 5.48 5.48h-.48a.5.5 0 0 0 0 1h.48a6 6 0 0 1-5.48 5.48v-.48a.5.5 0 0 0-1 0v.48A6 6 0 0 1 2.02 8.5h.48a.5.5 0 0 0 0-1zM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"
+                            fill="#a7a7aa"/>
+                    </Svg>
+                </Pressable>}
+                {markers && (
+                    <LeafletView
+                        doDebug={false}
+                        mapMarkers={markers}
+                        onMessageReceived={markerClickHandler}
+                        // mapShapes={[
+                        //     {
+                        //         shapeType: 'Polyline',
+                        //         color: "blue",
+                        //         id: "3",
+                        //         positions: [
+                        //             { lat: 38.80118939192329, lng: -74.69604492187501 },
+                        //             { lat: 38.19502155795575, lng: -74.65209960937501 },
+                        //         ]
+                        //     },
+                        // ]}
+                        // mapShapes={[
+                        //     {
+                        //         shapeType: 'Circle',
+                        //         color: "#123123",
+                        //         id: "1",
+                        //         center: { lat: 34.225727, lng: -77.94471 },
+                        //         radius: 2000
+                        //     },
+                        //     {
+                        //         shapeType: 'CircleMarker',
+                        //         color: "red",
+                        //         id: "2",
+                        //         center: { lat: 38.437424, lng: -78.867912 },
+                        //         radius: 15
+                        //     },
+                        //     {
+                        //         shapeType: 'Polygon',
+                        //         color: "blue",
+                        //         id: "3",
+                        //         positions: [
+                        //             { lat: 38.80118939192329, lng: -74.69604492187501 },
+                        //             { lat: 38.19502155795575, lng: -74.65209960937501 },
+                        //             { lat: 39.07890809706475, lng: -71.46606445312501 }
+                        //         ]
+                        //     },
+                        //     {
+                        //         shapeType: 'Polygon',
+                        //         color: "violet",
+                        //         id: "4",
+                        //         positions: [
+                        //             [
+                        //                 { lat: 37.13842453422676, lng: -74.28955078125001 },
+                        //                 { lat: 36.4433803110554, lng: -74.26208496093751 },
+                        //                 { lat: 36.43896124085948, lng: -73.00964355468751 },
+                        //                 { lat: 36.43896124085948, lng: -73.00964355468751 }
+                        //             ],
+                        //             [
+                        //                 { lat: 37.505368263398104, lng: -72.38891601562501 },
+                        //                 { lat: 37.309014074275915, lng: -71.96594238281251 },
+                        //                 { lat: 36.69044623523481, lng: -71.87805175781251 },
+                        //                 { lat: 36.58024660149866, lng: -72.75146484375001 },
+                        //                 { lat: 37.36579146999664, lng: -72.88330078125001 }
+                        //             ]
+                        //         ]
+                        //     },
+                        //     {
+                        //         shapeType: 'Polygon',
+                        //         color: "orange",
+                        //         id: "5",
+                        //         positions: [
+                        //             { lat: 35.411438052435486, lng: -78.67858886718751 },
+                        //             { lat: 35.9602229692967, lng: -79.18945312500001 },
+                        //             { lat: 35.97356075349624, lng: -78.30505371093751 }
+                        //         ]
+                        //     },
+                        //     {
+                        //         shapeType: 'Polygon',
+                        //         color: "purple",
+                        //         id: "5a",
+                        //         positions: [
+                        //             [
+                        //                 { lat: 36.36822190085111, lng: -79.26086425781251 },
+                        //                 { lat: 36.659606226479696, lng: -79.28833007812501 },
+                        //                 { lat: 36.721273880045004, lng: -79.81018066406251 }
+                        //             ],
+                        //             [
+                        //                 { lat: 35.43381992014202, lng: -79.79370117187501 },
+                        //                 { lat: 35.44277092585766, lng: -81.23840332031251 },
+                        //                 { lat: 35.007502842952896, lng: -80.837402343750017 }
+                        //             ]
+                        //         ]
+                        //     },
+                        //     {
+                        //         shapeType: 'Rectangle',
+                        //         color: "yellow",
+                        //         id: "6",
+                        //         bounds: [
+                        //             { lat: 36.5, lng: -75.7 },
+                        //             { lat: 38.01, lng: -73.13 }
+                        //         ]
+                        //     }
+                        // ]}
+                        mapCenterPosition={centerPosition?.position}
+                    />
+                )}
+            </View>
+        )
+    ), [markers, current, location, centerPosition, isLoading]);
 
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
             <View style={styles.pageHeader}>
-                <SearchInput onChange={setQuery}/>
+                <SearchInput onChange={setQuery} onFocus={() => setIsSearchModalOpen(true)}/>
+                    <Modal
+                        style={[styles.modalWrapper, {marginTop: map.current?.y}]}
+                        transparent={true}
+                        visible={!!searchList.length && isSearchModalOpen}
+                        onBackdropPress={() => isSearchModalOpen && setIsSearchModalOpen(false)}
+                    >
+                            <ScrollView style={styles.searchModal}>
+                                {
+                                    searchList.map(item => (
+                                        <Pressable
+                                            style={({pressed}) => [
+                                                {
+                                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                                },
+                                                styles.searchElement,
+                                            ]}
+                                            onPress={() => selectSearchItem(item)}
+                                            key={item.main.id}
+                                        >
+                                            <Text>{item.main.name}</Text>
+                                        </Pressable>
+                                    ))
+                                }
+                            </ScrollView>
+                    </Modal>
                 <Pressable
                     style={({pressed}) => [
                         {
@@ -281,121 +479,9 @@ const ObjectsMapScreen = ({navigation}) => {
                     </Svg>
                 </Pressable>
             </View>
-            {markerTitle}
-            {
-                errorMsg && <Text>{errorMsg}</Text>
-            }
-            {
-                isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : (
-                        <View
-                            onLayout={(event) => {
-                                map.current = event.nativeEvent.layout;
-                            }}
-                              style={styles.container}>
-                            {markers && (
-                                <LeafletView
-                                    doDebug={false}
-                                    mapMarkers={markers}
-                                    onMessageReceived={markerClickHandler}
-                                    // mapShapes={[
-                                    //     {
-                                    //         shapeType: 'Polyline',
-                                    //         color: "blue",
-                                    //         id: "3",
-                                    //         positions: [
-                                    //             { lat: 38.80118939192329, lng: -74.69604492187501 },
-                                    //             { lat: 38.19502155795575, lng: -74.65209960937501 },
-                                    //         ]
-                                    //     },
-                                    // ]}
-                                    // mapShapes={[
-                                    //     {
-                                    //         shapeType: 'Circle',
-                                    //         color: "#123123",
-                                    //         id: "1",
-                                    //         center: { lat: 34.225727, lng: -77.94471 },
-                                    //         radius: 2000
-                                    //     },
-                                    //     {
-                                    //         shapeType: 'CircleMarker',
-                                    //         color: "red",
-                                    //         id: "2",
-                                    //         center: { lat: 38.437424, lng: -78.867912 },
-                                    //         radius: 15
-                                    //     },
-                                    //     {
-                                    //         shapeType: 'Polygon',
-                                    //         color: "blue",
-                                    //         id: "3",
-                                    //         positions: [
-                                    //             { lat: 38.80118939192329, lng: -74.69604492187501 },
-                                    //             { lat: 38.19502155795575, lng: -74.65209960937501 },
-                                    //             { lat: 39.07890809706475, lng: -71.46606445312501 }
-                                    //         ]
-                                    //     },
-                                    //     {
-                                    //         shapeType: 'Polygon',
-                                    //         color: "violet",
-                                    //         id: "4",
-                                    //         positions: [
-                                    //             [
-                                    //                 { lat: 37.13842453422676, lng: -74.28955078125001 },
-                                    //                 { lat: 36.4433803110554, lng: -74.26208496093751 },
-                                    //                 { lat: 36.43896124085948, lng: -73.00964355468751 },
-                                    //                 { lat: 36.43896124085948, lng: -73.00964355468751 }
-                                    //             ],
-                                    //             [
-                                    //                 { lat: 37.505368263398104, lng: -72.38891601562501 },
-                                    //                 { lat: 37.309014074275915, lng: -71.96594238281251 },
-                                    //                 { lat: 36.69044623523481, lng: -71.87805175781251 },
-                                    //                 { lat: 36.58024660149866, lng: -72.75146484375001 },
-                                    //                 { lat: 37.36579146999664, lng: -72.88330078125001 }
-                                    //             ]
-                                    //         ]
-                                    //     },
-                                    //     {
-                                    //         shapeType: 'Polygon',
-                                    //         color: "orange",
-                                    //         id: "5",
-                                    //         positions: [
-                                    //             { lat: 35.411438052435486, lng: -78.67858886718751 },
-                                    //             { lat: 35.9602229692967, lng: -79.18945312500001 },
-                                    //             { lat: 35.97356075349624, lng: -78.30505371093751 }
-                                    //         ]
-                                    //     },
-                                    //     {
-                                    //         shapeType: 'Polygon',
-                                    //         color: "purple",
-                                    //         id: "5a",
-                                    //         positions: [
-                                    //             [
-                                    //                 { lat: 36.36822190085111, lng: -79.26086425781251 },
-                                    //                 { lat: 36.659606226479696, lng: -79.28833007812501 },
-                                    //                 { lat: 36.721273880045004, lng: -79.81018066406251 }
-                                    //             ],
-                                    //             [
-                                    //                 { lat: 35.43381992014202, lng: -79.79370117187501 },
-                                    //                 { lat: 35.44277092585766, lng: -81.23840332031251 },
-                                    //                 { lat: 35.007502842952896, lng: -80.837402343750017 }
-                                    //             ]
-                                    //         ]
-                                    //     },
-                                    //     {
-                                    //         shapeType: 'Rectangle',
-                                    //         color: "yellow",
-                                    //         id: "6",
-                                    //         bounds: [
-                                    //             { lat: 36.5, lng: -75.7 },
-                                    //             { lat: 38.01, lng: -73.13 }
-                                    //         ]
-                                    //     }
-                                    // ]}
-                                    mapCenterPosition={centerPosition}
-                                />
-                            )}
-                        </View>
-                )
-            }
+            {isTitleOpen && markerTitle}
+            {errorMsg && <Text>{errorMsg}</Text>}
+            {renderMap}
         </SafeAreaView>
     );
 };

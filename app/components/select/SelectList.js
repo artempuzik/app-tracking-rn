@@ -1,7 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-import { View, StyleSheet, Text } from 'react-native';
-import Svg, {Path} from "react-native-svg";
+import { View, StyleSheet } from 'react-native';
 
 const SelectList = ({items = [], value = null, onChange}) => {
   const [selectedValue, setSelectedValue] = useState(value);
