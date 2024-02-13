@@ -114,7 +114,12 @@ const translations = {
     only_current_type: "Only current type",
     polygon: "Polygon",
     polyline: "Polyline",
-    point: "Point"
+    point: "Point",
+    error_400: 'Bad Request',
+    error_403: 'Forbidden',
+    error_401: 'Unauthorized',
+    error_404: 'Not Found',
+    error_500: 'Internal Server Error',
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -228,7 +233,12 @@ const translations = {
     only_current_type: "Только выбранный тип",
     polygon: "Многоугольник",
     polyline: "Линия",
-    point: "Точка"
+    point: "Точка",
+    error_400: 'Неверный запрос',
+    error_403: 'Доступ к ресурсу запрещен',
+    error_401: 'Неавторизованный запрос',
+    error_404: 'Ресурс не найден',
+    error_500: 'Внутренняя ошибка сервера',
   }
 }
 

@@ -2,10 +2,18 @@ import axios from 'axios';
 import {BASE_URL} from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Updates from "expo-updates";
+import i18n from "../utils/i18";
 let reconnect = 0
 
 const api = axios.create({
-    baseURL: BASE_URL + '/api'
+    baseURL: BASE_URL + '/api',
+    errorMessage: {
+        400: i18n.t('error_400'),
+        403: i18n.t('error_403'),
+        401: i18n.t('error_401'),
+        404: i18n.t('error_404'),
+        500: i18n.t('error_500'),
+    }
 });
 
 const refreshToken = async () => {
@@ -39,6 +47,16 @@ const getUserDataFromStorage = async () => {
     return {
         user: JSON.parse(user),
         login: JSON.parse(login)
+    }
+}
+
+const getErrorMessage = (response) => {
+    switch (response.status.toString()) {
+        case '400': return i18n.t('error_400')
+        case '403': return i18n.t('error_403')
+        case '401': return i18n.t('error_401')
+        case '404': return i18n.t('error_404')
+        case '500': return i18n.t('error_500')
     }
 }
 
@@ -90,6 +108,8 @@ api.interceptors.response.use((response) => {
         }
         return api(originalRequest);
     }
+    error.message = getErrorMessage(error.response)
+    console.log(i18n.locale, error)
     return Promise.reject(error);
 });
 
