@@ -56,19 +56,23 @@ export const calculateDistance = (trip) => {
 }
 
 export const haversine = (lat1, lon1, lat2, lon2)=> {
-    const radLat1 = (Math.PI / 180) * lat1;
-    const radLon1 = (Math.PI / 180) * lon1;
-    const radLat2 = (Math.PI / 180) * lat2;
-    const radLon2 = (Math.PI / 180) * lon2;
+    function toRad(x) {
+        return x * Math.PI / 180;
+    }
 
-    const dLon = radLon2 - radLon1;
-    const dLat = radLat2 - radLat1;
-    const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(radLat1) * Math.cos(radLat2) * Math.sin(dLon / 2) ** 2;
+    const R = 6371; // km
+
+    const x1 = lat2 - lat1;
+    const dLat = toRad(x1);
+    const x2 = lon2 - lon1;
+    const dLon = toRad(x2)
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = 6371 * c;
-    return distance;
+    const d = R * c;
+
+    return d;
 }
 
 export const getMileage = (mileage) => {
@@ -111,4 +115,31 @@ export const convertDate = (timestamp) => {
 //         return imageUrl
 //     }
 // };
+
+export const polygonArea = (vertices) => {
+    let area = 0;
+    for (let i = 0; i < vertices.length; i++) {
+        let j = (i + 1) % vertices.length;
+        area += haversine(vertices[i].lat, vertices[i].lng, vertices[j].lat, vertices[j].lng);
+    }
+    area = Math.abs(area) / 2;
+    return (Math.round(area*1000)/10000).toFixed(3);
+}
+
+export const circleArea = (radius) => {
+    return Math.round(Math.PI * radius * radius / 1000)/1000;
+}
+
+export const getPolylineLength = (points) => {
+    let mileage = 0
+    for (let i = 1; i < points.length - 1; i++) {
+        mileage += haversine(
+            points[i-1].lat,
+            points[i-1].lng,
+            points[i].lat,
+            points[i].lng,
+        )
+    }
+    return (Math.round(mileage * 100))/100
+}
 

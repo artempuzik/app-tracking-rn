@@ -12,7 +12,7 @@ import CustomButton from "../../components/button/Button";
 import SelectList from "../../components/select/SelectList";
 import {getGeozoneById, getGeozones, getObjectHistoryDriversSession} from "../../store/objects/objectsActions";
 import i18n from "../../utils/i18";
-import {convertDate, getDuration, getMileage} from "../../utils/helpers";
+import {circleArea, convertDate, getDuration, getMileage, getPolylineLength, polygonArea} from "../../utils/helpers";
 import {Image} from "expo-image";
 import {LeafletView} from "react-native-leaflet-view";
 
@@ -82,6 +82,21 @@ const GeozoneItemScreen = ({navigation}) => {
             default: return null
         }
     }, [geoZone]);
+
+    const total = useMemo(() => {
+        if(!points) {
+            return
+        }
+        switch (geoZone?.style.type) {
+            case 'point':
+                return `S=${circleArea(points.radius)} km2`
+            case 'polygon':
+                return `S=${polygonArea(points.positions)} km2`
+            case 'polyline':
+                return `L=${getPolylineLength(points.positions)} km`
+            default: return null
+        }
+    }, [points]);
 
     const lengthIcon = useMemo(() => {
         switch (geoZone?.style.type) {
@@ -171,7 +186,7 @@ const GeozoneItemScreen = ({navigation}) => {
             <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     {lengthIcon}
-                    {/*<Text></Text>*/}
+                    <Text>{total}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     {

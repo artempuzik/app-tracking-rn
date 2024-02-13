@@ -10,8 +10,6 @@ import {getObjectHistory} from "../../../store/objects/objectsActions";
 import {useDispatch, useSelector} from "react-redux";
 import {calculateDistance, convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
-
-import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import {LeafletView} from "react-native-leaflet-view";
 
 const ObjectItemRoutes = ({object}) => {
@@ -62,18 +60,6 @@ const ObjectItemRoutes = ({object}) => {
     const icon = useMemo(() => {
         return icons.find((ic) => ic.id === object?.main.iconId)
     }, [object, icons])
-
-    // const generateRedShade = useCallback(() => {
-    //     const red = Math.round(Math.random() * 255);
-    //     const green = Math.round(Math.random() * 255);
-    //     const blue = Math.round(Math.random() * 255);
-    //
-    //     const redHex = red.toString(16).padStart(2, '0');
-    //     const greenHex = green.toString(16).padStart(2, '0');
-    //     const blueHex = blue.toString(16).padStart(2, '0');
-    //
-    //     return `#${redHex}${greenHex}${blueHex}`;
-    // }, []);
 
     const routes = useMemo(() => {
         const minTimeFilter = minDrive * 1000 * 60

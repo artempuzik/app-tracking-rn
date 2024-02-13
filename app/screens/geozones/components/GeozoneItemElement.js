@@ -3,7 +3,54 @@ import {View, Text, Pressable} from 'react-native';
 import styles from '../styles';
 import Svg, {Path} from "react-native-svg";
 import i18n from "../../../utils/i18";
+import {circleArea, getPolylineLength, polygonArea} from "../../../utils/helpers";
 const GeozoneItemElement = ({item}) => {
+    const points = useMemo(() => {
+        const mapPoints = []
+        item?.points.split(' ').forEach(point => {
+            if(!mapPoints.length) {
+                mapPoints.push({lat: point})
+            } else {
+                const lastPoint = mapPoints[mapPoints.length - 1]
+                if(lastPoint.lng) {
+                    mapPoints.push({lat: point})
+                } else {
+                    lastPoint.lng = point
+                }
+            }
+        })
+
+        switch (item?.style.type) {
+            case 'point':
+                return {
+                    radius: item.radius,
+                }
+            case 'polygon':
+                return {
+                    positions: mapPoints,
+                }
+            case 'polyline':
+                return {
+                    positions: mapPoints,
+                }
+            default: return null
+        }
+    }, [item]);
+
+    const total = useMemo(() => {
+        if(!points) {
+            return
+        }
+        switch (item?.style.type) {
+            case 'point':
+                return `S=${circleArea(points.radius)} km2`
+            case 'polygon':
+                return `S=${polygonArea(points.positions)} km2`
+            case 'polyline':
+                return `L=${getPolylineLength(points.positions)} km`
+            default: return null
+        }
+    }, [points]);
     const image = useMemo(() => {
         switch (item?.style.type) {
             case 'polygon':
@@ -97,7 +144,7 @@ const GeozoneItemElement = ({item}) => {
             <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     {lengthIcon}
-                    {/*<Text>{!!Number(iopoint?.value) ? i18n.t('on') : i18n.t('off')}</Text>*/}
+                    <Text>{total}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     {
