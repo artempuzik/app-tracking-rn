@@ -244,46 +244,46 @@ const DriverItemScreen = ({navigation}) => {
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('mileage')}</Text>
                 {
-                    sessions.driversessions ? <Text>{getMileage(totalMileage)}{` ${i18n.t('km')}`}</Text> : <Text>0</Text>
+                    sessions?.driversessions ? <Text>{getMileage(totalMileage)}{` ${i18n.t('km')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('engine_hours')}</Text>
                 {
-                    sessions.driversessions ? <Text>{getDuration(0, totalEngineH)}</Text> : <Text>0</Text>
+                    sessions?.driversessions ? <Text>{getDuration(0, totalEngineH)}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('idle')}</Text>
                 {
-                    sessions.driversessions ? <Text>{getDuration(0, totalIdle)}</Text> : <Text>0</Text>
+                    sessions?.driversessions ? <Text>{getDuration(0, totalIdle)}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('speed')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('max_speed')}</Text>
                 {
-                    sessions.driversessions ? <Text>{maxspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
+                    sessions?.driversessions ? <Text>{maxspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('average_speed')}</Text>
                 {
-                    sessions.driversessions ? <Text>{avgspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
+                    sessions?.driversessions ? <Text>{avgspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('fuel')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('fuel_consumption')}</Text>
                 {
-                    sessions.driversessions ? <Text>{totalFuel}{` ${i18n.t('l')}`}</Text> : <Text>0</Text>
+                    sessions?.driversessions ? <Text>{totalFuel}{` ${i18n.t('l')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('drive')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('number_of_violations')}</Text>
                 {
-                    sessions.driversessions ? <Text>{violationcount}</Text> : <Text>0</Text>
+                    sessions?.driversessions ? <Text>{violationcount}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>

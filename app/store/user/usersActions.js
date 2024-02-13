@@ -80,8 +80,8 @@ export const refreshUserToken = () => async (dispatch, getState) => {
       const access_token = response.data.accessToken
       if (access_token !== undefined) {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
-        dispatch(setToken(access_token))
-        await AsyncStorage.setItem('token', access_token);
+        await dispatch(setToken(access_token))
+        return await AsyncStorage.setItem('token', access_token);
       } else {
         await AsyncStorage.removeItem('token');
         await Updates.reloadAsync()

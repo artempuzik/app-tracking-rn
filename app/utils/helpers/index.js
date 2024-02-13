@@ -116,30 +116,43 @@ export const convertDate = (timestamp) => {
 //     }
 // };
 
-export const polygonArea = (vertices) => {
-    let area = 0;
-    for (let i = 0; i < vertices.length; i++) {
-        let j = (i + 1) % vertices.length;
-        area += haversine(vertices[i].lat, vertices[i].lng, vertices[j].lat, vertices[j].lng);
-    }
-    area = Math.abs(area) / 2;
-    return (Math.round(area*1000)/10000).toFixed(3);
-}
-
 export const circleArea = (radius) => {
     return Math.round(Math.PI * radius * radius / 1000)/1000;
 }
 
 export const getPolylineLength = (points) => {
-    let mileage = 0
-    for (let i = 1; i < points.length - 1; i++) {
-        mileage += haversine(
-            points[i-1].lat,
-            points[i-1].lng,
-            points[i].lat,
-            points[i].lng,
-        )
+    let length = 0;
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const point1 = points[i];
+        const point2 = points[i + 1];
+
+        const dlon = (point2.lng - point1.lng) * Math.PI / 180;
+        const dlat = (point2.lat - point1.lat) * Math.PI / 180;
+
+        const a = Math.sin(dlat / 2) * Math.sin(dlat / 2) +
+            Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
+            Math.sin(dlon / 2) * Math.sin(dlon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        const segmentDistance = 6378137 * c;
+        length += segmentDistance;
     }
-    return (Math.round(mileage * 100))/100
+
+    return Math.round(length)/1000;
+}
+
+export const polygonArea = (points) => {
+    let area = 0;
+    let x1 = points[points.length - 1].lng;
+    let y1 = points[points.length - 1].lat;
+    for (let i = 0; i < points.length; i++) {
+        const x2 = points[i].lng;
+        const y2 = points[i].lat;
+        area += (x2 - x1) * Math.PI / 180 * (2 + Math.sin(y1 * Math.PI / 180) + Math.sin(y2 * Math.PI / 180));
+        x1 = x2;
+        y1 = y2;
+    }
+    return Math.round(Math.abs(area * 6378137 * 6378137 / 2)/ 1000)/1000;
 }
 
