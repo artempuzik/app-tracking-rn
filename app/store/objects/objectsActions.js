@@ -70,7 +70,6 @@ export const getObjectStatusById = (id) => async (dispatch, getState) => {
 
 export const getObjectIcons = () => async (dispatch, getState) => {
   try {
-    const currentServer = getState().app.currentServer
     const response = await Api.getObjectIcons()
     if(response.status === 200) {
       // const mapArray = await Promise.all(response.data.map(async (icon) =>({
@@ -78,7 +77,7 @@ export const getObjectIcons = () => async (dispatch, getState) => {
       //   base64String: await convertImageToBase64(currentServer + icon.url)
       // })))
       // console.log(mapArray.length)
-      return dispatch(setObjectsIcons(response.data))
+      dispatch(setObjectsIcons(response.data))
     }
     return {
       response: response.data,
