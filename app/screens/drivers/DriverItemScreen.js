@@ -30,9 +30,6 @@ const DriverItemScreen = ({navigation}) => {
 
     const [isEditBlockOpen, setIsEditBlockOpen] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
-
-    const [isGroupModalOpen, setIsGroupModalOpen] = useState(false)
-    const [selectedGroup, setSelectedGroup] = useState(null)
     const [driverGroups, setDriverGroups] = useState([])
 
     const [name, setName] = useState('')
@@ -42,25 +39,6 @@ const DriverItemScreen = ({navigation}) => {
     const [rank, setRank] = useState('')
 
     const dispatch = useDispatch()
-
-    const groups = useSelector(state => state.app.profile?.objectgroups)
-
-    const removeGroups = useCallback((id) => {
-        const filteredGroups = driverGroups.filter(g => g.id !== id)
-        setDriverGroups(filteredGroups)
-    })
-
-    const addGroup = useCallback(() => {
-        if(selectedGroup) {
-            const isExist = !!driverGroups.find(g => g.id === selectedGroup)
-            if(isExist) {
-                return;
-            }
-            const selected = groups.find(g => g.id === selectedGroup)
-            setDriverGroups([...driverGroups, selected])
-            setIsGroupModalOpen(false)
-        }
-    },[selectedGroup, driverGroups])
 
     const fetchSessionData = async () => {
         try {
@@ -133,15 +111,6 @@ const DriverItemScreen = ({navigation}) => {
             setDriverGroups(driver.groups)
         }
     }, [driver])
-
-    const formatGroupArray = useMemo(() => {
-        if(!groups) {
-            return []
-        }
-        return groups.map(item => ({
-            [item.id]: item.name
-        }))
-    }, [groups])
 
     const saveDriver = () => {
         try {
@@ -257,81 +226,15 @@ const DriverItemScreen = ({navigation}) => {
                                 placeholder="Rank"
                             />
                         </View>
-                        <View style={{marginVertical: 10,}}>
-                            <Text>Группы в которых состоит водитель</Text>
-                            <View>
-                                {
-                                    driverGroups.map((g, index) =>(
-                                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}
-                                              key={`${index}`}
-                                        >
-                                            <Text>{g.name}</Text>
-                                            <Pressable
-                                                style={({pressed}) => [
-                                                    {
-                                                        backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                                                    },
-                                                    styles.headerButton,
-                                                ]}
-                                                onPress={() => removeGroups(g.id)}
-                                            >
-                                                <Svg
-                                                    width={20}
-                                                    height={20}
-                                                    viewBox="0 0 12 15"
-                                                >
-                                                    <Path className="st0" d="M1 14s.1 1 1 1h8c.6 0 1-.4 1-1V4H1v10z"
-                                                          fill="#a7a7aa" />
-                                                    <Path className="st0" d="M12 1H9L8 0H4L3 1H0v2h12z"
-                                                          fill="#a7a7aa" />
-                                                </Svg>
-                                            </Pressable>
-                                        </View>
-                                    ))
-                                }
-
-                            </View>
-                        </View>
-                        {
-                            isGroupModalOpen ? (
-                                <View style={{marginVertical: 10,}}>
-                                    <SelectList items={formatGroupArray} onChange={setSelectedGroup}/>
-                                    <Pressable
-                                        style={({pressed}) => [
-                                            {
-                                                backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                                            },
-                                            styles.resetButton,
-                                            {marginTop: 10}
-                                        ]}
-                                        onPress={addGroup}
-                                    >
-                                        <Text style={styles.resetButtonText}>Добавить группу</Text>
-                                    </Pressable>
-                                </View>
-                            ) : (
-                                <Pressable
-                                    style={({pressed}) => [
-                                        {
-                                            backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                                        },
-                                        styles.resetButton,
-                                    ]}
-                                    onPress={() => setIsGroupModalOpen(true)}
-                                >
-                                    <Text style={styles.resetButtonText}>Добавить группу</Text>
-                                </Pressable>
-                            )
-                        }
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <Text style={styles.error}>
                     {error}
                 </Text>
-                <CustomButton title={'Сохранить'} onPress={saveDriver} isLoading={loading}/>
+                <CustomButton title={i18n.t('save')} onPress={saveDriver} isLoading={loading}/>
             </View>
         </View>
-    ), [ isEditBlockOpen, isGroupModalOpen, selectedGroup, driverGroups, name, phone, license, rank, category])
+    ), [ isEditBlockOpen, name, phone, license, rank, category])
 
     const report = useMemo(() => (
         <View style={{...styles.container, padding: 20}}>
@@ -340,34 +243,48 @@ const DriverItemScreen = ({navigation}) => {
             <View style={styles.mainInfoRow}><Text>{i18n.t('general')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('mileage')}</Text>
-                <Text>{getMileage(totalMileage)}{` ${i18n.t('km')}`}</Text>
+                {
+                    sessions.driversessions ? <Text>{getMileage(totalMileage)}{` ${i18n.t('km')}`}</Text> : <Text>0</Text>
+                }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('engine_hours')}</Text>
-                <Text>{getDuration(0, totalEngineH)}</Text>
+                {
+                    sessions.driversessions ? <Text>{getDuration(0, totalEngineH)}</Text> : <Text>0</Text>
+                }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('idle')}</Text>
-                <Text>{getDuration(0, totalIdle)}</Text>
+                {
+                    sessions.driversessions ? <Text>{getDuration(0, totalIdle)}</Text> : <Text>0</Text>
+                }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('speed')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('max_speed')}</Text>
-                <Text>{maxspeed}{` ${i18n.t('speed_text')}`}</Text>
+                {
+                    sessions.driversessions ? <Text>{maxspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
+                }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('average_speed')}</Text>
-                <Text>{avgspeed}{` ${i18n.t('speed_text')}`}</Text>
+                {
+                    sessions.driversessions ? <Text>{avgspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
+                }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('fuel')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('fuel_consumption')}</Text>
-                <Text>{totalFuel}{` ${i18n.t('l')}`}</Text>
+                {
+                    sessions.driversessions ? <Text>{totalFuel}{` ${i18n.t('l')}`}</Text> : <Text>0</Text>
+                }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('drive')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('number_of_violations')}</Text>
-                <Text>{violationcount}</Text>
+                {
+                    sessions.driversessions ? <Text>{violationcount}</Text> : <Text>0</Text>
+                }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('fines')}</Text>
@@ -453,7 +370,7 @@ const DriverItemScreen = ({navigation}) => {
                 </View>
             </View>
             <ScrollView>
-                {sessions?.driversessions && report}
+                {report}
             </ScrollView>
         </View>
     ), [driver, sessions, interval])

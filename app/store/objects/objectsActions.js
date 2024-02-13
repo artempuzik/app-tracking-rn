@@ -1,6 +1,5 @@
 import Api from '../../api'
 import {setObjectEvents, setObjects, setObjectsIcons, setObjectsStatuses, setTransactions} from "./index";
-import {convertImageToBase64} from "../../utils/helpers";
 
 export const getObjects = () => async (dispatch) => {
   try {

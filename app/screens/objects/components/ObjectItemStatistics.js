@@ -41,7 +41,6 @@ const ObjectItemStatistics = ({object}) => {
             from: interval.from,
             till: interval.till,
             objectID: route.params.id,
-            trendID: object?.trends[1].id
         })).then(async (data) =>{
             if(data.response) {
                 setReport(data.response)
@@ -157,8 +156,6 @@ const ObjectItemStatistics = ({object}) => {
             }
         </View>
     ), [report])
-
-    console.log(reportType, report?.fuel)
 
     const totalReport = useMemo(() =>(
         <View style={{paddingHorizontal: 20}}>
@@ -355,7 +352,7 @@ const ObjectItemStatistics = ({object}) => {
                     </Pressable>
                 </View>
                 <View style={{marginHorizontal: 20}}>
-                    <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                    <CustomButton title={i18n.t('save')} onPress={saveFilters} />
                 </View>
             </View>
         </View>

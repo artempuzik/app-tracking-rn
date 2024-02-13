@@ -66,8 +66,6 @@ export const setRefreshStatusInterval = (value) => async (dispatch) => {
 export const refreshUserToken = () => async (dispatch, getState) => {
   try {
     const user = getState().user.currentUser
-    const server = getState().app.currentServer
-    console.log('refreshUserToken', user)
     if(!user) {
       return {
         response: null,
@@ -90,7 +88,7 @@ export const refreshUserToken = () => async (dispatch, getState) => {
       }
     }
   } catch (e) {
-    console.log('refreshUserToken error', e)
+    console.log(e)
   }
 }
 

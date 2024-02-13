@@ -17,16 +17,9 @@ export const clearStorage = async () => {
   await AsyncStorage.removeItem('refresh');
   await AsyncStorage.removeItem('language');
 }
-const checkUserDataAndLogout = () => async (dispatch) => {
-  const user = await AsyncStorage.getItem('user');
-  if(!user) {
-    dispatch(logOut())
-  }
-}
 
 export const changeServer = (server) => async (dispatch) => {
   const value = 'https://' + server.replace('https://', '')
-  console.log('change server', value)
   await AsyncStorage.setItem('server', value);
   dispatch(setCurrentServer(value))
   axios.defaults.baseURL = value  + '/api'
@@ -36,12 +29,10 @@ export const init = () => async (dispatch) => {
   dispatch(getSettings())
   const token = await AsyncStorage.getItem('token');
   const server = await AsyncStorage.getItem('server');
-  console.log('server server', server)
   if(server){
     dispatch(setCurrentServer(server))
     axios.defaults.baseURL = server  + '/api'
   }
-  console.log('TOKEN', token);
   if(token) {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     dispatch(setToken(token))
@@ -54,14 +45,12 @@ export const init = () => async (dispatch) => {
     if(user) {
       const currentUser = JSON.parse(user)
       await dispatch(setCurrentUser(currentUser))
-      console.log('user', currentUser)
       await dispatch(refreshUserToken())
     }
     const interval = await AsyncStorage.getItem('refresh');
     if(interval) {
       await dispatch(setRefreshInterval(+interval))
     }
-    console.log('interval', interval)
     await dispatch(getObjects())
     await dispatch(getObjectIcons())
     await dispatch(getProfileData())

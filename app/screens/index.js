@@ -5,9 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import AuthScreen from "./auth/AuthScreen";
 import HomeScreen from "./home/HomeScreen";
-// import RegistrationScreen from "./registration/RegistrationScreen";
 import {init} from "../store/app/appActions";
-// import ResetPasswordScreen from "./resetpassword/ResetPasswordScreen";
 import SettingsScreen from "./settings/SettingsScreen";
 import ObjectsScreen from "./objects/ObjectsScreen";
 import ObjectItemScreen from "./objects/ObjectItemScreen";
@@ -20,7 +18,7 @@ import GasStationItemScreen from "./gas-stations/GasStationItemScreen";
 import MapScreen from "./map/MapScreen";
 import GasStationScreen from "./gas-stations/GasStationScreen";
 import UserScreen from "./users/UserScreen";
-import {ActivityIndicator, Platform, View} from "react-native";
+import {Platform} from "react-native";
 import ServiceScreen from "./services/ServiceScreen";
 import Loading from "../components/loading/Loading";
 import GeozonesScreen from "./geozones/GeozonesScreen";
@@ -66,8 +64,6 @@ export default function Screens() {
                                 headerShown: false
                             }}>
                                 <Stack.Screen name="Auth" component={AuthScreen} />
-                                {/*<Stack.Screen name="Registration" component={RegistrationScreen} />*/}
-                                {/*<Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />*/}
                             </Stack.Navigator>
                         ) :
                         (

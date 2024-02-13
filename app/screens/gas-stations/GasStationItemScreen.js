@@ -1,5 +1,5 @@
-import React, {useMemo, useState} from 'react';
-import {View, ActivityIndicator, ScrollView, Pressable, Text} from 'react-native';
+import React, {useMemo} from 'react';
+import {View, ScrollView, Pressable, Text} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import {useSelector} from "react-redux";

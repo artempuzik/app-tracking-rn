@@ -61,7 +61,7 @@ const AppCalendarFilter = ({
         setMinDate(new Date())
         setMaxDate(new Date())
         setMinTime(new Date().setHours(0,0))
-        setMaxTime(new Date())
+        setMaxTime(new Date().setHours(23,29))
     }, [])
 
     const setYesterday = useCallback(() => {

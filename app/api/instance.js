@@ -50,16 +50,6 @@ const getUserDataFromStorage = async () => {
     }
 }
 
-const getErrorMessage = (response) => {
-    switch (response.status.toString()) {
-        case '400': return i18n.t('error_400')
-        case '403': return i18n.t('error_403')
-        case '401': return i18n.t('error_401')
-        case '404': return i18n.t('error_404')
-        case '500': return i18n.t('error_500')
-    }
-}
-
 api.interceptors.request.use(
     async (config) => {
         const token = await AsyncStorage.getItem('token');
@@ -97,7 +87,6 @@ api.interceptors.response.use((response) => {
         if(reconnect === 5) {
             reconnect = 0
             await AsyncStorage.removeItem('token');
-            console.log('interceptors', error.response)
             await Updates.reloadAsync()
             return Promise.reject(error);
         }
@@ -108,8 +97,7 @@ api.interceptors.response.use((response) => {
         }
         return api(originalRequest);
     }
-    error.message = getErrorMessage(error.response)
-    console.log(i18n.locale, error)
+    error.message = error.response.data.errorMessage || instance.defaults.errorMessage[error.response.status] || error.message;
     return Promise.reject(error);
 });
 

@@ -15,7 +15,6 @@ import i18n from '../../utils/i18'
 import styles from "./styles";
 import {useDispatch, useSelector} from "react-redux";
 import {changeServer, getToken, setAppLanguage} from "../../store/app/appActions";
-import {BASE_URL} from "../../config";
 import CustomButton from "../../components/button/Button";
 import RNPickerSelect from "react-native-picker-select";
 
