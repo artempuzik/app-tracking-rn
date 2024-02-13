@@ -105,7 +105,16 @@ const translations = {
     number_of_violations: "Number of violations",
     fines: "Fines",
     only_important: "Only important",
-    all: "All"
+    all: "All",
+    in_groups: "In groups",
+    available_speed: "Available speed",
+    zone_type: "Zone type",
+    yes: "Yes",
+    no: "No",
+    only_current_type: "Only current type",
+    polygon: "Polygon",
+    polyline: "Polyline",
+    point: "Point"
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -210,7 +219,16 @@ const translations = {
     number_of_violations: "Количество нарушений",
     fines: "Штрафы",
     only_important: "Только важные",
-    all: "Все"
+    all: "Все",
+    in_groups: "В группах",
+    available_speed: "Допустимая скорость",
+    zone_type: "Тип зоны",
+    yes: "Да",
+    no: "Нет",
+    only_current_type: "Только выбранный тип",
+    polygon: "Многоугольник",
+    polyline: "Линия",
+    point: "Точка"
   }
 }
 

@@ -66,13 +66,14 @@ export default StyleSheet.create({
         borderBottomWidth: 1,
     },
     locationPoint: {
-        width: 50,
+        width: 80,
         height: 50,
         position: 'absolute',
         bottom: 20,
         right: 20,
         zIndex: 10,
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
     }
 });

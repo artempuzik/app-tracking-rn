@@ -32,22 +32,17 @@ const ObjectsMapScreen = ({navigation}) => {
     const [current, setCurrent] = useState(null)
 
     const [statuses, setStatuses] = useState([])
-    const [icons, setIcons] = useState([]);
     const [objects, setObjects] = useState([]);
 
     const interval = useRef(null)
 
     const baseUrl = useSelector(state => state.app.currentServer)
+    const icons = useSelector(state => state.objects.icons)
 
     const getObjectStatuses = useCallback(async () => {
         await dispatch(getObjectsStatuses()).then(async (data) => {
             if(data.response) {
                 setStatuses(data.response)
-                await dispatch(getObjectIcons()).then((data) => {
-                    if(data.response) {
-                        setIcons(data.response)
-                    }
-                })
             }
             if(data.error) {
                 setErrorMsg(data.error)
@@ -301,125 +296,56 @@ const ObjectsMapScreen = ({navigation}) => {
                 }}
                 style={styles.container}>
                 {
-                    location &&  <Pressable
-                    style={({pressed}) => [
-                        {
-                            backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
-                        },
-                        styles.locationPoint,
-                    ]}
-                    onPress={() => {
-                        setCurrent(location.timestamp)
-                    }}
-                >
-                    <Svg
-                        width={30}
-                        height={30}
-                        viewBox="0 0 16 16"
-                    >
-                        <Path
-                            d="M8.5.5a.5.5 0 0 0-1 0v.518A7 7 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7 7 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7 7 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7 7 0 0 0 8.5 1.018zm-6.48 7A6 6 0 0 1 7.5 2.02v.48a.5.5 0 0 0 1 0v-.48a6 6 0 0 1 5.48 5.48h-.48a.5.5 0 0 0 0 1h.48a6 6 0 0 1-5.48 5.48v-.48a.5.5 0 0 0-1 0v.48A6 6 0 0 1 2.02 8.5h.48a.5.5 0 0 0 0-1zM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"
-                            fill="#a7a7aa"/>
-                    </Svg>
-                </Pressable>}
+                    location &&  (
+                        <View style={styles.locationPoint}>
+                            <Pressable
+                                style={({pressed}) => [
+                                    {
+                                        backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                    },
+                                ]}
+                                onPress={() => {
+                                    setCurrent(location.timestamp)
+                                }}
+                            >
+                                <Svg
+                                    width={30}
+                                    height={30}
+                                    viewBox="0 0 16 16"
+                                >
+                                    <Path
+                                        d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM9 8.466V7H7.5A1.5 1.5 0 0 0 6 8.5V11H5V8.5A2.5 2.5 0 0 1 7.5 6H9V4.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L9.41 8.658A.25.25 0 0 1 9 8.466"
+                                        fill="#2060ae"/>
+                                </Svg>
+                            </Pressable>
+                            <Pressable
+                                style={({pressed}) => [
+                                    {
+                                        backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                    },
+                                ]}
+                                onPress={() => {
+                                    setCurrent(location.timestamp)
+                                }}
+                            >
+                                <Svg
+                                    width={30}
+                                    height={30}
+                                    viewBox="0 0 16 16"
+                                >
+                                    <Path
+                                        d="M8.5.5a.5.5 0 0 0-1 0v.518A7 7 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7 7 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7 7 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7 7 0 0 0 8.5 1.018zm-6.48 7A6 6 0 0 1 7.5 2.02v.48a.5.5 0 0 0 1 0v-.48a6 6 0 0 1 5.48 5.48h-.48a.5.5 0 0 0 0 1h.48a6 6 0 0 1-5.48 5.48v-.48a.5.5 0 0 0-1 0v.48A6 6 0 0 1 2.02 8.5h.48a.5.5 0 0 0 0-1zM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"
+                                        fill="#a7a7aa"/>
+                                </Svg>
+                            </Pressable>
+                        </View>
+                    )
+                }
                 {markers && (
                     <LeafletView
                         doDebug={false}
                         mapMarkers={markers}
                         onMessageReceived={markerClickHandler}
-                        // mapShapes={[
-                        //     {
-                        //         shapeType: 'Polyline',
-                        //         color: "blue",
-                        //         id: "3",
-                        //         positions: [
-                        //             { lat: 38.80118939192329, lng: -74.69604492187501 },
-                        //             { lat: 38.19502155795575, lng: -74.65209960937501 },
-                        //         ]
-                        //     },
-                        // ]}
-                        // mapShapes={[
-                        //     {
-                        //         shapeType: 'Circle',
-                        //         color: "#123123",
-                        //         id: "1",
-                        //         center: { lat: 34.225727, lng: -77.94471 },
-                        //         radius: 2000
-                        //     },
-                        //     {
-                        //         shapeType: 'CircleMarker',
-                        //         color: "red",
-                        //         id: "2",
-                        //         center: { lat: 38.437424, lng: -78.867912 },
-                        //         radius: 15
-                        //     },
-                        //     {
-                        //         shapeType: 'Polygon',
-                        //         color: "blue",
-                        //         id: "3",
-                        //         positions: [
-                        //             { lat: 38.80118939192329, lng: -74.69604492187501 },
-                        //             { lat: 38.19502155795575, lng: -74.65209960937501 },
-                        //             { lat: 39.07890809706475, lng: -71.46606445312501 }
-                        //         ]
-                        //     },
-                        //     {
-                        //         shapeType: 'Polygon',
-                        //         color: "violet",
-                        //         id: "4",
-                        //         positions: [
-                        //             [
-                        //                 { lat: 37.13842453422676, lng: -74.28955078125001 },
-                        //                 { lat: 36.4433803110554, lng: -74.26208496093751 },
-                        //                 { lat: 36.43896124085948, lng: -73.00964355468751 },
-                        //                 { lat: 36.43896124085948, lng: -73.00964355468751 }
-                        //             ],
-                        //             [
-                        //                 { lat: 37.505368263398104, lng: -72.38891601562501 },
-                        //                 { lat: 37.309014074275915, lng: -71.96594238281251 },
-                        //                 { lat: 36.69044623523481, lng: -71.87805175781251 },
-                        //                 { lat: 36.58024660149866, lng: -72.75146484375001 },
-                        //                 { lat: 37.36579146999664, lng: -72.88330078125001 }
-                        //             ]
-                        //         ]
-                        //     },
-                        //     {
-                        //         shapeType: 'Polygon',
-                        //         color: "orange",
-                        //         id: "5",
-                        //         positions: [
-                        //             { lat: 35.411438052435486, lng: -78.67858886718751 },
-                        //             { lat: 35.9602229692967, lng: -79.18945312500001 },
-                        //             { lat: 35.97356075349624, lng: -78.30505371093751 }
-                        //         ]
-                        //     },
-                        //     {
-                        //         shapeType: 'Polygon',
-                        //         color: "purple",
-                        //         id: "5a",
-                        //         positions: [
-                        //             [
-                        //                 { lat: 36.36822190085111, lng: -79.26086425781251 },
-                        //                 { lat: 36.659606226479696, lng: -79.28833007812501 },
-                        //                 { lat: 36.721273880045004, lng: -79.81018066406251 }
-                        //             ],
-                        //             [
-                        //                 { lat: 35.43381992014202, lng: -79.79370117187501 },
-                        //                 { lat: 35.44277092585766, lng: -81.23840332031251 },
-                        //                 { lat: 35.007502842952896, lng: -80.837402343750017 }
-                        //             ]
-                        //         ]
-                        //     },
-                        //     {
-                        //         shapeType: 'Rectangle',
-                        //         color: "yellow",
-                        //         id: "6",
-                        //         bounds: [
-                        //             { lat: 36.5, lng: -75.7 },
-                        //             { lat: 38.01, lng: -73.13 }
-                        //         ]
-                        //     }
-                        // ]}
                         mapCenterPosition={centerPosition?.position}
                     />
                 )}
@@ -464,18 +390,23 @@ const ObjectsMapScreen = ({navigation}) => {
                         },
                         styles.headerButton,
                     ]}
-                    onPress={() => setIsGeozoneOpen(true)}
+                    onPress={() => setIsGeozoneOpen(prev => !prev)}
                 >
                     <Svg
                         width={27}
                         height={27}
                         viewBox="0 0 20 20"
                     >
-                        <Circle cx="2" cy="16" r="2"  fill="#a7a7aa"/>
-                        <Circle cx="16" cy="2" r="2"  fill="#a7a7aa"/>
-                        <Circle cx="2" cy="2" r="2"  fill="#a7a7aa"/>
-                        <Path fill-rule="evenodd" d="M3 3h12v3h2V1H1v16h7v-2H3V3z" clip-rule="evenodd"  fill="#a7a7aa"/>
-                        <Path d="M16.873 18l-.675-2.37h-3.396L12.127 18H10l3.287-10H15.7L19 18h-2.127zm-1.147-4.142c-.624-2.148-.977-3.363-1.057-3.644a12.167 12.167 0 0 1-.166-.668c-.14.582-.541 2.019-1.204 4.312h2.427z"  fill="#a7a7aa"/>
+                        <Circle cx="2" cy="16" r="2"
+                                fill={isGeozoneOpen ? "#2060ae" : "#a7a7aa"}/>
+                        <Circle cx="16" cy="2" r="2"
+                                fill={isGeozoneOpen ? "#2060ae" : "#a7a7aa"}/>
+                        <Circle cx="2" cy="2" r="2"
+                                fill={isGeozoneOpen ? "#2060ae" : "#a7a7aa"}/>
+                        <Path fillRule="evenodd" d="M3 3h12v3h2V1H1v16h7v-2H3V3z" clipRule="evenodd"
+                              fill={isGeozoneOpen ? "#2060ae" : "#a7a7aa"}/>
+                        <Path d="M16.873 18l-.675-2.37h-3.396L12.127 18H10l3.287-10H15.7L19 18h-2.127zm-1.147-4.142c-.624-2.148-.977-3.363-1.057-3.644a12.167 12.167 0 0 1-.166-.668c-.14.582-.541 2.019-1.204 4.312h2.427z"
+                              fill={isGeozoneOpen ? "#2060ae" : "#a7a7aa"}/>
                     </Svg>
                 </Pressable>
             </View>

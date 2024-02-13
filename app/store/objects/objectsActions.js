@@ -1,5 +1,6 @@
 import Api from '../../api'
 import {setObjectEvents, setObjects, setObjectsIcons, setObjectsStatuses, setTransactions} from "./index";
+import {convertImageToBase64} from "../../utils/helpers";
 
 export const getObjects = () => async (dispatch) => {
   try {
@@ -69,9 +70,15 @@ export const getObjectStatusById = (id) => async (dispatch, getState) => {
 
 export const getObjectIcons = () => async (dispatch, getState) => {
   try {
+    const currentServer = getState().app.currentServer
     const response = await Api.getObjectIcons()
     if(response.status === 200) {
-      dispatch(setObjectsIcons(response.data))
+      // const mapArray = await Promise.all(response.data.map(async (icon) =>({
+      //   ...icon,
+      //   base64String: await convertImageToBase64(currentServer + icon.url)
+      // })))
+      // console.log(mapArray.length)
+      return dispatch(setObjectsIcons(response.data))
     }
     return {
       response: response.data,
@@ -169,6 +176,37 @@ export const sendCustomCommand = (dto) => async () => {
 export const getFuelReport = (dto) => async () => {
   try {
     const response = await Api.getFuelReport(dto)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
+
+export const getGeozones = () => async () => {
+  try {
+    const response = await Api.getGeozones()
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+};
+
+export const getGeozoneById = (id) => async () => {
+  try {
+    const response = await Api.getGeozoneById(id)
     return {
       response: response.data,
       error: null,

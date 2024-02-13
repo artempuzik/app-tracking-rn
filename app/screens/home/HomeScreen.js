@@ -43,6 +43,7 @@ const HomeScreen = ({ navigation }) => {
                             },
                             styles.mainMenuItem,
                         ]}
+                        onPress={() => {navigation.navigate('Geozones')}}
                     >
                         <Svg
                             width={30}

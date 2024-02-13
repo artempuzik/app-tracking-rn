@@ -14,10 +14,13 @@ const EventItemElement = ({item, icons, profile}) => {
         }
     }, [item])
 
+    const car = useMemo(() => {
+        return profile?.objects.find(object => object.id === item.trackerid)
+    }, [item, profile])
+
     const icon = useMemo(() => {
-        const car = profile?.objects.find(object => object.id === item.trackerid)
-        return icons.find(icon => car.iconid == icon.id)
-    }, [item, icons, profile])
+        return icons?.find(icon => car?.iconid == icon.id)
+    }, [car, icons])
 
     return (
         <View style={styles.eventItemBlock}>
@@ -32,7 +35,7 @@ const EventItemElement = ({item, icons, profile}) => {
                     />
                 </View>
                 <View>
-                    <Text style={styles.idsBlock}>{item.trackerid}</Text>
+                    <Text style={styles.idsBlock}>{car.name}</Text>
                     <Text style={styles.itemText}>{convertDate(item.time)}</Text>
                 </View>
             </View>

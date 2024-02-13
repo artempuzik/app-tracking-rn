@@ -39,6 +39,11 @@ import {
 } from './profile'
 
 import {
+    getGeozones,
+    getGeozoneById
+} from './geozones'
+
+import {
     getFuelReport
 } from './reports'
 
@@ -76,4 +81,7 @@ export default {
     getObjectHistoryDriversSession,
     //reports
     getFuelReport,
+    //geozones
+    getGeozones,
+    getGeozoneById,
 }

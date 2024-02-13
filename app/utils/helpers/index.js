@@ -91,3 +91,24 @@ export const convertDate = (timestamp) => {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
+import * as FileSystem from 'expo-file-system';
+export const convertImageToBase64 = async (imageUrl) => {
+    try {
+        const directory = `${FileSystem.cacheDirectory}images`;
+        await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+        const fileName = imageUrl.split('/').pop();
+        const localUri = `${directory}/${fileName}`;
+
+        await FileSystem.downloadAsync(imageUrl, localUri);
+        if (!(await FileSystem.getInfoAsync(localUri)).exists) {
+            console.error(`File ${localUri} does not exist`);
+            return
+        }
+        const base64String = await FileSystem.readAsStringAsync(localUri, { encoding: 'base64' });
+        return `data:image/png;base64,${base64String}`
+    } catch (error) {
+        console.error('Error:', error);
+        return imageUrl
+    }
+};
+

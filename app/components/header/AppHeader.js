@@ -76,7 +76,6 @@ const AppHeader = ({ canGoBack }) => {
         return (
             <Modal
                 style={styles.modalWrapper}
-                backdropColor='transparent'
                 animationInTiming={50}
                 animationIn='fadeIn'
                 animationOut='fadeOut'

@@ -23,6 +23,8 @@ import UserScreen from "./users/UserScreen";
 import {ActivityIndicator, Platform, View} from "react-native";
 import ServiceScreen from "./services/ServiceScreen";
 import Loading from "../components/loading/Loading";
+import GeozonesScreen from "./geozones/GeozonesScreen";
+import GeozoneItemScreen from "./geozones/GeozoneItemScreen";
 
 export const navigationRef = createNavigationContainerRef();
 const Stack = createStackNavigator();
@@ -85,6 +87,8 @@ export default function Screens() {
                                 <Stack.Screen name="DriverItem" component={DriverItemScreen} />
                                 <Stack.Screen name="GasStation" component={GasStationScreen} />
                                 <Stack.Screen name="GasStationItem" component={GasStationItemScreen} />
+                                <Stack.Screen name="Geozones" component={GeozonesScreen} />
+                                <Stack.Screen name="GeozoneItem" component={GeozoneItemScreen} />
                                 <Stack.Screen name="Event" component={EventScreen} />
                                 <Stack.Screen name="User" component={UserScreen} />
                                 <Stack.Screen name="Service" component={ServiceScreen} />

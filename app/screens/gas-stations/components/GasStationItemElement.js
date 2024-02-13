@@ -1,5 +1,8 @@
 import React from 'react';
 import {View, Text} from 'react-native';
+import styles from '../styles';
+import i18n from "../../../utils/i18";
+import {convertDate} from "../../../utils/helpers";
 const GasStationItemElement = ({item}) => {
     return (
         <View style={styles.gasItemBlock}>
@@ -13,7 +16,7 @@ const GasStationItemElement = ({item}) => {
             </View>
             <View style={styles.itemRow}>
                 <Text style={styles.itemText}>{i18n.t('fuel_amount')}</Text>
-                <Text style={styles.itemText}>{item.value} l</Text>
+                <Text style={styles.itemText}>{item.value}</Text>
             </View>
             <View style={styles.itemRow}>
                 <Text style={styles.itemText}>{i18n.t('vehicle')}</Text>
@@ -22,10 +25,5 @@ const GasStationItemElement = ({item}) => {
         </View>
 );
 };
-import styles from '../styles';
-import Svg, {Path} from "react-native-svg";
-import {PRESSED_COLOR} from "../../../config";
-import i18n from "../../../utils/i18";
-import {convertDate} from "../../../utils/helpers";
 
 export default GasStationItemElement;

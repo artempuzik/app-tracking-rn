@@ -39,7 +39,7 @@ export default StyleSheet.create({
         borderColor: '#a7a7aa',
         width: width,
         position: 'absolute',
-        backgroundColor: '#e9e9ea',
+        backgroundColor: '#fff',
     },
     text: {
         color: 'black',
