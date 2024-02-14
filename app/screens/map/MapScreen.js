@@ -31,7 +31,7 @@ const ObjectsMapScreen = ({navigation}) => {
     const [isGeozoneOpen, setIsGeozoneOpen] = useState(false)
     const [current, setCurrent] = useState(null)
 
-    const [statuses, setStatuses] = useState([])
+    const [statuses, setStatuses] = useState(null)
     const [objects, setObjects] = useState([]);
 
     const interval = useRef(null)
@@ -134,6 +134,7 @@ const ObjectsMapScreen = ({navigation}) => {
             }
         })
     }, [statuses, objects, icons])
+    console.log(isLoading, markers)
 
     const markerTitle = useMemo(() => {
         if(current === null || !map.current || !statuses || !objects || !icons) {
@@ -289,7 +290,7 @@ const ObjectsMapScreen = ({navigation}) => {
     }, [markers, isTitleOpen])
 
     const renderMap = useMemo(() => (
-        isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : (
+        isLoading || !markers.length ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : (
             <View
                 onLayout={(event) => {
                     map.current = event.nativeEvent.layout;
@@ -341,14 +342,12 @@ const ObjectsMapScreen = ({navigation}) => {
                         </View>
                     )
                 }
-                {markers && (
-                    <LeafletView
-                        doDebug={false}
-                        mapMarkers={markers}
-                        onMessageReceived={markerClickHandler}
-                        mapCenterPosition={centerPosition?.position}
-                    />
-                )}
+                <LeafletView
+                    doDebug={false}
+                    mapMarkers={markers}
+                    onMessageReceived={markerClickHandler}
+                    mapCenterPosition={centerPosition?.position}
+                />
             </View>
         )
     ), [markers, current, location, centerPosition, isLoading]);
