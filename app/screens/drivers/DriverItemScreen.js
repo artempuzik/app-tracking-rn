@@ -151,6 +151,8 @@ const DriverItemScreen = ({navigation}) => {
         return result ? result.reduce((acc, s) => acc +=+s, 0)/result.length : 0
     }, [sessions])
 
+    console.log(new Date(interval.from))
+
     const editBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isEditBlockOpen ? 'flex' : 'none'}}>
             <View style={styles.screenTitle}>

@@ -125,7 +125,6 @@ const ObjectItemParking = ({object}) => {
 
     const renderMapScreen = useMemo(() => {
         if(!markers) return
-        console.log(markers)
         return (
             <View style={styles.container}>
                 <LeafletView
@@ -139,8 +138,6 @@ const ObjectItemParking = ({object}) => {
     const getIndex = (index) => {
         return index < 9 ? `0${index + 1}` : index +1
     }
-
-    console.log(idx)
 
     const pageBlock = useMemo(() => (
         <View style={{flex: 1}}>
@@ -344,25 +341,25 @@ const ObjectItemParking = ({object}) => {
                             value={minParking}
                             autoCorrect={false}
                             autoCapitalize='none'
-                            placeholder="Minimum drive / km"
+                            placeholder="Minimum parking (min)"
                         />
                     </View>
-                    <View style={styles.radioButtonsContainer}>
-                        <RadioForm
-                            style={styles.radioButtons}
-                            radio_props={PARKING_OPTIONS}
-                            onPress={(value) => {
-                                setShowParkingOptions(value);
-                            }}
-                            formHorizontal={false}
-                            labelHorizontal={true}
-                            initial={showParkingOptions}
-                            selectedButtonColor={showParkingOptions !== null ? '#f8642f' : '#a7a7aa'}
-                            buttonColor={'#a7a7aa'}
-                            buttonSize={15}
-                            animation={true}
-                        />
-                    </View>
+                    {/*<View style={styles.radioButtonsContainer}>*/}
+                    {/*    <RadioForm*/}
+                    {/*        style={styles.radioButtons}*/}
+                    {/*        radio_props={PARKING_OPTIONS}*/}
+                    {/*        onPress={(value) => {*/}
+                    {/*            setShowParkingOptions(value);*/}
+                    {/*        }}*/}
+                    {/*        formHorizontal={false}*/}
+                    {/*        labelHorizontal={true}*/}
+                    {/*        initial={showParkingOptions}*/}
+                    {/*        selectedButtonColor={showParkingOptions !== null ? '#f8642f' : '#a7a7aa'}*/}
+                    {/*        buttonColor={'#a7a7aa'}*/}
+                    {/*        buttonSize={15}*/}
+                    {/*        animation={true}*/}
+                    {/*    />*/}
+                    {/*</View>*/}
                     <Pressable
                         style={({pressed}) => [
                             {

@@ -122,6 +122,12 @@ export const getToken = (dto) => async (dispatch) => {
       }
     })
     dispatch(setToken(token))
+    await dispatch(getObjects())
+    await dispatch(getObjectIcons())
+    await dispatch(getProfileData())
+    await dispatch(getObjectsStatuses())
+    await dispatch(getObjectIcons())
+    await dispatch(getUsers())
     return {
       response,
       error: null,

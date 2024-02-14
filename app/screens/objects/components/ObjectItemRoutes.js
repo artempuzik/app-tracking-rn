@@ -111,14 +111,25 @@ const ObjectItemRoutes = ({object}) => {
 
     const renderMapScreen = useMemo(() => {
             let coordinates = [];
+            let markers = [];
             if (idx !== null) {
                 const array = parsePointString(routes[idx]?.points);
+                const first = array[0]
+                const last = array[array.length - 1]
+                markers = [first, last].map( el => ({
+                    position: {
+                        lat: el.lat,
+                        lng: el.lng,
+                    },
+                    icon: '📍',
+                    size: [30, 30]
+                }))
                 for(let i = 1; i < array.length - 1; i++) {
                     const prev = array[i -1]
                     const next = array[i]
                     coordinates.push({
                             shapeType: 'Polyline',
-                            color: "red",
+                            color: object.main.color,
                             id: i,
                             positions: [
                                 { lat: prev.lat, lng: prev.lng },
@@ -127,13 +138,34 @@ const ObjectItemRoutes = ({object}) => {
                         })
                 }
             } else {
-                const array = routes.map(rout => parsePointString(rout.points)).flat();
+                const array = routes.map(rout => parsePointString(rout.points));
+                const routeArray = array.flat();
                 for(let i = 1; i < array.length - 1; i++) {
-                    const prev = array[i -1]
-                    const next = array[i]
+                    const first = array[i][0]
+                    const last = array[i][array[i].length - 1]
+                    markers.push({
+                        position: {
+                            lat: first.lat,
+                            lng: first.lng,
+                        },
+                        icon: '📍',
+                        size: [30, 30]
+                    })
+                    markers.push({
+                        position: {
+                            lat: last.lat,
+                            lng: last.lng,
+                        },
+                        icon: '📍',
+                        size: [30, 30]
+                    })
+                }
+                for(let i = 1; i < routeArray.length - 1; i++) {
+                    const prev = routeArray[i -1]
+                    const next = routeArray[i]
                     coordinates.push({
                         shapeType: 'Polyline',
-                        color: "red",
+                        color: object.main.color,
                         id: i,
                         positions: [
                             { lat: prev.lat, lng: prev.lng },
@@ -147,7 +179,9 @@ const ObjectItemRoutes = ({object}) => {
                 <LeafletView
                     doDebug={false}
                     mapShapes={coordinates}
+                    mapMarkers={markers}
                     mapCenterPosition={coordinates[0]?.positions[0]}
+                    zoom={10}
                 />
             </View>
         )}, [idx, isShowMap, routes])
@@ -320,7 +354,12 @@ const ObjectItemRoutes = ({object}) => {
                     ) : renderMapScreen
                 }
             <Pressable
-                onPress={() => {setIsShowMap(prev => !prev)}}
+                onPress={() => {
+                    if(idx === null) {
+                        setIsShowMap(prev => !prev)
+                    }
+                    setIdx(null)
+                }}
                 style={({pressed}) => [
                     {
                         backgroundColor: pressed ? 'rgba(32,96,174,0.41)' : '#2060ae',

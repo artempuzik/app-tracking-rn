@@ -25,8 +25,12 @@ const AppCalendarFilter = ({
 
     const saveCalendar = useCallback(() => {
         setIsCalendarOpen(false)
-        const from = new Date(minDate).setTime(new Date(minTime))
-        const till = new Date(maxDate).setTime(new Date(maxTime))
+        const from_h = new Date(minTime).getHours()
+        const from_m = new Date(minTime).getMinutes()
+        const till_h = new Date(maxTime).getHours()
+        const till_m = new Date(maxTime).getMinutes()
+        const from = new Date(minDate).setHours(from_h, from_m)
+        const till = new Date(maxDate).setHours(till_h, till_m)
         setCalendarProperties({
             from,
             till,

@@ -47,8 +47,6 @@ export default function Screens() {
         })
     }, [])
 
-    console.log(isLoading)
-
     if(isLoading) {
         return (
             <Loading isLoading={isLoading} />

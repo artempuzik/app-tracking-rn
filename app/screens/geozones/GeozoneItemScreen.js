@@ -186,7 +186,7 @@ const GeozoneItemScreen = ({navigation}) => {
             <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     {lengthIcon}
-                    <Text>{total}</Text>
+                    <Text style={{marginLeft: 10}}>{total}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     {

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, Text, Pressable, ActivityIndicator, ScrollView} from 'react-native';
+import {View, Text, Pressable, ActivityIndicator} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import Svg, {Circle, Path} from "react-native-svg";

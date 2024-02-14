@@ -7,7 +7,7 @@ export default StyleSheet.create({
     },
     mapContainer: {
         width: '100%',
-        height: '25%',
+        height: '50%',
     },
     pageHeader: {
         width: '100%',
