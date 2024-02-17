@@ -40,25 +40,23 @@ const ObjectsMapScreen = ({navigation}) => {
     const icons = useSelector(state => state.objects.icons)
 
     const getObjectStatuses = useCallback(async () => {
-        await dispatch(getObjectsStatuses()).then(async (data) => {
-            if(data.response) {
-                setStatuses(data.response)
-            }
-            if(data.error) {
-                setErrorMsg(data.error)
-            }
-        })
+        try {
+            await dispatch(getObjectsStatuses()).then(async (data) => {
+                if(data.response) {
+                    setStatuses(data.response)
+                }
+                if(data.error) {
+                    setErrorMsg(data.error)
+                }
+            })
+        } finally {
+        }
     }, [])
 
     const getObjectsData = useCallback(async () => {
         await dispatch(getObjects()).then(async (data) =>{
             if(data.response) {
                 setObjects(data.response)
-                await dispatch(getObjectIcons()).then((data) => {
-                    if(data.response) {
-                        setIcons(data.response)
-                    }
-                })
             }
         })
     }, [])
@@ -114,7 +112,7 @@ const ObjectsMapScreen = ({navigation}) => {
                 return {}
             }
             const url = baseUrl + icon.url
-            if(idx === 0) {
+            if(!current && idx === 0) {
                 setCurrent(obj.main.id)
             }
             return {
@@ -134,7 +132,6 @@ const ObjectsMapScreen = ({navigation}) => {
             }
         })
     }, [statuses, objects, icons])
-    console.log(isLoading, markers)
 
     const markerTitle = useMemo(() => {
         if(current === null || !map.current || !statuses || !objects || !icons) {
@@ -152,17 +149,22 @@ const ObjectsMapScreen = ({navigation}) => {
         const iopoint = getItemIoPointsByItemId(statuses, item)
 
         return (
-            <View
-            style={{
-                position: 'absolute',
-                alignItems: 'center',
-                backgroundColor: 'white',
-                paddingHorizontal: 10,
-                width: '90%',
-                top: (map.current?.height + map.current?.y - 200)/2,
-                left: '5%',
-                zIndex: 10,
-            }}
+            <Pressable
+                style={({pressed}) => [
+                    {
+                        backgroundColor: pressed ? PRESSED_COLOR : 'white',
+                    },
+                    {
+                        position: 'absolute',
+                        alignItems: 'center',
+                        paddingHorizontal: 10,
+                        width: '90%',
+                        top: (map.current?.height + map.current?.y - 200)/2,
+                        left: '5%',
+                        zIndex: 10,
+                    }
+                ]}
+                onPress={() => navigation.navigate('ObjectItem', {id: item.main.id})}
             >
                 <View style={styles.main}>
                     <Image
@@ -248,7 +250,7 @@ const ObjectsMapScreen = ({navigation}) => {
                     borderBottomColor: 'white',
                     transform: [{ rotate: '180deg' }]
                 }]} />
-            </View>
+            </Pressable>
         )
 
     }, [current, map, statuses, objects, icons])
@@ -290,7 +292,6 @@ const ObjectsMapScreen = ({navigation}) => {
     }, [markers, isTitleOpen])
 
     const renderMap = useMemo(() => (
-        isLoading || !markers.length ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : (
             <View
                 onLayout={(event) => {
                     map.current = event.nativeEvent.layout;
@@ -349,8 +350,7 @@ const ObjectsMapScreen = ({navigation}) => {
                     mapCenterPosition={centerPosition?.position}
                 />
             </View>
-        )
-    ), [markers, current, location, centerPosition, isLoading]);
+    ), [markers, current, location, centerPosition]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -411,7 +411,7 @@ const ObjectsMapScreen = ({navigation}) => {
             </View>
             {isTitleOpen && markerTitle}
             {errorMsg && <Text>{errorMsg}</Text>}
-            {renderMap}
+            {isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : renderMap}
         </SafeAreaView>
     );
 };

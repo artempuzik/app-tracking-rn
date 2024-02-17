@@ -32,6 +32,7 @@ import {
     sendCustomCommand,
     getObjectHistory,
     getObjectHistoryDriversSession,
+    getPoint,
 } from './objects'
 
 import {
@@ -79,6 +80,7 @@ export default {
     sendCustomCommand,
     getObjectHistory,
     getObjectHistoryDriversSession,
+    getPoint,
     //reports
     getFuelReport,
     //geozones

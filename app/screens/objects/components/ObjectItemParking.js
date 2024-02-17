@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, Pressable, TextInput, ScrollView} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
@@ -107,7 +107,7 @@ const ObjectItemParking = ({object}) => {
                     lat: el.lat,
                     lng: el.lng,
                 },
-                icon: '📍',
+                icon: `<img src="../../../../assets/parking.svg" alt="parking"/>`,
                 size: [30, 30]
             }))
         } else {
@@ -117,7 +117,7 @@ const ObjectItemParking = ({object}) => {
                     lat: el.lat,
                     lng: el.lng,
                 },
-                icon: '📍',
+                icon: `<img src="../../../../assets/parking.svg" alt="parking"/>`,
                 size: [30, 30]
             }))
         }
@@ -300,7 +300,12 @@ const ObjectItemParking = ({object}) => {
                     ) : renderMapScreen
             }
             <Pressable
-                onPress={() => {setIsShowMap(prev => !prev)}}
+                onPress={() => {
+                    if(idx === null) {
+                        setIsShowMap(prev => !prev)
+                    }
+                    setIdx(null)
+                }}
                 style={({pressed}) => [
                     {
                         backgroundColor: pressed ? 'rgba(32,96,174,0.41)' : '#2060ae',

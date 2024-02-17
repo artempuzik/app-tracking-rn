@@ -76,7 +76,7 @@ export const haversine = (lat1, lon1, lat2, lon2)=> {
 }
 
 export const getMileage = (mileage) => {
-    return Math.round(mileage)/1000
+    return Math.round(mileage/10)/100
 }
 
 export const convertDate = (timestamp) => {

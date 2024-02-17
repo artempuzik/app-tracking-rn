@@ -69,7 +69,7 @@ const ObjectItemElement = ({item, icons, statuses}) => {
                                     </Svg>
                                 )
                         }
-                        <Text>{Number(point?.speed).toFixed(1)} {i18n.t('speed_text')}</Text>
+                        <Text>{Number(point?.speed)} {i18n.t('speed_text')}</Text>
                     </View>
                     <View style={styles.footerElement}>
                         <Svg

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, TextInput, ScrollView} from 'react-native';
+import {View, Text, Pressable, TextInput, ScrollView, Platform} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
@@ -12,6 +12,11 @@ import {calculateDistance, convertDate, getDuration, parsePointString} from "../
 import {Image} from "expo-image";
 import {LeafletView} from "react-native-leaflet-view";
 
+const androidIcon = 'https://cdn-icons-png.flaticon.com/512/25/25613.png'
+
+const startIcon = Platform.OS === 'android' ? androidIcon : `<img src="../../../../assets/start.svg" alt="start"/>`
+const finishIcon = Platform.OS === 'android' ? androidIcon : `<img src="../../../../assets/finish.svg" alt="finish"/>`
+
 const ObjectItemRoutes = ({object}) => {
     const navigation = useNavigation();
     const route = useRoute();
@@ -21,18 +26,8 @@ const ObjectItemRoutes = ({object}) => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
     const [isShowMap, setIsShowMap] = useState(false)
 
-    const [minDrive, setMinDrive] = useState('')
-    const [maxDrive, setMaxDrive] = useState('')
-
-    const saveFilters = useCallback(() => {
-        setIsFiltersOpen(false)
-    }, [minDrive, maxDrive])
-
-    const resetFilters = useCallback(() => {
-        setMinDrive('')
-        setMaxDrive('')
-    },[])
-
+    const [minTimeDrive, setMinTimeDrive] = useState('')
+    const [minTripDrive, setMinTripDrive] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [interval, setInterval] = useState({
         from: 0,
@@ -43,6 +38,30 @@ const ObjectItemRoutes = ({object}) => {
 
     const [history, setHistory] = useState([])
 
+    const [routes, setRoutes] = useState([])
+
+    const saveFilters = useCallback(() => {
+        const timeFilter = minTimeDrive * 1000 * 60
+        const tripFilter = minTripDrive * 1000
+        const int = history?.track ?
+            history?.track.intervals.filter( el => el.points)
+            : []
+        const result =  int.filter(i => {
+            if(!timeFilter && !tripFilter) {
+                return true
+            }
+            const timeResult = timeFilter ? (Number(i.till) - Number(i.from)) > timeFilter : true
+            return tripFilter ? timeResult && Number(i.length) > +tripFilter : timeResult
+        })
+        setRoutes(result)
+        setIsFiltersOpen(false)
+    }, [history, minTimeDrive, minTripDrive])
+
+    const resetFilters = useCallback(() => {
+        setMinTimeDrive('')
+        setMinTripDrive('')
+    },[])
+
     const getHistory = useCallback(async () => {
         await dispatch(getObjectHistory({
             from: interval.from,
@@ -51,6 +70,8 @@ const ObjectItemRoutes = ({object}) => {
         })).then(async (data) =>{
             if(data.response) {
                 setHistory(data.response)
+                const int = data.response.track.intervals.filter( el => el.points)
+                setRoutes(int)
             }
         })
     }, [route.params.id, interval])
@@ -60,19 +81,6 @@ const ObjectItemRoutes = ({object}) => {
     const icon = useMemo(() => {
         return icons.find((ic) => ic.id === object?.main.iconId)
     }, [object, icons])
-
-    const routes = useMemo(() => {
-        const minTimeFilter = minDrive * 1000 * 60
-        const int = history?.track ?
-            history?.track.intervals.filter( el => el.points)
-            : []
-        return int.filter(i => {
-            if(!minTimeFilter) {
-                return true
-            }
-            return (Number(i.till) - Number(i.from)) > minTimeFilter ? true : false
-        })
-    }, [history, minDrive])
 
     const fetchData = async () => {
         try {
@@ -116,14 +124,24 @@ const ObjectItemRoutes = ({object}) => {
                 const array = parsePointString(routes[idx]?.points);
                 const first = array[0]
                 const last = array[array.length - 1]
-                markers = [first, last].map( el => ({
-                    position: {
-                        lat: el.lat,
-                        lng: el.lng,
+                markers = [
+                    {
+                        position: {
+                            lat: first.lat,
+                            lng: first.lng,
+                        },
+                        icon: startIcon,
+                        size: [30, 30]
                     },
-                    icon: '📍',
-                    size: [30, 30]
-                }))
+                    {
+                        position: {
+                            lat: last.lat,
+                            lng: last.lng,
+                        },
+                        icon: finishIcon,
+                        size: [30, 30]
+                    }
+                ]
                 for(let i = 1; i < array.length - 1; i++) {
                     const prev = array[i -1]
                     const next = array[i]
@@ -148,7 +166,7 @@ const ObjectItemRoutes = ({object}) => {
                             lat: first.lat,
                             lng: first.lng,
                         },
-                        icon: '📍',
+                        icon: startIcon,
                         size: [30, 30]
                     })
                     markers.push({
@@ -156,7 +174,7 @@ const ObjectItemRoutes = ({object}) => {
                             lat: last.lat,
                             lng: last.lng,
                         },
-                        icon: '📍',
+                        icon: finishIcon,
                         size: [30, 30]
                     })
                 }
@@ -181,7 +199,7 @@ const ObjectItemRoutes = ({object}) => {
                     mapShapes={coordinates}
                     mapMarkers={markers}
                     mapCenterPosition={coordinates[0]?.positions[0]}
-                    zoom={10}
+                    zoom={13}
                 />
             </View>
         )}, [idx, isShowMap, routes])
@@ -341,7 +359,7 @@ const ObjectItemRoutes = ({object}) => {
                                                 </View>
                                                 <View>
                                                     <Text>
-                                                        {calculateDistance(h)}
+                                                        {Math.round(+h.length)/1000}
                                                         {` ${i18n.t('km')}`}
                                                     </Text>
                                                 </View>
@@ -397,21 +415,21 @@ const ObjectItemRoutes = ({object}) => {
                         <View>
                             <TextInput
                                 style={styles.input}
-                                onChangeText={setMinDrive}
-                                value={minDrive}
+                                onChangeText={setMinTimeDrive}
+                                value={minTimeDrive}
                                 autoCorrect={false}
                                 autoCapitalize='none'
-                                placeholder="Minimum drive / km"
+                                placeholder="Minimum drive / min"
                             />
                         </View>
                         <View>
                             <TextInput
                                 style={styles.input}
-                                onChangeText={setMaxDrive}
-                                value={maxDrive}
+                                onChangeText={setMinTripDrive}
+                                value={minTripDrive}
                                 autoCorrect={false}
                                 autoCapitalize='none'
-                                placeholder="Maximum drive / km"
+                                placeholder="Minimum drive / km"
                             />
                         </View>
                         <Pressable
@@ -431,7 +449,7 @@ const ObjectItemRoutes = ({object}) => {
                     </View>
                 </View>
             </View>
-        ), [minDrive, maxDrive, isFiltersOpen])
+        ), [minTimeDrive, minTripDrive, isFiltersOpen])
 
     return (
         <View style={styles.container}>

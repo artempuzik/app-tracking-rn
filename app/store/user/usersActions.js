@@ -4,6 +4,7 @@ import Api from '../../api'
 import axios from "../../api/instance";
 import {setToken} from "../app";
 import * as Updates from "expo-updates";
+import {getObjects, getObjectsStatuses} from "../objects/objectsActions";
 
 export const recoverPassword = (email) => async (dispatch, getState) => {
   try {
@@ -96,7 +97,9 @@ export const setCurrent = (user) => async (dispatch) => {
   try {
     await dispatch(setCurrentUser(user))
     await AsyncStorage.setItem('user', JSON.stringify(user));
-    return await dispatch(refreshUserToken())
+    await dispatch(refreshUserToken())
+    await dispatch(getObjects())
+    return await dispatch(getUsers())
   } catch (e) {
   }
 };

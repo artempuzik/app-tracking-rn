@@ -126,7 +126,6 @@ export const getToken = (dto) => async (dispatch) => {
     await dispatch(getObjectIcons())
     await dispatch(getProfileData())
     await dispatch(getObjectsStatuses())
-    await dispatch(getObjectIcons())
     await dispatch(getUsers())
     return {
       response,

@@ -147,6 +147,7 @@ const ObjectsScreen = ({navigation}) => {
     })
 
     const getObjectsData = useCallback(async () => {
+        setObjects([])
         await dispatch(getObjects()).then(async (data) =>{
             if(data.response) {
                 setObjects(data.response)

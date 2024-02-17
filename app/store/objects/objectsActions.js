@@ -71,12 +71,8 @@ export const getObjectIcons = () => async (dispatch, getState) => {
   try {
     const response = await Api.getObjectIcons()
     if(response.status === 200) {
-      // const mapArray = await Promise.all(response.data.map(async (icon) =>({
-      //   ...icon,
-      //   base64String: await convertImageToBase64(currentServer + icon.url)
-      // })))
-      // console.log(mapArray.length)
       dispatch(setObjectsIcons(response.data))
+      console.log(response.data)
     }
     return {
       response: response.data,
@@ -158,7 +154,9 @@ export const getObjectHistoryDriversSession = (dto) => async () => {
 
 export const sendCustomCommand = (dto) => async () => {
   try {
+    console.log(dto)
     const response = await Api.sendCustomCommand(dto)
+    console.log(response)
     return {
       response: response.data,
       error: null,
@@ -216,3 +214,19 @@ export const getGeozoneById = (id) => async () => {
     };
   }
 };
+
+export const getObjectPoint = (coords) => async (dispatch, getState) => {
+  try {
+    const lang = getState().app.language
+    const response = await Api.getPoint(coords, lang)
+    return {
+      response: response.data,
+      error: null,
+    };
+  } catch (e) {
+    return {
+      response: null,
+      error: JSON.stringify(e.message)
+    };
+  }
+}

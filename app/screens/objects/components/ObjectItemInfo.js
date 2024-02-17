@@ -1,19 +1,23 @@
-import React, {useMemo} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {View, Text, Pressable, ScrollView} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import i18n from '../../../utils/i18'
 import styles from '../styles';
 import {LeafletView} from "react-native-leaflet-view";
 import {useNavigation} from "@react-navigation/native";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Image} from "expo-image";
 import {convertDate, getMileage} from "../../../utils/helpers";
+import {getObjectPoint} from "../../../store/objects/objectsActions";
 
 const ObjectItemInfo = ({object, status}) => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const icons = useSelector(state => state.objects.icons)
     const baseUrl = useSelector(state => state.app.currentServer)
+
+    const [city, setCity] = useState(null)
 
     const point = useMemo(() => {
         return status?.points[0]
@@ -30,11 +34,33 @@ const ObjectItemInfo = ({object, status}) => {
 
     const iopoint = useMemo(() => {
         return status?.iopoints?.find(p => p.trendid == engine?.id)
-    }, [object, engine])
+    }, [status, engine])
+
+    const iopoints = useMemo(() => {
+        return status?.iopoints?.map(p => {
+            const current = object?.trends?.find(t => t.id == p.trendid)
+            return {
+                ...current,
+                value: p?.value ?? null
+            }
+        })
+    }, [object, status])
 
     const icon = useMemo(() => {
         return icons.find((ic) => ic.id === object?.main.iconId)
     }, [object, icons])
+
+    useEffect(() => {
+        const coords = status?.points[0]
+        if(!coords) {
+            return
+        }
+        dispatch(getObjectPoint(coords)).then(data => {
+            if(data.response) {
+                setCity(data.response)
+            }
+        })
+    }, [status, object])
 
     const points = useMemo(() => {
         if(!status) {
@@ -53,6 +79,19 @@ const ObjectItemInfo = ({object, status}) => {
             size: [icon.width, icon.height]
         }))
     }, [status])
+
+    const renderTrends = useMemo(() => {
+        if(!iopoints) {
+            return null
+        }
+        return iopoints?.map( p => {
+            const value = p.dataType === 0 ? `${p.value} ${p.units}` : !!Number(p?.value) ? i18n.t('on') : i18n.t('off')
+            return (<View style={styles.infoPropRow} key={p.id}>
+                <Text>{p.name}</Text>
+                <Text>{value}</Text>
+            </View>)
+        })
+    }, [iopoints])
 
     return (
         <View style={styles.container}>
@@ -106,6 +145,7 @@ const ObjectItemInfo = ({object, status}) => {
                 />
             </View>
             <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{convertDate(point?.time)}</Text>
+            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{city?.display_name}</Text>
             <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     <Svg
@@ -144,7 +184,7 @@ const ObjectItemInfo = ({object, status}) => {
                             </Svg>
                         )
                     }
-                    <Text>{Number(point?.speed).toFixed(1)} {i18n.t('speed_text')}</Text>
+                    <Text>{Number(point?.speed)} {i18n.t('speed_text')}</Text>
                 </View>
                 <View style={styles.footerElement}>
                     <Svg
@@ -163,28 +203,21 @@ const ObjectItemInfo = ({object, status}) => {
                     }
                 </View>
             </View>
-            <View>
-                <View style={styles.infoPropRow}>
-                    <Text>{i18n.t('power')}</Text>
-                    <Text>{pwr?.value} V</Text>
-                </View>
-                <View style={styles.infoPropRow}>
-                    <Text>{i18n.t('engine')}</Text>
-                    <Text>{!!Number(iopoint?.value) ? i18n.t('on') : i18n.t('off')}</Text>
-                </View>
+            <ScrollView style={{flex: 1}}>
+                {renderTrends}
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('mileage')}</Text>
                     <Text>{getMileage(status?.stat[0].mileage)} {i18n.t('km')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('engine_hours')}</Text>
-                    <Text>{Math.floor(Number(status?.stat[0].totalenginetime/360000))} {i18n.t('hours')}</Text>
+                    <Text>{Math.round(Number(status?.stat[0].totalenginetime/36000))/100} {i18n.t('hours')}</Text>
                 </View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('phone_number')}</Text>
                     <Text>{object?.main.phone}</Text>
                 </View>
-            </View>
+            </ScrollView>
             <View style={styles.sendBtnContainer}>
                 <Pressable
                     style={({pressed}) => [
@@ -198,18 +231,6 @@ const ObjectItemInfo = ({object, status}) => {
                     <Text style={styles.commentText}>{'</>'}</Text>
                     <Text style={styles.commentText}>{i18n.t('send_command')}</Text>
                 </Pressable>
-                {/*<Pressable*/}
-                {/*    style={({pressed}) => [*/}
-                {/*        {*/}
-                {/*            backgroundColor: pressed ? '#c7c7c9' : 'transparent',*/}
-                {/*        },*/}
-                {/*        styles.sendCommentButton,*/}
-                {/*    ]}*/}
-                {/*    onPress={() => navigation.navigate('ObjectTask', {id: object.main.id})}*/}
-                {/*>*/}
-                {/*    <Text style={styles.commentText}>{'</>'}</Text>*/}
-                {/*    <Text style={styles.commentText}>{i18n.t('create_command')}</Text>*/}
-                {/*</Pressable>*/}
             </View>
         </View>
     );

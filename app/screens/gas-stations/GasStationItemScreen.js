@@ -26,7 +26,7 @@ const GasStationItemScreen = ({navigation}) => {
                 lat: transaction.lat,
                 lng: transaction.lng,
             },
-            icon: "https://s1.geotek.online/ico/geotek/iconH18.png",
+            icon: `<img src="../../../assets/AZS.svg" alt="azs"/>`,
             size: [32, 32]
         }]
     }, [transaction])
