@@ -45,7 +45,7 @@ const GasStationScreen = ({navigation}) => {
             return []
         }
         const withStationFilter = selectedStation ? transactions.filter(t => +t.objectID === +selectedStation) : transactions
-        return withStationFilter.filter(el => JSON.stringify(el).includes(query))
+        return withStationFilter.filter(el => JSON.stringify(el).toLowerCase().includes(query.toLowerCase()))
     }, [transactions, query, selectedStation])
 
     const formatStation = useMemo(() => {

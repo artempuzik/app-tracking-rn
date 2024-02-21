@@ -1,15 +1,14 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import {useRoute} from "@react-navigation/native";
 import {editDriver, getDriverById, getDriverSessionById} from "../../store/drivers/driversActions";
 import Svg, {Path} from "react-native-svg";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../components/button/Button";
-import SelectList from "../../components/select/SelectList";
 import {getObjectHistoryDriversSession} from "../../store/objects/objectsActions";
 import i18n from "../../utils/i18";
 import {convertDate, getDuration, getMileage} from "../../utils/helpers";

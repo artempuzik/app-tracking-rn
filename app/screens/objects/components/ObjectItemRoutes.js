@@ -130,7 +130,7 @@ const ObjectItemRoutes = ({object}) => {
                             lat: first.lat,
                             lng: first.lng,
                         },
-                        icon: startIcon,
+                        icon: finishIcon,
                         size: [30, 30]
                     },
                     {
@@ -138,11 +138,11 @@ const ObjectItemRoutes = ({object}) => {
                             lat: last.lat,
                             lng: last.lng,
                         },
-                        icon: finishIcon,
+                        icon: startIcon,
                         size: [30, 30]
                     }
                 ]
-                for(let i = 1; i < array.length - 1; i++) {
+                for(let i = 1; i < array.length; i++) {
                     const prev = array[i -1]
                     const next = array[i]
                     coordinates.push({
@@ -157,8 +157,7 @@ const ObjectItemRoutes = ({object}) => {
                 }
             } else {
                 const array = routes.map(rout => parsePointString(rout.points));
-                const routeArray = array.flat();
-                for(let i = 1; i < array.length - 1; i++) {
+                for(let i = 0; i < array.length; i++) {
                     const first = array[i][0]
                     const last = array[i][array[i].length - 1]
                     markers.push({
@@ -166,7 +165,7 @@ const ObjectItemRoutes = ({object}) => {
                             lat: first.lat,
                             lng: first.lng,
                         },
-                        icon: startIcon,
+                        icon: finishIcon,
                         size: [30, 30]
                     })
                     markers.push({
@@ -174,22 +173,18 @@ const ObjectItemRoutes = ({object}) => {
                             lat: last.lat,
                             lng: last.lng,
                         },
-                        icon: finishIcon,
+                        icon: startIcon,
                         size: [30, 30]
                     })
-                }
-                for(let i = 1; i < routeArray.length - 1; i++) {
-                    const prev = routeArray[i -1]
-                    const next = routeArray[i]
-                    coordinates.push({
+                    coordinates[i] = {
                         shapeType: 'Polyline',
                         color: object.main.color,
                         id: i,
-                        positions: [
-                            { lat: prev.lat, lng: prev.lng },
-                            { lat: next.lat, lng: next.lng },
-                        ]
-                    })
+                        positions: []
+                    }
+                    for(let j = 0; j < array[i].length-1; j++) {
+                        coordinates[i].positions.push({ lat: array[i][j].lat, lng: array[i][j].lng })
+                    }
                 }
             }
         return (

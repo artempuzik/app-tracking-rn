@@ -72,7 +72,6 @@ export const getObjectIcons = () => async (dispatch, getState) => {
     const response = await Api.getObjectIcons()
     if(response.status === 200) {
       dispatch(setObjectsIcons(response.data))
-      console.log(response.data)
     }
     return {
       response: response.data,
@@ -154,9 +153,7 @@ export const getObjectHistoryDriversSession = (dto) => async () => {
 
 export const sendCustomCommand = (dto) => async () => {
   try {
-    console.log(dto)
     const response = await Api.sendCustomCommand(dto)
-    console.log(response)
     return {
       response: response.data,
       error: null,

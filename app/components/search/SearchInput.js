@@ -3,21 +3,22 @@ import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import i18n from "../../utils/i18"
 
-const SearchInput = ({onChange, onFocus}) => {
+const SearchInput = ({onChange, onFocus, val}) => {
     const [value, setValue] = useState('')
 
     useEffect(() =>{
         onChange(value)
     }, [value])
+
     return (
         <View style={styles.searchContainer}>
             <View style={styles.searchBar}>
                 <View style={styles.searchInputContainer}>
                     <TextInput
                         style={styles.searchInput}
-                        onPressIn={onFocus}
+                        onChange={onFocus}
                         onChangeText={setValue}
-                        value={value}
+                        value={val}
                         placeholder={i18n.t('search')}
                         placeholderTextColor="#999"
                     />

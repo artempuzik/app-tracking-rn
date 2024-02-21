@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView, TextInput} from 'react-native';
+import {View, Text, Pressable, ScrollView, TextInput, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import Svg, {Path} from "react-native-svg";
@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Checkbox from 'expo-checkbox';
 import styles from './styles';
 import AppHeader from "../../components/header/AppHeader";
-import CustomButton from "../../components/button/Button";
+import * as SMS from 'expo-sms';
 import i18n from "../../utils/i18";
 import AppModal from "../../components/modal/AppModal";
 import {sendCustomCommand} from "../../store/objects/objectsActions";
@@ -16,36 +16,66 @@ import {Image} from "expo-image";
 const ObjectSendCommandScreen = ({navigation}) => {
     const route = useRoute();
     const dispatch = useDispatch()
+    const [isSmsAvailable, setIsSmsAvailable] = useState(false)
     const [sendSmsMessages, setSendSmsMessages] = useState(false)
     const [message, setMessages] = useState('')
     const [isModalShow, setIsModalShow] = useState(false)
-
     const profile = useSelector(state => state.app.profile)
+
     const icons = useSelector(state => state.objects.icons)
     const baseUrl = useSelector(state => state.app.currentServer)
-
     const element = useMemo(() => profile.objects.find(el => el.id == route.params.id, [profile]))
+
+    SMS.isAvailableAsync().then((data) => {
+        setIsSmsAvailable(data)
+    });
 
     const icon = useMemo(() => {
         return icons.find((ic) => ic.id == element?.iconid)
     }, [element, icons])
 
     const sendCommand = useCallback(() => {
-        dispatch(sendCustomCommand({
-            objectID: element.id,
-            templateID: "",
-            cmd: message
+        if(sendSmsMessages) {
+            if(!isSmsAvailable) {
+                Alert.alert('Sms is not available');
+                return
+            }
+            SMS.sendSMSAsync(
+                [element.phone],
+                message,
+            ).then(data => {
+                console.log(data)
+            });
+        } else {
+            dispatch(sendCustomCommand({
+                objectID: element.id,
+                templateID: "",
+                cmd: message
 
-        }))
+            }))
+        }
     })
 
     const sendTemplateCommand = useCallback((template) => {
-        dispatch(sendCustomCommand({
-            objectID: element.id,
-            templateID: template.id,
-            cmd: template.cmd
+        if(sendSmsMessages) {
+            if(!isSmsAvailable) {
+                Alert.alert('Sms is not available');
+                return
+            }
+            SMS.sendSMSAsync(
+                [element.phone],
+                template.cmd,
+            ).then(data => {
+                console.log(data)
+            });
+        } else {
+            dispatch(sendCustomCommand({
+                objectID: element.id,
+                templateID: template.id,
+                cmd: template.cmd
 
-        }))
+            }))
+        }
     })
 
     return (
@@ -123,16 +153,11 @@ const ObjectSendCommandScreen = ({navigation}) => {
                     <Text style={styles.commentText}>{i18n.t('custom_command')}</Text>
                 </Pressable>
             </ScrollView>
-            <View style={{paddingHorizontal: 20}}>
-                <CustomButton
-                    title={i18n.t('save')}
-                    onPress={() => navigation.navigate('ObjectItem', {id: route.params.id})}
-                />
-            </View>
             <AppModal
                 isModalOpen={isModalShow}
                 setIsModalOpen={setIsModalShow}
                 onPress={sendCommand}
+                buttonTitle={'send_command'}
             >
                 <View style={{paddingHorizontal: 20}}>
                     <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>{i18n.t('typed_command')}</Text>

@@ -49,7 +49,7 @@ const EventScreen = ({navigation}) => {
         const withObjects = selectedObject !== null ? events.filter(e => selectedObject === e.trackerid) : events
         const withStatus = showAll !== null ? withObjects.filter(e => !showAll ? e.status === '0' : true) : withObjects
         const withDate = date ? withStatus.filter(e => +e.time <= +date + 3600000 && +e.time >= +date - 3600000) : withStatus
-        return withDate.filter(el => JSON.stringify(el).includes(query))
+        return withDate.filter(el => JSON.stringify(el).toLowerCase().includes(query.toLowerCase()))
     }, [events, query, date, showAll, selectedObject])
     const formatObjects = useMemo(() => {
         if(!profile?.objects.length) {

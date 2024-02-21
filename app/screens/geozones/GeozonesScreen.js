@@ -71,7 +71,7 @@ const GeozoneItemScreen = ({navigation}) => {
         setItems(withFilter)
     }, [geoZones, isAll, isShowPoint, isShowPolygon, isShowLine, selectedGroup])
 
-    const filteredArray = useMemo(() => items.filter(el => el.name.includes(query)), [items, query]);
+    const filteredArray = useMemo(() => items.filter(el => el.name.toLowerCase().includes(query.toLowerCase())), [items, query]);
 
     const resetFilters = useCallback(() => {
         setSelectedGroup(initialFilters.selectedGroup)

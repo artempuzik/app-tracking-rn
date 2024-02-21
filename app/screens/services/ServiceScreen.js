@@ -13,6 +13,7 @@ import {
 } from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
 import ServiceItemElement from "./components/ServiceItemElement";
+import i18n from "../../utils/i18";
 
 const initialFilters = {
     selectedStation: null
@@ -28,11 +29,6 @@ const ServiceScreen = ({navigation}) => {
     const [objects, setObjects] = useState([])
     const [icons, setIcons] = useState([])
 
-    const [interval, setInterval] = useState({
-        from: 0,
-        till: 0,
-    })
-
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
@@ -42,8 +38,8 @@ const ServiceScreen = ({navigation}) => {
         if(!objects.length) {
             return []
         }
-        // const withIconAndMainFilter = selectedStation ? events.filter(e => e.objectID === selectedStation) : mainArray
-        return objects.filter(el => JSON.stringify(el).includes(query))
+        //const withIconAndMainFilter = selectedStation ? events.filter(e => e.objectID === selectedStation) : mainArray
+        return objects.filter(el => JSON.stringify(el).toLowerCase().includes(query.toLowerCase()))
     }, [objects, query])
 
     const saveFilters = useCallback(() => {
@@ -115,11 +111,11 @@ const ServiceScreen = ({navigation}) => {
                         ]}
                         onPress={resetFilters}
                     >
-                        <Text style={styles.resetButtonText}>Сбросить фильтры</Text>
+                        <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
                 <View style={{paddingHorizontal: 20}}>
-                    <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                    <CustomButton title={i18n.t('save')} onPress={saveFilters} />
                 </View>
             </View>
         )

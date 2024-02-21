@@ -27,11 +27,6 @@ const ObjectItemInfo = ({object, status}) => {
         return object?.trends.find(t => t.flags === 'POINTBYEVT ENGINE' || t.flags === 'ENGINE')
     }, [object])
 
-    const pwr = useMemo(() => {
-        const trend = object?.trends.find(t => t.input === 'PWR')
-        return status?.iopoints?.find(p => p.trendid == trend?.id)
-    }, [object])
-
     const iopoint = useMemo(() => {
         return status?.iopoints?.find(p => p.trendid == engine?.id)
     }, [status, engine])
@@ -79,6 +74,14 @@ const ObjectItemInfo = ({object, status}) => {
             size: [icon.width, icon.height]
         }))
     }, [status])
+
+    const address = useMemo(() => {
+        if(!city) {
+            return ''
+        }
+        return city.display_name
+        //return `${city.address.house_number}, ${city.address.road}, ${city.address.suburb}, ${city.address.city}`
+    }, [city]);
 
     const renderTrends = useMemo(() => {
         if(!iopoints) {
@@ -145,7 +148,9 @@ const ObjectItemInfo = ({object, status}) => {
                 />
             </View>
             <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{convertDate(point?.time)}</Text>
-            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{city?.display_name}</Text>
+            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>
+                {address}
+            </Text>
             <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     <Svg
@@ -205,18 +210,22 @@ const ObjectItemInfo = ({object, status}) => {
             </View>
             <ScrollView style={{flex: 1}}>
                 {renderTrends}
-                <View style={styles.infoPropRow}>
-                    <Text>{i18n.t('mileage')}</Text>
-                    <Text>{getMileage(status?.stat[0].mileage)} {i18n.t('km')}</Text>
-                </View>
-                <View style={styles.infoPropRow}>
-                    <Text>{i18n.t('engine_hours')}</Text>
-                    <Text>{Math.round(Number(status?.stat[0].totalenginetime/36000))/100} {i18n.t('hours')}</Text>
-                </View>
-                <View style={styles.infoPropRow}>
-                    <Text>{i18n.t('phone_number')}</Text>
-                    <Text>{object?.main.phone}</Text>
-                </View>
+                {
+                   Number(status?.stat[0].mileage) ? (
+                        <View style={styles.infoPropRow}>
+                            <Text>{i18n.t('mileage')}</Text>
+                            <Text>{getMileage(status?.stat[0].mileage)} {i18n.t('km')}</Text>
+                        </View>
+                    ) : null
+                }
+                {
+                    Number(status?.stat[0].totalenginetime) ? (
+                        <View style={styles.infoPropRow}>
+                            <Text>{i18n.t('engine_hours')}</Text>
+                            <Text>{Math.round(Number(status?.stat[0].totalenginetime/36000))/100} {i18n.t('hours')}</Text>
+                        </View>
+                    ) : null
+                }
             </ScrollView>
             <View style={styles.sendBtnContainer}>
                 <Pressable

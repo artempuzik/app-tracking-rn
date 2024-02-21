@@ -17,7 +17,7 @@ const getObjectHistoryDriversSession = (dto) => axios.post('/objectsHistory/Driv
 
 const getObjectEvents = () => axios.get('/objectevents')
 
-const sendCustomCommand = (dto) => axios.post('/objects/commands', dto)
+const sendCustomCommand = (dto) => axios.post('/objects/command', dto)
 
 const getPoint = (coords, lang) => axios.get(`http://map.geotek.online/nominatim/reverse?format=json&lat=${coords.lat}48&lon=${coords.lng}&accept-language=${lang}`)
 

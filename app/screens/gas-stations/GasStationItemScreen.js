@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {View, ScrollView, Pressable, Text} from 'react-native';
+import {View, ScrollView, Pressable, Text, Platform} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import {useSelector} from "react-redux";
@@ -9,6 +9,10 @@ import {LeafletView} from "react-native-leaflet-view";
 import Svg, {Path} from "react-native-svg";
 import i18n from "../../utils/i18";
 import {convertDate, getDuration} from "../../utils/helpers";
+
+const androidIcon = 'https://s4.geotek.online/ico/geotek/iconH18.png'
+
+const gasIcon = Platform.OS === 'android' ? androidIcon : `<img src="../../../assets/AZS.svg" alt="azs"/>`
 
 const GasStationItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -26,7 +30,7 @@ const GasStationItemScreen = ({navigation}) => {
                 lat: transaction.lat,
                 lng: transaction.lng,
             },
-            icon: `<img src="../../../assets/AZS.svg" alt="azs"/>`,
+            icon: gasIcon,
             size: [32, 32]
         }]
     }, [transaction])

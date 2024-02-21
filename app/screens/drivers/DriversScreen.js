@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Pressable, Text, ScrollView, ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+import {View, Pressable, Text, FlatList, RefreshControl} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
 import styles from './styles';
@@ -10,10 +10,9 @@ import {DRIVERS_OPTIONS, PRESSED_COLOR} from "../../config";
 import {useDispatch} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import SelectList from "../../components/select/SelectList";
-import {getDriverGroups, getDrivers, getDriverSessionById} from "../../store/drivers/driversActions";
+import {getDriverGroups, getDrivers} from "../../store/drivers/driversActions";
 import CustomButton from "../../components/button/Button";
 import i18n from "../../utils/i18";
-import ObjectItemElement from "../objects/components/ObjectItemElement";
 
 const initialFilters = {
     isAll: null,
@@ -47,7 +46,7 @@ const DriversScreen = ({navigation}) => {
         if(!drivers.length) {
             return []
         }
-        return drivers.filter(el => el.name.includes(query))
+        return drivers.filter(el => el.name.toLowerCase().includes(query.toLowerCase()))
     }, [query, drivers])
 
     const resetFilters = useCallback(() => {

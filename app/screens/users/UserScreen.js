@@ -18,7 +18,7 @@ const UserScreen = ({navigation}) => {
 
     const dispatch = useDispatch()
 
-    const filteredUserArray = useMemo(() => users.filter(u => u.name.includes(query)), [users, query])
+    const filteredUserArray = useMemo(() => users.filter(u => u.name.toLowerCase().includes(query.toLowerCase())), [users, query])
 
     const selectCurrentUserHandler = useCallback(async (user) => {
         setIsLoading(true)

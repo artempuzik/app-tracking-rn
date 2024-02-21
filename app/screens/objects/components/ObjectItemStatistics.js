@@ -4,7 +4,7 @@ import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
 import SelectList from "../../../components/select/SelectList";
-import {getFuelReport} from '../../../store/objects/objectsActions';
+import {getFuelReport, getObjectPoint} from '../../../store/objects/objectsActions';
 import {REPORTS_LIST} from "../../../config";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../../components/button/Button";
@@ -21,6 +21,7 @@ const ObjectItemStatistics = ({object}) => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
     const [reportType, setReportType] = useState('general')
+    const [reportActions, setReportActions] = useState([])
 
     const [isLoading, setIsLoading] = useState(false)
     const [report, setReport] = useState(null)
@@ -62,6 +63,18 @@ const ObjectItemStatistics = ({object}) => {
         }
     }, [interval])
 
+    useEffect(() => {
+        if(report?.fuel.actions.length) {
+            Promise.all(report.fuel.actions.map(async (action) => {
+                const adr = await dispatch(getObjectPoint(action))
+                return {
+                    ...action,
+                    address: adr.response
+                }
+            })).then(data => setReportActions(data))
+        }
+    }, [report])
+
     const saveFilters = useCallback(() => {
         setIsFiltersOpen(false)
     }, [])
@@ -70,8 +83,36 @@ const ObjectItemStatistics = ({object}) => {
         setReportType('')
     },[])
 
+    const actions = useMemo(() => {
+        if(!reportActions.length) {
+            return null
+        }
+        return reportActions.map(action => {
+            return (
+                <View style={{borderBottomColor: '#a7a7aa', borderBottomWidth: 1}}>
+                    <View style={styles.subStatRow}>
+                        <Text>{i18n.t(action.type.toLowerCase())}</Text>
+                        <Text>{action.type}</Text>
+                    </View>
+                    <View style={styles.subStatRow}>
+                        <Text>{i18n.t('volume')}</Text>
+                        <Text>{action?.volume}</Text>
+                    </View>
+                    <View style={styles.subStatRow}>
+                        <Text>{i18n.t('time')}</Text>
+                        <Text>{convertDate(action?.time)}</Text>
+                    </View>
+                    <View style={styles.subStatRow}>
+                        <Text>{i18n.t('address')}</Text>
+                        <Text style={{maxWidth: '50%'}}>{action.address.display_name}</Text>
+                    </View>
+                </View>
+            )
+        })
+    }, [reportActions]);
+
     const fuelReport = useMemo(() =>(
-        <View style={{paddingHorizontal: 20}}>
+        <View style={{paddingHorizontal: 20, paddingBottom: 50}}>
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('mileage')}</Text>
                 <Text>
@@ -136,24 +177,7 @@ const ObjectItemStatistics = ({object}) => {
                 <Text>{i18n.t('total_drains')}</Text>
                 <Text>{Number(report?.fuel.draintotal).toFixed(2)}</Text>
             </View>
-            {
-                report?.actions?.length
-                && report?.actions.map(action => (
-                    <View style={{borderBottomColor: '#a7a7aa', borderBottomWidth: 1}}>
-                        <View style={styles.subStatRow}>
-                            <Text>{i18n.t(action.type.toLowerCase())}</Text>
-                        </View>
-                        <View style={styles.subStatRow}>
-                            <Text>{i18n.t('volume')}</Text>
-                            <Text>{action?.volume}</Text>
-                        </View>
-                        <View style={styles.subStatRow}>
-                            <Text>{i18n.t('time')}</Text>
-                            <Text>{convertDate(action?.time)}</Text>
-                        </View>
-                    </View>
-                ))
-            }
+            {actions}
         </View>
     ), [report])
 

@@ -17,6 +17,7 @@ import ObjectsMap from "./components/ObjectsMap";
 import {getProfileData} from "../../store/app/appActions";
 import {getUsers, refreshUserToken} from "../../store/user/usersActions";
 import {getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
+import Loading from "../../components/loading/Loading";
 
 const initialFilters = {
     withIgnition: null,
@@ -65,7 +66,7 @@ const ObjectsScreen = ({navigation}) => {
 
     useEffect(() => {
         if(objects.length) {
-            setItems(objects.filter(el => el.main.name.includes(query)))
+            setItems(objects.filter(el => el.main.name.toLowerCase().includes(query.toLowerCase())))
         }
     }, [query, objects])
 
@@ -132,15 +133,10 @@ const ObjectsScreen = ({navigation}) => {
         await dispatch(getUsers())
     }, [])
 
-    const refreshToken = useCallback(async () => {
-        await dispatch(refreshUserToken())
-    }, [])
-
     const onRefresh = useCallback(async () => {
         try {
             setIsLoading(true)
             await getObjectStatuses()
-            await refreshToken()
         } finally {
             setIsLoading(false)
         }
@@ -364,6 +360,15 @@ const ObjectsScreen = ({navigation}) => {
             <SafeAreaView style={styles.container}>
                 <AppHeader canGoBack={true} />
                 <ObjectsMap objects={items} icons={icons}/>
+            </SafeAreaView>
+        )
+    }
+
+    if(isLoading) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <AppHeader canGoBack={true} />
+                <Loading isLoading={isLoading}/>
             </SafeAreaView>
         )
     }

@@ -7,14 +7,14 @@ import {Image} from "expo-image";
 import styles from './styles';
 import AppHeader from "../../components/header/AppHeader";
 import {useDispatch, useSelector} from "react-redux";
-import {getObjectIcons, getObjects, getObjectsStatuses} from "../../store/objects/objectsActions";
+import {getGeozones, getObjects, getObjectsStatuses} from "../../store/objects/objectsActions";
 import SearchInput from "../../components/search/SearchInput";
 import Svg, {Circle, Path} from "react-native-svg";
 import i18n from "../../utils/i18";
 import {convertDate, getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
-import Modal from "react-native-modal";
 import {PRESSED_COLOR} from "../../config";
 
+const meIcon = 'https://cdn-icons-png.flaticon.com/512/25/25613.png'
 const ObjectsMapScreen = ({navigation}) => {
     const dispatch = useDispatch()
     const refreshInterval = useSelector(state => state.user.refreshInterval)
@@ -38,6 +38,19 @@ const ObjectsMapScreen = ({navigation}) => {
 
     const baseUrl = useSelector(state => state.app.currentServer)
     const icons = useSelector(state => state.objects.icons)
+
+    const [geoZones, setGeoZones] = useState(null)
+
+    const getObjectGeozones = async () => {
+        try {
+            await dispatch(getGeozones()).then((data) =>{
+                if(data.response) {
+                    setGeoZones(data.response)
+                }
+            })
+        } finally {
+        }
+    }
 
     const getObjectStatuses = useCallback(async () => {
         try {
@@ -70,6 +83,7 @@ const ObjectsMapScreen = ({navigation}) => {
             setIsLoading(true)
             await getObjectsData()
             await getObjectStatuses()
+            await getObjectGeozones()
         } finally {
             setIsLoading(false)
         }
@@ -93,6 +107,12 @@ const ObjectsMapScreen = ({navigation}) => {
     }, []);
 
     useEffect(() => {
+        if(!query) {
+            setCurrent(0)
+        }
+    }, [query]);
+
+    useEffect(() => {
         interval.current = setInterval(async () => await getObjectStatuses(), refreshInterval)
         return () => {
             console.log('CLOSE MAP SCREEN')
@@ -105,16 +125,14 @@ const ObjectsMapScreen = ({navigation}) => {
         if(!statuses || !objects || !icons) {
             return []
         }
-        return statuses?.points?.map((point, idx) => {
+        const mrks = statuses?.points?.map((point, idx) => {
             const obj = objects.find(o => o.main.id == point.trackerid)
             const icon = icons.find((ic) => ic.id == obj?.main.iconId)
             if (!icon || !point) {
                 return {}
             }
             const url = baseUrl + icon.url
-            if(!current && idx === 0) {
-                setCurrent(obj.main.id)
-            }
+
             return {
                 id: obj.main.id,
                 position: {
@@ -131,18 +149,86 @@ const ObjectsMapScreen = ({navigation}) => {
                 size: [icon.width, icon.height]
             }
         })
-    }, [statuses, objects, icons])
+
+        if (location) {
+           if(current === null) {
+               setCurrent(0)
+           }
+           mrks.push({
+               id: 0,
+               position: {
+                   lat: location.coords.latitude,
+                   lng: location.coords.longitude,
+               },
+               icon: meIcon,
+               size: [30, 30]
+           })
+        } else {
+            if(current === null && idx === 0) {
+                setCurrent(obj.main.id)
+            }
+        }
+        return mrks
+    }, [statuses, objects, icons, location, current])
+
+    const shapes = useMemo(() => {
+        if(!geoZones || !isGeozoneOpen) {
+            return []
+        }
+        return geoZones.map(zone => {
+            const mapPoints = []
+            zone?.points.split(' ').forEach(point => {
+                if(!mapPoints.length) {
+                    mapPoints.push({lat: point})
+                } else {
+                    const lastPoint = mapPoints[mapPoints.length - 1]
+                    if(lastPoint.lng) {
+                        mapPoints.push({lat: point})
+                    } else {
+                        lastPoint.lng = point
+                    }
+                }
+            })
+
+            switch (zone?.style.type) {
+                case 'point':
+                    return {
+                        shapeType: 'Circle',
+                        color: zone.style.strokeColor,
+                        id: zone.id,
+                        center: mapPoints[0],
+                        radius: zone.radius,
+                        positions: mapPoints,
+                    }
+                case 'polygon':
+                    return {
+                        shapeType: 'Polygon',
+                        color: zone.style.strokeColor,
+                        id: zone.id,
+                        positions: mapPoints,
+                    }
+                case 'polyline':
+                    return {
+                        shapeType: 'Polyline',
+                        color: zone.style.strokeColor,
+                        id: zone.id,
+                        positions: mapPoints,
+                    }
+                default: return null
+            }
+        })
+    }, [geoZones, isGeozoneOpen]);
 
     const markerTitle = useMemo(() => {
         if(current === null || !map.current || !statuses || !objects || !icons) {
             return null
         }
-        if(location?.timestamp === current) {
+        if(0 === current) {
             return
         }
         const item = objects.find(obj => obj?.main.id === current)
 
-        const icon = icons.find(i => i.id == item.main.iconId)
+        const icon = icons.find(i => i.id == item?.main?.iconId)
 
         const point = getItemPointByItemId(statuses, item)
 
@@ -257,25 +343,19 @@ const ObjectsMapScreen = ({navigation}) => {
 
     const selectSearchItem = useCallback((item) => {
         setCurrent(item.main.id)
+        setQuery(item.main.name)
         setIsSearchModalOpen(false)
     }, [])
 
     const centerPosition = useMemo(() => {
-        if(location?.timestamp === current) {
-            return {
-                position: {
-                    lat: location.coords.latitude,
-                    lng: location.coords.longitude,
-                }
-            }
-        }
         if(!markers) {
             return null
         }
-        return current ? markers.find(m => m.id === current) : markers[0]
+        return current !== null ? markers.find(m => m.id === current) : markers[0]
     }, [current, markers, location]);
 
     const markerClickHandler = useCallback((message) => {
+        setIsSearchModalOpen(false)
         const {payload, event} = message;
         if(!payload) {
             return
@@ -343,45 +423,46 @@ const ObjectsMapScreen = ({navigation}) => {
                         </View>
                     )
                 }
+                {
+                    isSearchModalOpen ? (
+                        <ScrollView style={styles.searchModal}>
+                            {
+                                searchList.map(item => (
+                                    <Pressable
+                                        style={({pressed}) => [
+                                            {
+                                                backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                            },
+                                            styles.searchElement,
+                                        ]}
+                                        onPress={() => selectSearchItem(item)}
+                                        key={item.main.id}
+                                    >
+                                        <Text>{item.main.name}</Text>
+                                    </Pressable>
+                                ))
+                            }
+                        </ScrollView>
+                    ) : null
+                }
                 <LeafletView
                     doDebug={false}
                     mapMarkers={markers}
+                    mapShapes={shapes}
                     onMessageReceived={markerClickHandler}
                     mapCenterPosition={centerPosition?.position}
                 />
             </View>
-    ), [markers, current, location, centerPosition]);
+    ), [markers, current, location, centerPosition, isSearchModalOpen, searchList, shapes, query]);
 
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
             <View style={styles.pageHeader}>
-                <SearchInput onChange={setQuery} onFocus={() => setIsSearchModalOpen(true)}/>
-                    <Modal
-                        style={[styles.modalWrapper, {marginTop: map.current?.y}]}
-                        transparent={true}
-                        visible={!!searchList.length && isSearchModalOpen}
-                        onBackdropPress={() => isSearchModalOpen && setIsSearchModalOpen(false)}
-                    >
-                            <ScrollView style={styles.searchModal}>
-                                {
-                                    searchList.map(item => (
-                                        <Pressable
-                                            style={({pressed}) => [
-                                                {
-                                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
-                                                },
-                                                styles.searchElement,
-                                            ]}
-                                            onPress={() => selectSearchItem(item)}
-                                            key={item.main.id}
-                                        >
-                                            <Text>{item.main.name}</Text>
-                                        </Pressable>
-                                    ))
-                                }
-                            </ScrollView>
-                    </Modal>
+                    <SearchInput onChange={setQuery}
+                                 val={query}
+                                 onFocus={() => setIsSearchModalOpen(true)}
+                    />
                 <Pressable
                     style={({pressed}) => [
                         {

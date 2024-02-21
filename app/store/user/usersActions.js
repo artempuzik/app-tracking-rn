@@ -82,7 +82,9 @@ export const refreshUserToken = () => async (dispatch, getState) => {
       if (access_token !== undefined) {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
         await dispatch(setToken(access_token))
-        return await AsyncStorage.setItem('token', access_token);
+        await AsyncStorage.setItem('token', access_token);
+        await dispatch(getObjects());
+        await dispatch(getUsers());
       } else {
         await AsyncStorage.removeItem('token');
         await Updates.reloadAsync()
@@ -98,8 +100,6 @@ export const setCurrent = (user) => async (dispatch) => {
     await dispatch(setCurrentUser(user))
     await AsyncStorage.setItem('user', JSON.stringify(user));
     await dispatch(refreshUserToken())
-    await dispatch(getObjects())
-    return await dispatch(getUsers())
   } catch (e) {
   }
 };
