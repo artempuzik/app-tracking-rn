@@ -12,6 +12,9 @@ import i18n from "../../../utils/i18";
 import {Image} from "expo-image";
 import {useDispatch, useSelector} from "react-redux";
 import {convertDate, getDuration, getMileage} from "../../../utils/helpers";
+import {SafeAreaView} from "react-native-safe-area-context";
+import AppHeader from "../../../components/header/AppHeader";
+import Loading from "../../../components/loading/Loading";
 
 const ObjectItemStatistics = ({object}) => {
     const navigation = useNavigation();
@@ -64,7 +67,7 @@ const ObjectItemStatistics = ({object}) => {
     }, [interval])
 
     useEffect(() => {
-        if(report?.fuel.actions.length) {
+        if(report?.fuel?.actions.length) {
             Promise.all(report.fuel.actions.map(async (action) => {
                 const adr = await dispatch(getObjectPoint(action))
                 return {
@@ -133,49 +136,49 @@ const ObjectItemStatistics = ({object}) => {
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('drive')}</Text>
-                <Text>{getDuration(0, +report?.track.movingtime)}</Text>
+                <Text>{getDuration(0, +report?.track?.movingtime)}</Text>
             </View>
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('fuel')}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('level_at_the_beginning')}</Text>
-                <Text>{Number(report?.fuel.startvolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.startvolume).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('level_at_the_ending')}</Text>
-                <Text>{Number(report?.fuel.finishvolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.finishvolume).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('fuel_consumption')}</Text>
-                <Text>{Number(report?.fuel.usedvolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.usedvolume).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('consumption_on_the_move')}</Text>
-                <Text>{Number(report?.fuel.workingvolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.workingvolume).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('consumption_for_100_km')}</Text>
-                <Text>{Number(report?.fuel.valueperkm).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.valueperkm).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('consumption_for_one_hour')}</Text>
-                <Text>{Number(report?.fuel.valueperh).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.valueperh).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('idle_consumption')}</Text>
-                <Text>{Number(report?.fuel.idlevolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.idlevolume).toFixed(2)}</Text>
             </View>
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('gas')}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('total_refills')}</Text>
-                <Text>{Number(report?.fuel.fuelingtotal).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.fuelingtotal).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('total_drains')}</Text>
-                <Text>{Number(report?.fuel.draintotal).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.draintotal).toFixed(2)}</Text>
             </View>
             {actions}
         </View>
@@ -203,45 +206,45 @@ const ObjectItemStatistics = ({object}) => {
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('parking')}</Text>
-                <Text>{getDuration(0, +report?.track.parkingtime)}</Text>
+                <Text>{getDuration(0, +report?.track?.parkingtime)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('drive')}</Text>
-                <Text>{getDuration(0, +report?.track.movingtime)}</Text>
+                <Text>{getDuration(0, +report?.track?.movingtime)}</Text>
             </View>
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('fuel')}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('fuel_consumption')}</Text>
-                <Text>{Number(report?.fuel.usedvolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.usedvolume).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('consumption_for_100_km')}</Text>
-                <Text>{Number(report?.fuel.valueperkm).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.valueperkm).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('consumption_for_one_hour')}</Text>
-                <Text>{Number(report?.fuel.valueperh).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.valueperh).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('consumption_on_the_move')}</Text>
-                <Text>{Number(report?.fuel.workingvolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.workingvolume).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('idle_consumption')}</Text>
-                <Text>{Number(report?.fuel.idlevolume).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.idlevolume).toFixed(2)}</Text>
             </View>
             <View style={styles.mainStatRow}>
                 <Text>{i18n.t('gas')}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('total_refills')}</Text>
-                <Text>{Number(report?.fuel.fuelingtotal).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.fuelingtotal).toFixed(2)}</Text>
             </View>
             <View style={styles.subStatRow}>
                 <Text>{i18n.t('total_drains')}</Text>
-                <Text>{Number(report?.fuel.draintotal).toFixed(2)}</Text>
+                <Text>{Number(report?.fuel?.draintotal).toFixed(2)}</Text>
             </View>
         </View>
     ), [report])
@@ -387,7 +390,7 @@ const ObjectItemStatistics = ({object}) => {
             {filtersBlock}
             <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
-                !isFiltersOpen && !isCalendarOpen ? pageBlock : null
+                !isFiltersOpen && !isCalendarOpen && report ? pageBlock : null
             }
         </View>
     );

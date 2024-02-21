@@ -170,7 +170,7 @@ export const getFuelReport = (dto) => async () => {
   try {
     const response = await Api.getFuelReport(dto)
     return {
-      response: response,
+      response: response.data,
       error: null,
     };
   } catch (e) {
