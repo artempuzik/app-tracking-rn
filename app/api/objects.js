@@ -19,7 +19,7 @@ const getObjectEvents = () => axios.get('/objectevents')
 
 const sendCustomCommand = (dto) => axios.post('/objects/command', dto)
 
-const getPoint = (coords, lang) => axios.get(`http://map.geotek.online/nominatim/reverse?format=json&lat=${coords.lat}48&lon=${coords.lng}&accept-language=${lang}`)
+const getPoint = (coords, lang) => fetch(`http://map.geotek.online/nominatim/reverse?format=json&lat=${coords.lat}48&lon=${coords.lng}&accept-language=${lang}`)
 
 export {
     getObjects,

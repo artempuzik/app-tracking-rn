@@ -216,8 +216,9 @@ export const getObjectPoint = (coords) => async (dispatch, getState) => {
   try {
     const lang = getState().app.language
     const response = await Api.getPoint(coords, lang)
+    const result = await response.json();
     return {
-      response: response.data,
+      response: result,
       error: null,
     };
   } catch (e) {

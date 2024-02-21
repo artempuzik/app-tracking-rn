@@ -355,7 +355,6 @@ const ObjectsMapScreen = ({navigation}) => {
     }, [current, markers, location]);
 
     const markerClickHandler = useCallback((message) => {
-        setIsSearchModalOpen(false)
         const {payload, event} = message;
         if(!payload) {
             return
@@ -425,24 +424,26 @@ const ObjectsMapScreen = ({navigation}) => {
                 }
                 {
                     isSearchModalOpen ? (
-                        <ScrollView style={styles.searchModal}>
-                            {
-                                searchList.map(item => (
-                                    <Pressable
-                                        style={({pressed}) => [
-                                            {
-                                                backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
-                                            },
-                                            styles.searchElement,
-                                        ]}
-                                        onPress={() => selectSearchItem(item)}
-                                        key={item.main.id}
-                                    >
-                                        <Text>{item.main.name}</Text>
-                                    </Pressable>
-                                ))
-                            }
-                        </ScrollView>
+                        <Pressable onPress={() => setIsSearchModalOpen(false)} style={styles.modalWrapper}>
+                            <ScrollView style={styles.searchModal}>
+                                {
+                                    searchList.map(item => (
+                                        <Pressable
+                                            style={({pressed}) => [
+                                                {
+                                                    backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                                                },
+                                                styles.searchElement,
+                                            ]}
+                                            onPress={() => selectSearchItem(item)}
+                                            key={item.main.id}
+                                        >
+                                            <Text>{item.main.name}</Text>
+                                        </Pressable>
+                                    ))
+                                }
+                            </ScrollView>
+                        </Pressable>
                     ) : null
                 }
                 <LeafletView

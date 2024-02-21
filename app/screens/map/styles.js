@@ -51,14 +51,16 @@ export default StyleSheet.create({
     modalWrapper: {
         position: 'absolute',
         backgroundColor: 'transparent',
-        flex: 1,
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        zIndex: 100,
     },
     searchModal: {
-        position: 'absolute',
         width: '100%',
         maxHeight: 200,
         backgroundColor: 'white',
-        zIndex: 10,
+        zIndex: 110,
     },
     searchElement: {
         padding: 10,
