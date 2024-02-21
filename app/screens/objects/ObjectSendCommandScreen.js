@@ -1,5 +1,12 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView, TextInput, Alert} from 'react-native';
+import {
+    View,
+    Text,
+    Pressable,
+    ScrollView,
+    TextInput,
+    Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import Svg, {Path} from "react-native-svg";
@@ -12,7 +19,6 @@ import i18n from "../../utils/i18";
 import AppModal from "../../components/modal/AppModal";
 import {sendCustomCommand} from "../../store/objects/objectsActions";
 import {Image} from "expo-image";
-
 const ObjectSendCommandScreen = ({navigation}) => {
     const route = useRoute();
     const dispatch = useDispatch()
@@ -30,29 +36,45 @@ const ObjectSendCommandScreen = ({navigation}) => {
         setIsSmsAvailable(data)
     });
 
+    const sendDirectSms = useCallback(async (msg, phone) => {
+        try {
+        SMS.sendSMSAsync(
+            [phone],
+            msg,
+        ).then(data => {
+            Alert.alert('Result: ' + data.result);
+            setTimeout(() => navigation.navigate('ObjectItem', {id: route.params.id}), 1000)
+        });
+        } catch (err) {
+            console.warn(err);
+        }
+    }, [element, message])
+
     const icon = useMemo(() => {
         return icons.find((ic) => ic.id == element?.iconid)
     }, [element, icons])
 
     const sendCommand = useCallback(() => {
         if(sendSmsMessages) {
+            console.log(isSmsAvailable)
             if(!isSmsAvailable) {
                 Alert.alert('Sms is not available');
+                navigation.navigate('ObjectItem', {id: route.params.id})
                 return
             }
-            SMS.sendSMSAsync(
-                [element.phone],
-                message,
-            ).then(data => {
-                console.log(data)
-            });
+            sendDirectSms(message, element.phone).catch()
         } else {
             dispatch(sendCustomCommand({
                 objectID: element.id,
-                templateID: "",
-                cmd: message
-
-            }))
+                templateID: 0,
+                command: message
+            })).then(res => {
+                if(!res.error) {
+                    Alert.alert('Successfully sent');
+                } else {
+                    Alert.alert(res.error);
+                }
+            })
         }
     })
 
@@ -60,21 +82,22 @@ const ObjectSendCommandScreen = ({navigation}) => {
         if(sendSmsMessages) {
             if(!isSmsAvailable) {
                 Alert.alert('Sms is not available');
+                navigation.navigate('ObjectItem', {id: route.params.id})
                 return
             }
-            SMS.sendSMSAsync(
-                [element.phone],
-                template.cmd,
-            ).then(data => {
-                console.log(data)
-            });
+            sendDirectSms(template.cmd, element.phone).catch()
         } else {
             dispatch(sendCustomCommand({
                 objectID: element.id,
                 templateID: template.id,
                 cmd: template.cmd
-
-            }))
+            })).then(res => {
+                if(!res.error) {
+                    Alert.alert('Successfully sent');
+                } else {
+                    Alert.alert(res.error);
+                }
+            })
         }
     })
 

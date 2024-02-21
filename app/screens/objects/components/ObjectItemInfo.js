@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView} from 'react-native';
+import {View, Text, Pressable, ScrollView, Alert} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import i18n from '../../../utils/i18'
 import styles from '../styles';

@@ -1,11 +1,10 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, Text, Pressable, TextInput, ScrollView} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View, Text, Pressable, TextInput, ScrollView, Platform} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import i18n from "../../../utils/i18";
 import styles from '../styles';
-import RadioForm from "react-native-simple-radio-button";
-import {PARKING_OPTIONS, PRESSED_COLOR} from "../../../config";
+import {PRESSED_COLOR} from "../../../config";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../../components/button/Button";
 import {useDispatch, useSelector} from "react-redux";
@@ -13,6 +12,11 @@ import {getObjectHistory} from "../../../store/objects/objectsActions";
 import {convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
 import {LeafletView} from "react-native-leaflet-view";
+
+const parkingIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 3C0 1.34315 1.34315 0 3 0H21C22.6569 0 24 1.34315 24 3V21C24 22.6569 22.6569 24 21 24H3C1.34315 24 0 22.6569 0 21V3Z" fill="black"/>
+<path d="M7 18V5H12.9148C13.9319 5 14.8218 5.19043 15.5846 5.57129C16.3473 5.95215 16.9406 6.48747 17.3644 7.17725C17.7881 7.86702 18 8.67318 18 9.5957C18 10.5267 17.7814 11.3328 17.3443 12.0142C16.9116 12.6955 16.3027 13.2202 15.5176 13.5884C14.737 13.9565 13.8248 14.1406 12.781 14.1406H9.24818V11.3984H12.0316C12.4688 11.3984 12.8412 11.3265 13.149 11.1826C13.4613 11.0345 13.6999 10.825 13.865 10.5542C14.0345 10.2834 14.1192 9.96387 14.1192 9.5957C14.1192 9.22331 14.0345 8.90592 13.865 8.64355C13.6999 8.37695 13.4613 8.17383 13.149 8.03418C12.8412 7.8903 12.4688 7.81836 12.0316 7.81836H10.7202V18H7Z" fill="white"/>
+</svg>`
 
 const initialFilters = {
     minParking: '',
@@ -107,7 +111,7 @@ const ObjectItemParking = ({object}) => {
                     lat: el.lat,
                     lng: el.lng,
                 },
-                icon: `<img src="../../../../assets/parking.svg" alt="parking"/>`,
+                icon: parkingIcon,
                 size: [30, 30]
             }))
         } else {
@@ -117,7 +121,7 @@ const ObjectItemParking = ({object}) => {
                     lat: el.lat,
                     lng: el.lng,
                 },
-                icon: `<img src="../../../../assets/parking.svg" alt="parking"/>`,
+                icon: parkingIcon,
                 size: [30, 30]
             }))
         }

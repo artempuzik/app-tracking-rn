@@ -170,7 +170,7 @@ export const getFuelReport = (dto) => async () => {
   try {
     const response = await Api.getFuelReport(dto)
     return {
-      response: response.data,
+      response: response,
       error: null,
     };
   } catch (e) {
@@ -216,9 +216,8 @@ export const getObjectPoint = (coords) => async (dispatch, getState) => {
   try {
     const lang = getState().app.language
     const response = await Api.getPoint(coords, lang)
-    const result = await response.json();
     return {
-      response: result,
+      response: response.data,
       error: null,
     };
   } catch (e) {

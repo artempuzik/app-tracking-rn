@@ -112,14 +112,14 @@ const ObjectsMapScreen = ({navigation}) => {
         }
     }, [query]);
 
-    useEffect(() => {
-        interval.current = setInterval(async () => await getObjectStatuses(), refreshInterval)
-        return () => {
-            console.log('CLOSE MAP SCREEN')
-            clearInterval(interval.current)
-            interval.current = null
-        }
-    }, [])
+    // useEffect(() => {
+    //     interval.current = setInterval(async () => await getObjectStatuses(), refreshInterval)
+    //     return () => {
+    //         console.log('CLOSE MAP SCREEN')
+    //         clearInterval(interval.current)
+    //         interval.current = null
+    //     }
+    // }, [])
 
     const markers = useMemo(() => {
         if(!statuses || !objects || !icons) {

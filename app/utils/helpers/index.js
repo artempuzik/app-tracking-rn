@@ -157,3 +157,32 @@ export const polygonArea = (points) => {
     return Math.round(Math.abs(area * 6378137 * 6378137 / 2)/ 1000)/1000;
 }
 
+import { Asset } from 'expo-asset';
+export const pathToUri = async (name) => {
+    try {
+        let assetPath;
+        switch (name) {
+            case 'start':
+                assetPath = require(`../../../assets/logo.png`);
+                break;
+            case 'finish':
+                assetPath = require(`../../../assets/finish.svg`);
+                break;
+            case 'parking':
+                assetPath = require(`../../../assets/parking.svg`);
+                break;
+            case 'azs':
+                assetPath = require(`../../../assets/AZS.svg`);
+                break;
+            default:
+                throw new Error('Invalid SVG name');
+        }
+        const svgAsset = Asset.fromModule(assetPath);
+        await svgAsset.downloadAsync(); // Ensure asset is downloaded
+        return svgAsset.uri;
+    } catch (error) {
+        console.error('Error converting SVG to URI:', error);
+        return null;
+    }
+};
+
