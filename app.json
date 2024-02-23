@@ -17,7 +17,7 @@
     "ios": {
       "userInterfaceStyle": "light",
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.geotek"
+      "bundleIdentifier": "com.geotek"
     },
     "android": {
       "userInterfaceStyle": "light",
@@ -28,7 +28,7 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.geotek",
+      "package": "com.geotek",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
@@ -60,9 +60,6 @@
       "router": {
         "origin": false
       },
-      "eas": {
-        "projectId": "4918dd6a-6bed-43ce-a4f4-05fe3d9df301"
-      }
     }
   }
 }

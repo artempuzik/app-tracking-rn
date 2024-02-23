@@ -24,7 +24,7 @@ const UserScreen = ({navigation}) => {
         setIsLoading(true)
         await dispatch(setCurrent(user)).then(() => setTimeout(() => {
             setIsLoading(false)
-            navigation.navigate('Objects')
+            navigation.navigate('Home')
             }, 1000))
     }, [])
 
