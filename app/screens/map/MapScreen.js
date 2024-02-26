@@ -351,7 +351,7 @@ const ObjectsMapScreen = ({navigation}) => {
             return null
         }
         return current !== null ? markers.find(m => m.id === current) : markers[0]
-    }, [current, markers, location]);
+    }, [current, markers]);
 
     const goToMe = useCallback(() => {
         setCurrent(null)
