@@ -71,6 +71,8 @@ const ObjectSendCommandScreen = ({navigation}) => {
             })).then(res => {
                 if(!res.error) {
                     Alert.alert('Successfully sent');
+                    navigation.navigate('ObjectItem', {id: route.params.id})
+                    return
                 } else {
                     Alert.alert(res.error);
                 }
@@ -94,6 +96,8 @@ const ObjectSendCommandScreen = ({navigation}) => {
             })).then(res => {
                 if(!res.error) {
                     Alert.alert('Successfully sent');
+                    navigation.navigate('ObjectItem', {id: route.params.id})
+                    return
                 } else {
                     Alert.alert(res.error);
                 }

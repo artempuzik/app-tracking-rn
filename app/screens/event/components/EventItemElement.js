@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import styles from '../styles';
 import {convertDate} from "../../../utils/helpers";
@@ -25,7 +25,7 @@ const EventItemElement = ({item, icons, profile}) => {
     return (
         <View style={styles.eventItemBlock}>
             <View style={styles.mainRow}>
-                <View>
+                <View style={{marginRight: 10}}>
                     <Image
                         style={styles.image}
                         height={icon?.height}
@@ -54,7 +54,9 @@ const EventItemElement = ({item, icons, profile}) => {
                               fill={"#a7a7aa"}/>
                     </Svg>
                 </View>
-                <Text style={styles.itemText}>{item.text}</Text>
+                <ScrollView style={{flex: 1}}>
+                    <Text style={styles.itemText}>{item.text}</Text>
+                </ScrollView>
             </View>
         </View>
     );

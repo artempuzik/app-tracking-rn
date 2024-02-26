@@ -66,7 +66,7 @@ export default function Screens() {
                         ) :
                         (
                             <Stack.Navigator initialRouteName="Home"
-                                             style={{paddingBottom: isAndroid ? 20 : 0}}
+                                             style={{paddingBottom: isAndroid ? 60 : 10}}
                                              screenOptions={{
                                 headerShown: false
                             }}>

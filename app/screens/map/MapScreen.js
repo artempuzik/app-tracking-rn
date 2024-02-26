@@ -89,8 +89,8 @@ const ObjectsMapScreen = ({navigation}) => {
         }
     }
 
-    useEffect(() => {
-        (async () => {
+    const getLocation = useCallback(async () => {
+            setIsLoading(true)
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
@@ -99,11 +99,11 @@ const ObjectsMapScreen = ({navigation}) => {
 
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
-        })();
+            setIsLoading(false)
     }, []);
 
     useEffect(() => {
-        fetchData().catch(() => {})
+        fetchData().then(() => getLocation()).catch(() => {})
     }, []);
 
     useEffect(() => {
@@ -112,14 +112,19 @@ const ObjectsMapScreen = ({navigation}) => {
         }
     }, [query]);
 
-    // useEffect(() => {
-    //     interval.current = setInterval(async () => await getObjectStatuses(), refreshInterval)
-    //     return () => {
-    //         console.log('CLOSE MAP SCREEN')
-    //         clearInterval(interval.current)
-    //         interval.current = null
-    //     }
-    // }, [])
+    useEffect(() => {
+        if(current === 0) {
+            return () => {
+                clearInterval(interval.current)
+                interval.current = null
+            }
+        }
+        interval.current = setInterval(async () => await getObjectStatuses(), refreshInterval)
+        return () => {
+            clearInterval(interval.current)
+            interval.current = null
+        }
+    }, [current])
 
     const markers = useMemo(() => {
         if(!statuses || !objects || !icons) {
@@ -138,12 +143,6 @@ const ObjectsMapScreen = ({navigation}) => {
                 position: {
                     lat: point.lat,
                     lng: point.lng,
-                },
-                animation: {
-                    type: 'spin',
-                    duration: icon.rotate ? 5 : 10000,
-                    direction: 'reverse',
-                    iterationCount: 100,
                 },
                 icon: url,
                 size: [icon.width, icon.height]
@@ -354,6 +353,11 @@ const ObjectsMapScreen = ({navigation}) => {
         return current !== null ? markers.find(m => m.id === current) : markers[0]
     }, [current, markers, location]);
 
+    const goToMe = useCallback(() => {
+        setCurrent(null)
+        setTimeout(() => setCurrent(0))
+    }, [centerPosition])
+
     const markerClickHandler = useCallback((message) => {
         const {payload, event} = message;
         if(!payload) {
@@ -364,6 +368,10 @@ const ObjectsMapScreen = ({navigation}) => {
             const id = payload.mapMarkerID
             if(typeof id === 'number') {
                 setCurrent(id)
+                if(id !== 0) {
+                    const obj = objects.find(o => o.main.id == id)
+                    setQuery(obj.main.name)
+                }
             }
         } else {
             setIsTitleOpen(false)
@@ -385,9 +393,7 @@ const ObjectsMapScreen = ({navigation}) => {
                                         backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
                                     },
                                 ]}
-                                onPress={() => {
-                                    setCurrent(location.timestamp)
-                                }}
+                                onPress={goToMe}
                             >
                                 <Svg
                                     width={30}
@@ -405,9 +411,7 @@ const ObjectsMapScreen = ({navigation}) => {
                                         backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
                                     },
                                 ]}
-                                onPress={() => {
-                                    setCurrent(location.timestamp)
-                                }}
+                                onPress={goToMe}
                             >
                                 <Svg
                                     width={30}
@@ -452,6 +456,7 @@ const ObjectsMapScreen = ({navigation}) => {
                     mapShapes={shapes}
                     onMessageReceived={markerClickHandler}
                     mapCenterPosition={centerPosition?.position}
+                    androidHardwareAccelerationDisabled={false}
                 />
             </View>
     ), [markers, current, location, centerPosition, isSearchModalOpen, searchList, shapes, query]);

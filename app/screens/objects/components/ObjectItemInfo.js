@@ -97,7 +97,7 @@ const ObjectItemInfo = ({object, status}) => {
     }, [iopoints])
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.pageItemHeader}>
                 <View style={styles.rightBlock}>
                     <Pressable
@@ -208,7 +208,7 @@ const ObjectItemInfo = ({object, status}) => {
                     }
                 </View>
             </View>
-            <ScrollView style={{flex: 1}}>
+            <View style={{flex: 1}}>
                 {renderTrends}
                 {
                    Number(status?.stat[0].mileage) ? (
@@ -226,7 +226,7 @@ const ObjectItemInfo = ({object, status}) => {
                         </View>
                     ) : null
                 }
-            </ScrollView>
+            </View>
             <View style={styles.sendBtnContainer}>
                 <Pressable
                     style={({pressed}) => [
@@ -241,7 +241,7 @@ const ObjectItemInfo = ({object, status}) => {
                     <Text style={styles.commentText}>{i18n.t('send_command')}</Text>
                 </Pressable>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 

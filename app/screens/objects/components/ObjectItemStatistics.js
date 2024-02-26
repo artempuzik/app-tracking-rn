@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView} from 'react-native';
+import {View, Text, Pressable, ScrollView, ActivityIndicator} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
@@ -68,13 +68,16 @@ const ObjectItemStatistics = ({object}) => {
 
     useEffect(() => {
         if(report?.fuel?.actions.length) {
+            setIsLoading(true)
             Promise.all(report.fuel.actions.map(async (action) => {
                 const adr = await dispatch(getObjectPoint(action))
                 return {
                     ...action,
                     address: adr.response
                 }
-            })).then(data => setReportActions(data))
+            }))
+                .then(data => setReportActions(data))
+                .finally(_=> setIsLoading(false))
         }
     }, [report])
 
@@ -182,7 +185,7 @@ const ObjectItemStatistics = ({object}) => {
             </View>
             {actions}
         </View>
-    ), [report])
+    ), [report, actions, reportActions])
 
     const totalReport = useMemo(() =>(
         <View style={{paddingHorizontal: 20}}>
@@ -333,11 +336,15 @@ const ObjectItemStatistics = ({object}) => {
                     </Pressable>
                 </View>
             </View>
-            <ScrollView>
-                {report && reportType === 'fuel' ? fuelReport : totalReport}
-            </ScrollView>
+            {
+                isLoading ? <ActivityIndicator /> : (
+                    <ScrollView>
+                        {report && reportType === 'fuel' ? fuelReport : totalReport}
+                    </ScrollView>
+                )
+            }
         </View>
-), [report, reportType])
+), [report, reportType, isLoading, fuelReport, totalReport])
 
     const filtersBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>

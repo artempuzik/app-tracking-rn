@@ -65,7 +65,7 @@ const AppCalendarFilter = ({
         setMinDate(new Date())
         setMaxDate(new Date())
         setMinTime(new Date().setHours(0,0))
-        setMaxTime(new Date().setHours(23,29))
+        setMaxTime(new Date().setHours(23,59))
     }, [])
 
     const setYesterday = useCallback(() => {
@@ -253,7 +253,7 @@ const AppCalendarFilter = ({
                     </View>
                 </View>
                 <View style={{paddingHorizontal: 20}}>
-                    <CustomButton title={i18n.t('save')} onPress={saveCalendar} />
+                    <CustomButton title={i18n.t('apply')} onPress={saveCalendar} />
                 </View>
             </View>
         </View>

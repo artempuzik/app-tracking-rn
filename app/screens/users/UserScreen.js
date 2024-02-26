@@ -22,10 +22,11 @@ const UserScreen = ({navigation}) => {
 
     const selectCurrentUserHandler = useCallback(async (user) => {
         setIsLoading(true)
-        await dispatch(setCurrent(user)).then(() => setTimeout(() => {
+        await dispatch(setCurrent(user)).then(() => {
             setIsLoading(false)
             navigation.navigate('Home')
-            }, 1000))
+        }
+    )
     }, [])
 
     return (
