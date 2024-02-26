@@ -97,7 +97,7 @@ const ObjectItemInfo = ({object, status}) => {
     }, [iopoints])
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.pageItemHeader}>
                 <View style={styles.rightBlock}>
                     <Pressable
@@ -208,7 +208,7 @@ const ObjectItemInfo = ({object, status}) => {
                     }
                 </View>
             </View>
-            <View style={{flex: 1}}>
+            <ScrollView style={{flex: 1}}>
                 {renderTrends}
                 {
                    Number(status?.stat[0].mileage) ? (
@@ -226,22 +226,22 @@ const ObjectItemInfo = ({object, status}) => {
                         </View>
                     ) : null
                 }
-            </View>
-            <View style={styles.sendBtnContainer}>
-                <Pressable
-                    style={({pressed}) => [
-                        {
-                            backgroundColor: pressed ? '#c7c7c9' : 'transparent',
-                        },
-                        styles.sendCommentButton,
-                    ]}
-                    onPress={() => navigation.navigate('ObjectSendCommand', {id: object.main.id})}
-                >
-                    <Text style={styles.commentText}>{'</>'}</Text>
-                    <Text style={styles.commentText}>{i18n.t('send_command')}</Text>
-                </Pressable>
-            </View>
-        </ScrollView>
+                <View style={styles.sendBtnContainer}>
+                    <Pressable
+                        style={({pressed}) => [
+                            {
+                                backgroundColor: pressed ? '#c7c7c9' : 'transparent',
+                            },
+                            styles.sendCommentButton,
+                        ]}
+                        onPress={() => navigation.navigate('ObjectSendCommand', {id: object.main.id})}
+                    >
+                        <Text style={styles.commentText}>{'</>'}</Text>
+                        <Text style={styles.commentText}>{i18n.t('send_command')}</Text>
+                    </Pressable>
+                </View>
+            </ScrollView>
+        </View>
     );
 };
 

@@ -35,7 +35,7 @@ const EventItemElement = ({item, icons, profile}) => {
                     />
                 </View>
                 <View>
-                    <Text style={styles.idsBlock}>{car.name}</Text>
+                    <Text style={styles.idsBlock}>{car?.name}</Text>
                     <Text style={styles.itemText}>{convertDate(item.time)}</Text>
                 </View>
             </View>
