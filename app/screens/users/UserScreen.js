@@ -6,7 +6,7 @@ import SearchInput from "../../components/search/SearchInput";
 import {useDispatch, useSelector} from "react-redux";
 import {PRESSED_COLOR} from "../../config";
 import UserItemElement from "./components/UserItemElement";
-import {setCurrent} from "../../store/user/usersActions";
+import {setCurrent} from "../../store/app/appActions";
 import i18n from "../../utils/i18";
 
 const UserScreen = ({navigation}) => {

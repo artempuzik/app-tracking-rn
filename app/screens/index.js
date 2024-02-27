@@ -31,6 +31,7 @@ const isAndroid = Platform.OS === 'android'
 export default function Screens() {
     const dispatch = useDispatch();
     const token = useSelector(store => store.app.token)
+    const loading = useSelector(store => store.app.loading)
     const [isLoading, setIsLoading] = useState(false)
     const initApp = async () => {
         try {
@@ -47,7 +48,7 @@ export default function Screens() {
         })
     }, [])
 
-    if(isLoading) {
+    if(isLoading || loading) {
         return (
             <Loading isLoading={isLoading} />
         )

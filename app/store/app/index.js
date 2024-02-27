@@ -3,6 +3,7 @@ import {BASE_URL} from "../../config";
 
 const initialState = {
     subUserId: 0,
+    loading: false,
     token: null,
     currentServer: BASE_URL,
     language: 'en-us',
@@ -17,6 +18,9 @@ export const appSlice = createSlice({
     reducers: {
         setToken: (state, action) => {
             state.token = action.payload
+        },
+        setLoading: (state, action) => {
+            state.loading = action.payload
         },
         setLanguage: (state, action) => {
             state.language = action.payload
@@ -57,6 +61,7 @@ export const {
     setServers,
     setLanguages,
     setCurrentServer,
+    setLoading
 } = appSlice.actions
 
 export default appSlice.reducer

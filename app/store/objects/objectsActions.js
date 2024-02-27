@@ -1,6 +1,7 @@
 import Api from '../../api'
 import {setObjectEvents, setObjects, setObjectsIcons, setObjectsStatuses, setTransactions} from "./index";
 
+
 export const getObjects = () => async (dispatch) => {
   try {
     const response = await Api.getObjects()

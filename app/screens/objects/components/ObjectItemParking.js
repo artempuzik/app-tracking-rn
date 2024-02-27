@@ -381,7 +381,7 @@ const ObjectItemParking = ({object}) => {
                         <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
-                <View style={{marginHorizontal: 20}}>
+                <View style={{marginHorizontal: 20, marginBottom: 20}}>
                     <CustomButton title={'Сохранить'} onPress={saveFilters} />
                 </View>
             </View>

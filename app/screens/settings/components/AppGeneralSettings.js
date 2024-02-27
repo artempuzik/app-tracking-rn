@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import {View, Text, ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
 import i18n from '../../../utils/i18'
 import styles from '../styles'
 import {useDispatch, useSelector} from "react-redux";
@@ -8,9 +8,12 @@ import {CODE_LIST, METRICS_LIST, REFRESH_INTERVAL} from "../../../config";
 import CustomButton from "../../../components/button/Button";
 import {changeUser, setRefreshStatusInterval} from "../../../store/user/usersActions";
 import RangeSlider from "../../../components/Slider/RangeSlider";
+import {reloadApp, setAppLanguage} from "../../../store/app/appActions";
+import {useNavigation} from "@react-navigation/native";
 
 const AppGeneralSettings = () => {
-    const [language, setLang] = useState('ru')
+    const lang = useSelector(state => state.app.language)
+    const navigation = useNavigation();
     const [flags, setFlags] = useState('')
     const [geocoder, setGeocoder] = useState('')
     const [interval, setInterval] = useState(REFRESH_INTERVAL)
@@ -38,7 +41,7 @@ const AppGeneralSettings = () => {
             setLoading(true)
             dispatch(changeUser({
                 geocoder,
-                language,
+                language: lang,
                 flags,
             })).then((response) => {
                 setLoading(false)
@@ -46,10 +49,17 @@ const AppGeneralSettings = () => {
                     setError(response.error)
                 }
                 dispatch(setRefreshStatusInterval(interval))
+                dispatch(reloadApp())
             })
         } catch (e) {
             setLoading(false)
         }
+    }
+
+    if(loading) {
+        return (
+            <ActivityIndicator />
+        )
     }
 
     if(!user) {
@@ -72,7 +82,7 @@ const AppGeneralSettings = () => {
                         >
                             <View style={styles.block}>
                                 <Text style={styles.text}>{i18n.t('interface_language')}</Text>
-                                <SelectList items={languages} value={language} onChange={setLang}/>
+                                <SelectList items={languages} value={lang} onChange={(value) => dispatch(setAppLanguage(value))}/>
                             </View>
                             <View style={styles.block}>
                                 <Text style={styles.text}>{i18n.t('default_map')}</Text>

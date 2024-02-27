@@ -2,11 +2,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from '../../utils/i18'
 import Api from '../../api'
 import axios from '../../api/instance'
-import {resetAppState, setCurrentServer, setLanguage, setLanguages, setProfile, setServers, setToken} from "./index";
+import {
+  resetAppState,
+  setCurrentServer,
+  setLanguage,
+  setLanguages,
+  setLoading,
+  setProfile,
+  setServers,
+  setToken
+} from "./index";
 import {resetUserState, setCurrentUser, setRefreshInterval} from "../user";
 import {resetDriversState} from "../drivers";
 import {resetObjectsState} from "../objects";
-import {getUsers, refreshUserToken} from "../user/usersActions";
+import {getUsers} from "../user/usersActions";
 import {getObjectIcons, getObjects, getObjectsStatuses} from "../objects/objectsActions";
 import * as Updates from "expo-updates";
 
@@ -97,6 +106,11 @@ export const setAppLanguage = (language) => async (dispatch) => {
   dispatch(setLanguage(language))
 };
 
+export const reloadApp = () => async (dispatch) => {
+  dispatch(setLoading(true))
+  setTimeout(() => dispatch(setLoading(false)), 500)
+}
+
 export const getToken = (dto) => async (dispatch) => {
   try {
     const response = await Api.getUserToken({
@@ -135,6 +149,48 @@ export const getToken = (dto) => async (dispatch) => {
       response: null,
       error: JSON.stringify(e.message)
     };
+  }
+};
+
+export const refreshUserToken = () => async (dispatch, getState) => {
+  try {
+    const user = getState().user.currentUser
+    if(!user) {
+      return {
+        response: null,
+        error: 'Not found'
+      };
+    }
+    const response = await Api.refreshToken({
+      subUserId: user.id,
+      language: user.language
+    })
+    if(response.status === 200) {
+      const access_token = response.data.accessToken
+      if (access_token !== undefined) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
+        await AsyncStorage.setItem('token', access_token);
+        await dispatch(setToken(access_token))
+        await dispatch(getObjects())
+        await dispatch(getObjectIcons())
+        await dispatch(getProfileData())
+        await dispatch(getObjectsStatuses())
+      } else {
+        await AsyncStorage.removeItem('token');
+        await Updates.reloadAsync()
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const setCurrent = (user) => async (dispatch) => {
+  try {
+    await dispatch(setCurrentUser(user))
+    await AsyncStorage.setItem('user', JSON.stringify(user));
+    await dispatch(refreshUserToken())
+  } catch (e) {
   }
 };
 export const logOut = () => async (dispatch) => {

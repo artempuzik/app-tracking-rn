@@ -264,6 +264,12 @@ export default StyleSheet.create({
         marginVertical: 5,
         opacity: 0.6,
     },
+    rowLine: {
+        backgroundColor: '#ceced0',
+        paddingVertical: 5,
+        paddingHorizontal: 2,
+        marginTop: 15,
+    },
     subStatRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',

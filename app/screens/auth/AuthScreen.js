@@ -48,14 +48,6 @@ export default function AuthScreen({navigation}) {
         }
     }, []);
 
-    // const pressRegistrationBtnHandler = () => {
-    //     navigation.navigate('Registration')
-    // }
-    //
-    // const goToResetPasswordScreen = () => {
-    //     navigation.navigate('ResetPassword')
-    // }
-
     const formatLangArray = useMemo(() => {
         return languages.map(item => ({
             label: Object.values(item)[0], value: Object.keys(item)[0]
@@ -146,21 +138,6 @@ export default function AuthScreen({navigation}) {
                                     btnColor={'#FFA500'}
                                     onPress={submitHandler}
                                 />
-                                {/*<View style={{ marginTop: 20 }}>*/}
-                                {/*    <Pressable*/}
-                                {/*        onPress={goToResetPasswordScreen}*/}
-                                {/*    >*/}
-                                {/*        <Text style={styles.links}>Забыли пароль?</Text>*/}
-                                {/*    </Pressable>*/}
-                                {/*</View>*/}
-                                {/*<View style={{ marginTop: 20, ...styles.row }}>*/}
-                                {/*    <Text style={styles.text}>Нет аккаунта?</Text>*/}
-                                {/*    <Pressable*/}
-                                {/*        onPress={pressRegistrationBtnHandler}*/}
-                                {/*    >*/}
-                                {/*        <Text style={styles.links}>Зарегистрироваться</Text>*/}
-                                {/*    </Pressable>*/}
-                                {/*</View>*/}
                         <View style={{ marginTop: 20, marginBottom: 50, ...styles.row }}>
                         <Text style={styles.text}>{i18n.t('interface_language')}</Text>
                             <RNPickerSelect

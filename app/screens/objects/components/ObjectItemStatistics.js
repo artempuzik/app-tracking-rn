@@ -12,9 +12,6 @@ import i18n from "../../../utils/i18";
 import {Image} from "expo-image";
 import {useDispatch, useSelector} from "react-redux";
 import {convertDate, getDuration, getMileage} from "../../../utils/helpers";
-import {SafeAreaView} from "react-native-safe-area-context";
-import AppHeader from "../../../components/header/AppHeader";
-import Loading from "../../../components/loading/Loading";
 
 const ObjectItemStatistics = ({object}) => {
     const navigation = useNavigation();
@@ -93,9 +90,9 @@ const ObjectItemStatistics = ({object}) => {
         if(!reportActions.length) {
             return null
         }
-        return reportActions.map(action => {
+        return reportActions.map((action, index) => {
             return (
-                <View style={{borderBottomColor: '#a7a7aa', borderBottomWidth: 1}}>
+                <View key={index} style={{borderBottomColor: '#a7a7aa', borderBottomWidth: 1}}>
                     <View style={styles.subStatRow}>
                         <Text>{i18n.t(action.type.toLowerCase())}</Text>
                         <Text>{action.type}</Text>
@@ -183,6 +180,7 @@ const ObjectItemStatistics = ({object}) => {
                 <Text>{i18n.t('total_drains')}</Text>
                 <Text>{Number(report?.fuel?.draintotal).toFixed(2)}</Text>
             </View>
+            <View style={styles.rowLine}></View>
             {actions}
         </View>
     ), [report, actions, reportActions])
@@ -385,7 +383,7 @@ const ObjectItemStatistics = ({object}) => {
                         <Text style={styles.resetButtonText}>{i18n.t('reset_filters')}</Text>
                     </Pressable>
                 </View>
-                <View style={{marginHorizontal: 20}}>
+                <View style={{marginHorizontal: 20, marginBottom: 20}}>
                     <CustomButton title={i18n.t('save')} onPress={saveFilters} />
                 </View>
             </View>

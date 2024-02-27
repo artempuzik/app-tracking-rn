@@ -139,8 +139,8 @@ const DriversScreen = ({navigation}) => {
                         </Pressable>
                     </View>
                 </View>
-                <View style={{paddingHorizontal: 20}}>
-                    <CustomButton title={'Сохранить'} onPress={() => {}} />
+                <View style={{paddingHorizontal: 20, marginBottom: 20}}>
+                    <CustomButton title={i18n.t('save')} onPress={() => {}} />
                 </View>
             </View>
         )

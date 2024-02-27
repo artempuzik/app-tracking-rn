@@ -1,10 +1,6 @@
-import {setUsers, setCurrentUser, setRefreshInterval} from "./index";
+import {setUsers, setRefreshInterval} from "./index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Api from '../../api'
-import axios from "../../api/instance";
-import {setToken} from "../app";
-import * as Updates from "expo-updates";
-import {getObjects, getObjectsStatuses} from "../objects/objectsActions";
 
 export const recoverPassword = (email) => async (dispatch, getState) => {
   try {
@@ -63,46 +59,6 @@ export const setRefreshStatusInterval = (value) => async (dispatch) => {
   dispatch(setRefreshInterval(value))
   await AsyncStorage.setItem('refresh', value.toString());
 }
-
-export const refreshUserToken = () => async (dispatch, getState) => {
-  try {
-    const user = getState().user.currentUser
-    if(!user) {
-      return {
-        response: null,
-        error: 'Not found'
-      };
-    }
-    const response = await Api.refreshToken({
-      subUserId: user.id,
-      language: user.language
-    })
-    if(response.status === 200) {
-      const access_token = response.data.accessToken
-      if (access_token !== undefined) {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
-        await dispatch(setToken(access_token))
-        await AsyncStorage.setItem('token', access_token);
-        await dispatch(getObjects());
-        await dispatch(getUsers());
-      } else {
-        await AsyncStorage.removeItem('token');
-        await Updates.reloadAsync()
-      }
-    }
-  } catch (e) {
-    console.log(e)
-  }
-}
-
-export const setCurrent = (user) => async (dispatch) => {
-  try {
-    await dispatch(setCurrentUser(user))
-    await AsyncStorage.setItem('user', JSON.stringify(user));
-    await dispatch(refreshUserToken())
-  } catch (e) {
-  }
-};
 
 export const getUserById = (id) => async (dispatch, getState) => {
   try {
