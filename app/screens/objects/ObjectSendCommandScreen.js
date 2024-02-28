@@ -41,12 +41,11 @@ const ObjectSendCommandScreen = ({navigation}) => {
         SMS.sendSMSAsync(
             [phone],
             msg,
-        ).then(data => {
-            Alert.alert('Result: ' + data.result);
-            setTimeout(() => navigation.navigate('ObjectItem', {id: route.params.id}), 1000)
-        });
+        )
         } catch (err) {
             console.warn(err);
+        } finally {
+            navigation.navigate('ObjectItem', {id: route.params.id})
         }
     }, [element, message])
 
@@ -68,15 +67,8 @@ const ObjectSendCommandScreen = ({navigation}) => {
                 objectID: element.id,
                 templateID: 0,
                 command: message
-            })).then(res => {
-                if(!res.error) {
-                    Alert.alert('Successfully sent');
-                    navigation.navigate('ObjectItem', {id: route.params.id})
-                    return
-                } else {
-                    Alert.alert(res.error);
-                }
-            })
+            }))
+            navigation.navigate('ObjectItem', {id: route.params.id})
         }
     })
 
@@ -93,15 +85,8 @@ const ObjectSendCommandScreen = ({navigation}) => {
                 objectID: element.id,
                 templateID: template.id,
                 cmd: template.cmd
-            })).then(res => {
-                if(!res.error) {
-                    Alert.alert('Successfully sent');
-                    navigation.navigate('ObjectItem', {id: route.params.id})
-                    return
-                } else {
-                    Alert.alert(res.error);
-                }
-            })
+            }))
+            navigation.navigate('ObjectItem', {id: route.params.id})
         }
     })
 

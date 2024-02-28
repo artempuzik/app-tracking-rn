@@ -222,7 +222,7 @@ const GeozoneItemScreen = ({navigation}) => {
                 </View>
                 <View style={styles.infoPropRow}>
                     <Text>{i18n.t('zone_type')}</Text>
-                    <Text>{geoZone?.style.type}</Text>
+                    <Text>{i18n.t(geoZone?.style.type)}</Text>
                 </View>
             </View>
         </View>

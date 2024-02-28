@@ -97,7 +97,7 @@ api.interceptors.response.use((response) => {
         }
         return api(originalRequest);
     }
-    error.message = error.response.data.errorMessage || instance.defaults.errorMessage[error.response.status] || error.message;
+    error.message = api.defaults.errorMessage[error.response.status] || error.message;
     return Promise.reject(error);
 });
 

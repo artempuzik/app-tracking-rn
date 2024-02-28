@@ -53,9 +53,7 @@ export default StyleSheet.create({
         height: 40,
     },
     input: {
-        backgroundColor: 'white',
         borderWidth: 0,
-        padding: 10,
         marginBottom: 10,
     },
     inputContainer: {

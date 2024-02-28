@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import RNPickerSelect from 'react-native-picker-select';
 import { View, StyleSheet } from 'react-native';
+import i18n from "../../utils/i18";
 
 const SelectList = ({items = [], value = null, onChange}) => {
   const [selectedValue, setSelectedValue] = useState(value);
@@ -22,6 +23,7 @@ const SelectList = ({items = [], value = null, onChange}) => {
             items={formatArray}
             style={pickerSelectStyles}
             value={selectedValue || null}
+            placeholder={{value: 'select_item', label: i18n.t('select_item')}}
         />
       </View>
   );

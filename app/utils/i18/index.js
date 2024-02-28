@@ -122,7 +122,15 @@ const translations = {
     error_401: 'Unauthorized',
     error_404: 'Not Found',
     error_500: 'Internal Server Error',
-    refresh_interval: 'Refresh interval, sec.'
+    refresh_interval: 'Refresh interval, sec.',
+    select_item: 'Select an item',
+    in_move: 'Driving',
+    parked: 'Parked',
+    min_drive_min: 'Minimum drive, minute',
+    min_drive_km: 'Minimum drive, KM',
+    min_parking_min:  'Minimum parking, min.',
+    general_report: 'General report',
+
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -184,15 +192,15 @@ const translations = {
     select_interval: "Выберите интервал",
     today: "Сегодня",
     yesterday: "Вчера",
-    this_week: "Эта неделя",
+    this_week: "Неделя",
     this_month: "Этот месяц",
     previous_month: "Прошлый месяц",
     date: "Дата",
     duration: "Продолжительность",
     station: "Станция",
     pump: "Насос",
-    fuel_amount: "Количество топлива",
-    vehicle: "Транспортное средство",
+    fuel_amount: "Количество",
+    vehicle: "Кому",
     limit: "Лимит",
     object: "Объект",
     send_command_by_sms: "Отправлять команды СМС сообщениями",
@@ -244,7 +252,14 @@ const translations = {
     error_401: 'Неавторизованный запрос',
     error_404: 'Ресурс не найден',
     error_500: 'Внутренняя ошибка сервера',
-    refresh_interval: 'Интервал обновления, сек.'
+    refresh_interval: 'Интервал обновления, сек.',
+    select_item: 'Выберите',
+    in_move: 'В движение',
+    parked: 'В парковке',
+    min_drive_min: 'Мин. вождения, минут',
+    min_drive_km: 'Мин. вождения, км.',
+    min_parking_min:  'Минимальная парковка, мин.',
+    general_report: 'Сводный отчет',
   },
   'tr-tr': {
     auth_title: "Giriş",
@@ -366,7 +381,14 @@ const translations = {
     error_401: 'Yetkisiz istek',
     error_404: 'Kaynak bulunamadı',
     error_500: 'Server hatası',
-    refresh_interval: 'Güncelleme aralığı, san.'
+    refresh_interval: 'Güncelleme aralığı, san.',
+    select_item: 'Listeden seç',
+    in_move: 'Gidiyor',
+    parked: 'Park halinde',
+    min_drive_min: 'Minimum yol, dak.',
+    min_drive_km: 'Minimum yol, km.',
+    min_parking_min:  'Minimum park, dak.',
+    general_report: 'Genel rapor',
   },
   'az-latn-az': {
     auth_title: "Sisteme giriş",
@@ -488,7 +510,14 @@ const translations = {
     error_401: 'İcazəsiz sorğu',
     error_404: 'Resurs tapılmadı',
     error_500: 'Server xətası',
-    refresh_interval: 'Yeniləmə intervalı, san.'
+    refresh_interval: 'Yeniləmə intervalı, san.',
+    select_item: 'Siyahıdan seç',
+    in_move: 'Gedir',
+    parked: 'Dayanıb',
+    min_drive_min: 'Minimum yol, dəq.',
+    min_drive_km: 'Minimum yol, km.',
+    min_parking_min:  'Minimum park, dəq.',
+    general_report: 'Gənəl hesabat',
   }
 }
 

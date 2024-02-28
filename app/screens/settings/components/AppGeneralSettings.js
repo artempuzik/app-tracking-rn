@@ -92,6 +92,9 @@ const AppGeneralSettings = () => {
                                 <Text style={styles.text}>{i18n.t('measuring_system')}</Text>
                                 <SelectList items={CODE_LIST} value={geocoder} onChange={setGeocoder}/>
                             </View>
+                            <View style={styles.block}>
+                                <Text style={styles.text}>{i18n.t('refresh_interval')}</Text>
+                            </View>
                             <RangeSlider onChange={setInterval}/>
                             <Text style={styles.error}>
                                 {error}

@@ -66,10 +66,6 @@ const ObjectItemInfo = ({object, status}) => {
                 lat: point.lat,
                 lng: point.lng,
             },
-            animation: {
-                type: 'spin',
-                duration: icon.rotate ? 5 : 10000,
-            },
             icon: baseUrl + icon.url,
             size: [icon.width, icon.height]
         }))

@@ -99,7 +99,7 @@ const ObjectItemStatistics = ({object}) => {
                     </View>
                     <View style={styles.subStatRow}>
                         <Text>{i18n.t('volume')}</Text>
-                        <Text>{action?.volume}</Text>
+                        <Text>{Number(action?.volume).toFixed(2)}</Text>
                     </View>
                     <View style={styles.subStatRow}>
                         <Text>{i18n.t('time')}</Text>

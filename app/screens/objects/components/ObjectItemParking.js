@@ -350,7 +350,7 @@ const ObjectItemParking = ({object}) => {
                             value={minParking}
                             autoCorrect={false}
                             autoCapitalize='none'
-                            placeholder="Minimum parking (min)"
+                            placeholder={i18n.t('min_parking_min')}
                         />
                     </View>
                     {/*<View style={styles.radioButtonsContainer}>*/}
@@ -382,7 +382,7 @@ const ObjectItemParking = ({object}) => {
                     </Pressable>
                 </View>
                 <View style={{marginHorizontal: 20, marginBottom: 20}}>
-                    <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                    <CustomButton title={i18n.t('save')} onPress={saveFilters} />
                 </View>
             </View>
         </View>

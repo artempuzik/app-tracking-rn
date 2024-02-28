@@ -273,9 +273,9 @@ export default StyleSheet.create({
     subStatRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 5,
+        paddingVertical: 3,
         paddingHorizontal: 10,
-        marginVertical: 5,
+        marginVertical: 2,
         opacity: 0.6,
     },
     image: {

@@ -1,5 +1,6 @@
 import React, {useMemo, useState} from 'react';
-import {View, Text, TextInput, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import {View, Text, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import {TextInput} from 'react-native-paper';
 import i18n from '../../../utils/i18'
 import styles from '../styles'
 import CustomButton from "../../../components/button/Button";
@@ -10,6 +11,9 @@ const AppProfile = () => {
     const [currentPassword, setCurrentPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [hideCurrentPassword, setHideCurrentPassword] = useState(true)
+    const [hideNewPassword, setHideNewPassword] = useState(true)
+    const [hideConfirmPassword, setHideConfirmPassword] = useState(true)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
@@ -66,33 +70,52 @@ const AppProfile = () => {
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('password')}</Text>
                             <TextInput
-                                style={styles.input}
-                                onChangeText={setCurrentPassword}
-                                autoCapitalize='none'
+                                style={styles.inputPass}
                                 placeholder={i18n.t('password')}
-                                keyboardType="visible-password"
-                                secureTextEntry={true}
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                activeOutlineColor="#326A81"
+                                returnKeyType="next"
+                                mode="outlined"
+                                selectionColor="#326A81"
+                                blurOnSubmit={false}
+                                onChangeText={setCurrentPassword}
+                                secureTextEntry={hideCurrentPassword ? true : false}
+                                right={<TextInput.Icon icon="eye" onPress={() => setHideCurrentPassword(!hideCurrentPassword)}/>}
                             />
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('new_password')}</Text>
                             <TextInput
-                                style={styles.input}
-                                onChangeText={setNewPassword}
-                                autoCapitalize='none'
+                                style={styles.inputPass}
                                 placeholder={i18n.t('new_password')}
-                                keyboardType="visible-password"
-                                secureTextEntry={true}
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                activeOutlineColor="#326A81"
+                                returnKeyType="next"
+                                mode="outlined"
+                                selectionColor="#326A81"
+                                blurOnSubmit={false}
+                                onChangeText={setNewPassword}
+                                secureTextEntry={hideNewPassword ? true : false}
+                                right={<TextInput.Icon icon="eye" onPress={() => setHideNewPassword(!hideNewPassword)}/>}
                             />
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('confirm_password')}</Text>
                             <TextInput
-                                style={styles.input}
-                                onChangeText={setConfirmPassword}
+                                style={styles.inputPass}
                                 placeholder={i18n.t('confirm_password')}
-                                keyboardType="visible-password"
-                                secureTextEntry={true}
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                activeOutlineColor="#326A81"
+                                returnKeyType="next"
+                                mode="outlined"
+                                selectionColor="#326A81"
+                                blurOnSubmit={false}
+                                onChangeText={setConfirmPassword}
+                                secureTextEntry={hideConfirmPassword ? true : false}
+                                right={<TextInput.Icon icon="eye" onPress={() => setHideConfirmPassword(!hideConfirmPassword)}/>}
                             />
                         </View>
                         {

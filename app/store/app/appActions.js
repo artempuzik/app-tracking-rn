@@ -104,6 +104,7 @@ export const setAppLanguage = (language) => async (dispatch) => {
   i18n.locale = language
   await AsyncStorage.setItem('language', language);
   dispatch(setLanguage(language))
+  dispatch(reloadApp())
 };
 
 export const reloadApp = () => async (dispatch) => {

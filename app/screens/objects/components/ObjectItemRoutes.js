@@ -419,7 +419,7 @@ const ObjectItemRoutes = ({object}) => {
                                 value={minTimeDrive}
                                 autoCorrect={false}
                                 autoCapitalize='none'
-                                placeholder="Minimum drive / min"
+                                placeholder={i18n.t('min_drive_min')}
                             />
                         </View>
                         <View>
@@ -429,7 +429,7 @@ const ObjectItemRoutes = ({object}) => {
                                 value={minTripDrive}
                                 autoCorrect={false}
                                 autoCapitalize='none'
-                                placeholder="Minimum drive / km"
+                                placeholder={i18n.t('min_drive_km')}
                             />
                         </View>
                         <Pressable
@@ -445,7 +445,7 @@ const ObjectItemRoutes = ({object}) => {
                         </Pressable>
                     </View>
                     <View style={{marginHorizontal: 20, marginBottom: 20}}>
-                        <CustomButton title={'Сохранить'} onPress={saveFilters} />
+                        <CustomButton title={i18n.t('save')} onPress={saveFilters} />
                     </View>
                 </View>
             </View>

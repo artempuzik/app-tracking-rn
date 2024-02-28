@@ -13,9 +13,8 @@ import AppHeader from "../../components/header/AppHeader";
 import SelectList from "../../components/select/SelectList";
 import {getObjectIcons, getObjects, getObjectsStatuses} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
-import ObjectsMap from "./components/ObjectsMap";
 import {getProfileData} from "../../store/app/appActions";
-import {getUsers, refreshUserToken} from "../../store/user/usersActions";
+import {getUsers} from "../../store/user/usersActions";
 import {getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
 import Loading from "../../components/loading/Loading";
 
@@ -41,8 +40,6 @@ const ObjectsScreen = ({navigation}) => {
     const [icons, setIcons] = useState([])
     const [statuses, setStatuses] = useState([])
     const [profile, setProfile] = useState(null)
-
-    const [isMapOpen, setMapOpen] = useState(false)
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
@@ -298,7 +295,7 @@ const ObjectsScreen = ({navigation}) => {
                             },
                             styles.headerButton,
                         ]}
-                        onPress={() => setMapOpen(true)}
+                        onPress={() => navigation.navigate('Map')}
                     >
                         <Svg
                             width={25}
@@ -354,15 +351,6 @@ const ObjectsScreen = ({navigation}) => {
                 />
             </View>
     ), [items, icons, statuses, isLoading])
-
-    if(isMapOpen) {
-        return (
-            <SafeAreaView style={styles.container}>
-                <AppHeader canGoBack={true} />
-                <ObjectsMap objects={items} icons={icons}/>
-            </SafeAreaView>
-        )
-    }
 
     if(isLoading) {
         return (

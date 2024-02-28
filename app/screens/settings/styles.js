@@ -12,6 +12,9 @@ export default StyleSheet.create({
         padding: 10,
         marginBottom: 10,
     },
+    inputPass: {
+        marginBottom: 10,
+    },
     settingsContainer: {
         flex: 1,
         padding: 20,

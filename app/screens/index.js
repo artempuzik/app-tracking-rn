@@ -36,7 +36,7 @@ export default function Screens() {
     const initApp = async () => {
         try {
             setIsLoading(true)
-            await dispatch(init())
+            await dispatch(init()).then(() => console.log(isLoading))
         } finally {
             setIsLoading(false)
         }
@@ -86,7 +86,7 @@ export default function Screens() {
                                 <Stack.Screen name="GeozoneItem" component={GeozoneItemScreen} />
                                 <Stack.Screen name="Event" component={EventScreen} />
                                 <Stack.Screen name="User" component={UserScreen} />
-                                <Stack.Screen name="Service" component={ServiceScreen} />
+                                {/*<Stack.Screen name="Service" component={ServiceScreen} />*/}
                             </Stack.Navigator>
                         )
                 }

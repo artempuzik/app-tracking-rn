@@ -1,3 +1,5 @@
+import i18n from "../utils/i18";
+
 export const REFRESH_INTERVAL = 15000 // milliseconds
 export const BASE_URL = 'https://s4.geotek.online'
 
@@ -16,8 +18,8 @@ export const METRICS_LIST = [
 ]
 
 export const REPORTS_LIST = [
-    {'general': 'General reports'},
-    {'fuel': 'Fuel reports'},
+    {'general': i18n.t('general_report')},
+    {'fuel': i18n.t('fuel_report')},
 ]
 
 export const CODE_LIST = [
@@ -26,18 +28,18 @@ export const CODE_LIST = [
 ]
 
 export const WITH_IGNITION_OPTIONS = [
-    { label: 'On', value: true },
-    { label: 'Off', value: false },
+    { label: i18n.t('on'), value: true },
+    { label: i18n.t('off'), value: false },
 ];
 
 export const MOVE_OPTIONS = [
-    { label: 'In move', value: true },
-    { label: 'Parked', value: false },
+    { label: i18n.t('in_move'), value: true },
+    { label: i18n.t('parked'), value: false },
 ];
 
 export const STATUS_OPTIONS = [
-    { label: 'Online', value: true },
-    { label: 'Offline', value: false },
+    { label: i18n.t('online'), value: true },
+    { label: i18n.t('offline'), value: false },
 ];
 
 export const DRIVERS_OPTIONS = [

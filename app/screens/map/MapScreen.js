@@ -393,7 +393,7 @@ const ObjectsMapScreen = ({navigation}) => {
                                         backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
                                     },
                                 ]}
-                                onPress={goToMe}
+                                onPress={() => {}}
                             >
                                 {
                                     current ? (

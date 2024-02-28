@@ -1,7 +1,6 @@
 import {
     ImageBackground,
     Text,
-    TextInput,
     View,
     Image,
     SafeAreaView,
@@ -10,13 +9,15 @@ import {
     KeyboardAvoidingView,
     StyleSheet
 } from 'react-native';
+import {TextInput} from 'react-native-paper';
 import React, {useEffect, useMemo, useState} from "react";
 import i18n from '../../utils/i18'
 import styles from "./styles";
 import {useDispatch, useSelector} from "react-redux";
-import {changeServer, getToken, setAppLanguage} from "../../store/app/appActions";
+import {changeServer, getToken, reloadApp, setAppLanguage} from "../../store/app/appActions";
 import CustomButton from "../../components/button/Button";
 import RNPickerSelect from "react-native-picker-select";
+import Loading from "../../components/loading/Loading";
 
 const background = require('../../../assets/bg_auth.png')
 const logo = require('../../../assets/logo.png')
@@ -28,6 +29,7 @@ export default function AuthScreen({navigation}) {
 
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
+    const [hidePass, setHidePass] = useState(true);
     const [loading, setLoading] = useState(false)
 
     const [error, setError] = useState('')
@@ -107,18 +109,28 @@ export default function AuthScreen({navigation}) {
                                 <View style={styles.inputContainer}>
                                     <TextInput
                                         style={styles.input}
-                                        onChangeText={setUserName}
+                                        placeholder={i18n.t('user')}
                                         autoCorrect={false}
                                         autoCapitalize='none'
-                                        placeholder={i18n.t('user')}
+                                        activeOutlineColor="#326A81"
+                                        returnKeyType="next"
+                                        mode="outlined"
+                                        blurOnSubmit={false}
+                                        onChangeText={setUserName}
                                     />
                                     <TextInput
                                         style={styles.input}
-                                        onChangeText={setPassword}
+                                        placeholder={i18n.t('password')}
                                         autoCorrect={false}
                                         autoCapitalize='none'
-                                        placeholder={i18n.t('password')}
-                                        secureTextEntry={true}
+                                        activeOutlineColor="#326A81"
+                                        returnKeyType="next"
+                                        mode="outlined"
+                                        selectionColor="#326A81"
+                                        blurOnSubmit={false}
+                                        onChangeText={setPassword}
+                                        secureTextEntry={hidePass ? true : false}
+                                        right={<TextInput.Icon icon="eye" onPress={() => setHidePass(!hidePass)}/>}
                                     />
                                 </View>
                                 <Text style={styles.error}>
@@ -130,6 +142,7 @@ export default function AuthScreen({navigation}) {
                                         items={formatServerArray}
                                         style={pickerSelectStylesServers}
                                         value={host}
+                                        placeholder={{value: 'select_item', label: i18n.t('select_item')}}
                                     />
                                 </View>
                                 <CustomButton
@@ -145,6 +158,7 @@ export default function AuthScreen({navigation}) {
                                 items={formatLangArray}
                                 style={pickerSelectStylesLanguage}
                                 value={lang}
+                                placeholder={{value: 'select_item', label: i18n.t('select_item')}}
                             />
                     </View>
                             </KeyboardAvoidingView>
