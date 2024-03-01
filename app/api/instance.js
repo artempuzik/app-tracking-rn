@@ -8,11 +8,11 @@ let reconnect = 0
 const api = axios.create({
     baseURL: BASE_URL + '/api',
     errorMessage: {
-        400: i18n.t('error_400'),
-        403: i18n.t('error_403'),
-        401: i18n.t('error_401'),
-        404: i18n.t('error_404'),
-        500: i18n.t('error_500'),
+        400: 'error_400',
+        403: 'error_403',
+        401: 'error_401',
+        404: 'error_404',
+        500: 'error_500',
     }
 });
 
@@ -97,7 +97,7 @@ api.interceptors.response.use((response) => {
         }
         return api(originalRequest);
     }
-    error.message = api.defaults.errorMessage[error.response.status] || error.message;
+    error.message = i18n.t(api.defaults.errorMessage[error.response.status]) || error.message;
     return Promise.reject(error);
 });
 

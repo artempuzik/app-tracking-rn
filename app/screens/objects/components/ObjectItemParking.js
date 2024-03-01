@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, TextInput, ScrollView, Platform} from 'react-native';
+import {View, Text, Pressable, ScrollView} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import i18n from "../../../utils/i18";
@@ -12,6 +12,7 @@ import {getObjectHistory} from "../../../store/objects/objectsActions";
 import {convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
 import {LeafletView} from "react-native-leaflet-view";
+import Input from "../../../components/input/Input";
 
 const parkingIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M0 3C0 1.34315 1.34315 0 3 0H21C22.6569 0 24 1.34315 24 3V21C24 22.6569 22.6569 24 21 24H3C1.34315 24 0 22.6569 0 21V3Z" fill="black"/>
@@ -343,16 +344,13 @@ const ObjectItemParking = ({object}) => {
             </View>
             <View style={styles.filtersMainContainer}>
                 <View style={{paddingHorizontal: 20}}>
-                    <View>
-                        <TextInput
-                            style={styles.input}
+                        <Input
                             onChangeText={setMinParking}
                             value={minParking}
                             autoCorrect={false}
-                            autoCapitalize='none'
+                            multiline={true}
                             placeholder={i18n.t('min_parking_min')}
                         />
-                    </View>
                     {/*<View style={styles.radioButtonsContainer}>*/}
                     {/*    <RadioForm*/}
                     {/*        style={styles.radioButtons}*/}

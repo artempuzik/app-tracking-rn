@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View} from 'react-native';
+import {KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import {useDispatch} from "react-redux";
@@ -12,6 +12,7 @@ import CustomButton from "../../components/button/Button";
 import {getObjectHistoryDriversSession} from "../../store/objects/objectsActions";
 import i18n from "../../utils/i18";
 import {convertDate, getDuration, getMileage} from "../../utils/helpers";
+import Input from "../../components/input/Input";
 
 const DriverItemScreen = ({navigation}) => {
     const route = useRoute();
@@ -150,8 +151,6 @@ const DriverItemScreen = ({navigation}) => {
         return result ? result.reduce((acc, s) => acc +=+s, 0)/result.length : 0
     }, [sessions])
 
-    console.log(new Date(interval.from))
-
     const editBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isEditBlockOpen ? 'flex' : 'none'}}>
             <View style={styles.screenTitle}>
@@ -177,56 +176,41 @@ const DriverItemScreen = ({navigation}) => {
                         enabled={Platform.OS === 'ios'}
                         style={styles.auth}
                     >
-                        <View>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setName}
                                 value={name}
                                 autoCorrect={false}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder="Driver"
                             />
-                        </View>
-                        <View>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setPhone}
                                 value={phone}
                                 autoCorrect={false}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder="Phone"
                             />
-                        </View>
-                        <View>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setLicense}
                                 value={license}
                                 autoCorrect={false}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder="License"
                             />
-                        </View>
-                        <View>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setCategory}
                                 value={category}
                                 autoCorrect={false}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder="Category"
                             />
-                        </View>
-                        <View>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setRank}
                                 value={rank}
                                 autoCorrect={false}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder="Rank"
                             />
-                        </View>
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <Text style={styles.error}>

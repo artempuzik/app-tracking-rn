@@ -143,11 +143,11 @@ const ObjectItemInfo = ({object, status}) => {
                     mapCenterPosition={points[0]?.position}
                 />
             </View>
-            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>{convertDate(point?.time)}</Text>
-            <Text style={{marginVertical: 10, marginHorizontal: 20, opacity: 0.6}}>
+            <Text style={{marginBottom: 5, marginTop: 10, marginHorizontal: 20, opacity: 0.6}}>{convertDate(point?.time)}</Text>
+            <Text style={{marginVertical: 5, marginHorizontal: 20, opacity: 0.6}}>
                 {address}
             </Text>
-            <View style={{...styles.footer, marginTop: 10, paddingHorizontal: 20}}>
+            <View style={{...styles.footer, marginVertical: 5, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>
                     <Svg
                         style={{marginTop: 5}}

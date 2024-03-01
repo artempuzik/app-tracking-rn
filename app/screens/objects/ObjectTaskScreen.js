@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {View, Text, Pressable, TextInput, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import {View, Text, Pressable, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import Svg, {Path} from "react-native-svg";
@@ -8,6 +8,7 @@ import Checkbox from 'expo-checkbox';
 import styles from './styles';
 import AppHeader from "../../components/header/AppHeader";
 import Button from "../../components/button/Button";
+import Input from "../../components/input/Input";
 
 const ObjectTaskScreen = ({navigation}) => {
     const route = useRoute();
@@ -62,16 +63,15 @@ const ObjectTaskScreen = ({navigation}) => {
                     enabled={Platform.OS === 'ios'}
                     style={styles.auth}
                 >
-                    <TextInput
-                        style={styles.input}
+                    <Input
                         onChangeText={setTitle}
                         value={title}
                         autoCorrect={false}
-                        autoCapitalize='none'
+                        multiline={true}
                         placeholder="Название"
                     />
-                    <TextInput
-                        style={{...styles.input, height: 150}}
+                    <Input
+                        style={{height: 150}}
                         placeholder="Комментарий"
                         multiline={true}
                         numberOfLines={10}

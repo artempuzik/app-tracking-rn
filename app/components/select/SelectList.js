@@ -23,7 +23,7 @@ const SelectList = ({items = [], value = null, onChange}) => {
             items={formatArray}
             style={pickerSelectStyles}
             value={selectedValue || null}
-            placeholder={{value: 'select_item', label: i18n.t('select_item')}}
+            placeholder={{value: '', label: i18n.t('select_item')}}
         />
       </View>
   );

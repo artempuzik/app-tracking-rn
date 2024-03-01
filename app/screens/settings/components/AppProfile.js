@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TextInput, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import {View, Text, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
 import i18n from '../../../utils/i18'
 import styles from '../styles'
 import CustomButton from "../../../components/button/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {changeUser} from "../../../store/user/usersActions";
+import Input from "../../../components/input/Input";
 
 const AppProfile = () => {
     const [name, setName] = useState('')
@@ -63,64 +64,58 @@ const AppProfile = () => {
                         >
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('user')}</Text>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setName}
                                 value={name}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder={i18n.t('user')}
-                                keyboardType="default"
                             />
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('company_name')}</Text>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setOrgName}
                                 value={orgName}
+                                multiline={true}
                                 autoCapitalize='none'
                                 placeholder={i18n.t('company_name')}
-                                keyboardType="default"
                             />
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('phone_number')}</Text>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setPhoneNumber}
                                 value={phoneNumber}
+                                multiline={true}
                                 placeholder={i18n.t('phone_number')}
                                 keyboardType="phone-pad"
                             />
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('email_address')}</Text>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setEmail}
                                 value={email}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder={i18n.t('email_address')}
                                 keyboardType="email-address"
                             />
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('contacts')}</Text>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setContactName}
                                 value={contactName}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder={i18n.t('contacts')}
                             />
                         </View>
                         <View style={styles.block}>
                             <Text style={styles.text}>{i18n.t('address')}</Text>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setPostAddress}
                                 value={postAddress}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder={i18n.t('address')}
                             />
                         </View>

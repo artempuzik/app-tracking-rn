@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, TextInput, ScrollView, Platform} from 'react-native';
+import {View, Text, Pressable, ScrollView} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
@@ -8,9 +8,10 @@ import CustomButton from "../../../components/button/Button";
 import i18n from "../../../utils/i18";
 import {getObjectHistory} from "../../../store/objects/objectsActions";
 import {useDispatch, useSelector} from "react-redux";
-import {calculateDistance, convertDate, getDuration, parsePointString, pathToUri} from "../../../utils/helpers";
+import {calculateDistance, convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
 import {LeafletView} from "react-native-leaflet-view";
+import Input from "../../../components/input/Input";
 
 const finishIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0C7.02938 0 3 4.02938 3 9C3 11.1292 3.93825 13.0016 4.97662 14.625L11.388 23.6835C11.5286 23.8822 11.757 24 12 24C12.243 24 12.4714 23.8822 12.612 23.6835L19.0234 14.625C20.0156 13.2893 21 11.1292 21 9C21 4.02938 16.9706 0 12 0ZM16 4H9V14H11.7028V10.0938H15.5722V7.90625H11.7028V6.1875H16V4Z" fill="black"/>
@@ -412,26 +413,20 @@ const ObjectItemRoutes = ({object}) => {
                 </View>
                 <View style={styles.filtersMainContainer}>
                     <View style={{paddingHorizontal: 20}}>
-                        <View>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setMinTimeDrive}
                                 value={minTimeDrive}
                                 autoCorrect={false}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder={i18n.t('min_drive_min')}
                             />
-                        </View>
-                        <View>
-                            <TextInput
-                                style={styles.input}
+                            <Input
                                 onChangeText={setMinTripDrive}
                                 value={minTripDrive}
                                 autoCorrect={false}
-                                autoCapitalize='none'
+                                multiline={true}
                                 placeholder={i18n.t('min_drive_km')}
                             />
-                        </View>
                         <Pressable
                             style={({pressed}) => [
                                 {

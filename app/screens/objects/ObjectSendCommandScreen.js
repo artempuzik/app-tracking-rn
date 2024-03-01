@@ -4,7 +4,6 @@ import {
     Text,
     Pressable,
     ScrollView,
-    TextInput,
     Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,6 +18,7 @@ import i18n from "../../utils/i18";
 import AppModal from "../../components/modal/AppModal";
 import {sendCustomCommand} from "../../store/objects/objectsActions";
 import {Image} from "expo-image";
+import Input from "../../components/input/Input";
 const ObjectSendCommandScreen = ({navigation}) => {
     const route = useRoute();
     const dispatch = useDispatch()
@@ -173,12 +173,11 @@ const ObjectSendCommandScreen = ({navigation}) => {
             >
                 <View style={{paddingHorizontal: 20}}>
                     <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>{i18n.t('typed_command')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <Input
                         onChangeText={setMessages}
                         value={message}
+                        multiline={true}
                         autoCorrect={false}
-                        autoCapitalize='none'
                     />
                 </View>
             </AppModal>

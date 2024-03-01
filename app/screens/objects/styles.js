@@ -170,7 +170,6 @@ export default StyleSheet.create({
     input: {
         borderColor: '#a7a7aa',
         borderWidth: 1,
-        padding: 10,
         marginBottom: 10,
     },
     textContainer: {

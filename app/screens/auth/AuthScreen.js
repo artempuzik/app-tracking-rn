@@ -14,10 +14,9 @@ import React, {useEffect, useMemo, useState} from "react";
 import i18n from '../../utils/i18'
 import styles from "./styles";
 import {useDispatch, useSelector} from "react-redux";
-import {changeServer, getToken, reloadApp, setAppLanguage} from "../../store/app/appActions";
+import {changeServer, getToken, setAppLanguage} from "../../store/app/appActions";
 import CustomButton from "../../components/button/Button";
 import RNPickerSelect from "react-native-picker-select";
-import Loading from "../../components/loading/Loading";
 
 const background = require('../../../assets/bg_auth.png')
 const logo = require('../../../assets/logo.png')

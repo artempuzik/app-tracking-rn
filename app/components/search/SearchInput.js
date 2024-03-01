@@ -19,6 +19,7 @@ const SearchInput = ({onChange, onFocus, val}) => {
                         onChange={onFocus}
                         onChangeText={setValue}
                         value={val}
+                        multiline={true}
                         placeholder={i18n.t('search')}
                         placeholderTextColor="#999"
                     />
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         fontSize: 16,
         color: '#333',
+        borderWidth: 0,
     },
     searchIconContainer: {
         padding: 5,
