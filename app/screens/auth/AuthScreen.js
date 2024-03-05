@@ -22,7 +22,6 @@ const background = require('../../../assets/bg_auth.png')
 const logo = require('../../../assets/logo.png')
 export default function AuthScreen({navigation}) {
     const servers = useSelector(state => state.app.servers)
-    const currentServer = useSelector(state => state.app.currentServer)
     const languages = useSelector(state => state.app.languages)
     const lang = useSelector(state => state.app.language)
 
@@ -44,8 +43,8 @@ export default function AuthScreen({navigation}) {
     }, [host]);
 
     useEffect(() => {
-        if(currentServer) {
-            setHost(currentServer.replace('https://', ''))
+        if(servers) {
+            setHost(servers[0].replace('https://', ''))
         }
     }, []);
 

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, Text, ActivityIndicator, Pressable, ScrollView} from 'react-native';
+import {View, Text, ActivityIndicator, Pressable, ScrollView, Platform, Linking} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import {LeafletView} from 'react-native-leaflet-view';
@@ -13,8 +13,6 @@ import Svg, {Circle, Path} from "react-native-svg";
 import i18n from "../../utils/i18";
 import {convertDate, getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
 import {PRESSED_COLOR} from "../../config";
-
-//const FOREGROUND_LOCATION_ACCURACY = Location.Accuracy.BestForNavigation;
 
 const meIcon = 'https://cdn-icons-png.flaticon.com/512/25/25613.png'
 const ObjectsMapScreen = ({navigation}) => {
@@ -42,19 +40,6 @@ const ObjectsMapScreen = ({navigation}) => {
     const icons = useSelector(state => state.objects.icons)
 
     const [geoZones, setGeoZones] = useState(null)
-
-    const subscribeLocation = useCallback(async () => {
-        // await Location.watchPositionAsync(
-        //     {
-        //         accuracy: FOREGROUND_LOCATION_ACCURACY,
-        //         distanceInterval: 0,
-        //         timeInterval: 10000,
-        //     },
-        //     (_location) => {
-        //         console.log('got foreground location subscription update');
-        //     },
-        // );
-    }, [])
 
     const getObjectGeozones = async () => {
         try {
@@ -393,6 +378,22 @@ const ObjectsMapScreen = ({navigation}) => {
         }
     }, [markers, isTitleOpen])
 
+    const moveToLocation = useCallback(async () => {
+        const marker = markers.find(m => m.id === current)
+        if(!marker) {
+            return
+        }
+        const {lat, lng} = marker.position
+
+        if (Platform.OS === 'ios') {
+            const url = `maps://maps.apple.com/maps?daddr=${lat},${lng}&ll=`;
+            await Linking.openURL(url);
+        } else {
+            const url = `http://maps.google.com?daddr=${lat},${lng}&ll=`;
+            await Linking.openURL(url);
+        }
+    }, [current, markers]);
+
     const renderMap = useMemo(() => (
             <View
                 onLayout={(event) => {
@@ -408,7 +409,7 @@ const ObjectsMapScreen = ({navigation}) => {
                                         backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
                                     },
                                 ]}
-                                onPress={subscribeLocation}
+                                onPress={moveToLocation}
                             >
                                 {
                                     current ? (

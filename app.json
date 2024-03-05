@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "geotek",
+    "name": "GeoTek Mobile",
     "slug": "geotek",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/geotek.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/logo.png",
+      "image": "./assets/geotek.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2060ae"
+      "backgroundColor": "#fff"
     },
     "assetBundlePatterns": [
       "assets/**/*"
@@ -25,7 +25,7 @@
         "apiKey": ""
       },
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/geotek.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.geotek",

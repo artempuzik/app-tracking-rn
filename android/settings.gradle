@@ -1,4 +1,4 @@
-rootProject.name = 'geotek'
+rootProject.name = 'GeoTek Mobile'
 
 dependencyResolutionManagement {
   versionCatalogs {
