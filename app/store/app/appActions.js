@@ -18,6 +18,7 @@ import {resetObjectsState} from "../objects";
 import {getUsers} from "../user/usersActions";
 import {getObjectIcons, getObjects, getObjectsStatuses} from "../objects/objectsActions";
 import * as Updates from "expo-updates";
+import {Alert} from "react-native";
 
 
 export const clearStorage = async () => {
@@ -88,6 +89,10 @@ export const getProfileData = () => async (dispatch) => {
   try {
     const response = await Api.getProfile()
     if(response.status === 200) {
+      if(!response.data.objects) {
+        Alert.alert('Invalid JSON')
+        dispatch(logOut())
+      }
       dispatch(setProfile(response.data))
     }
     return {
@@ -95,6 +100,7 @@ export const getProfileData = () => async (dispatch) => {
       error: null,
     };
   } catch (e) {
+    console.log(e)
     return {
       response: null,
       error: JSON.stringify(e.message)

@@ -44,7 +44,7 @@ export const parsePointString = (str) => {
 export const calculateDistance = (trip) => {
     let mileage = 0
     const resultArray = parsePointString(trip.points)
-    for (let i = 1; i < resultArray.length - 1; i++) {
+    for (let i = 1; i < resultArray.length; i++) {
         mileage += haversine(
             resultArray[i-1].lat,
             resultArray[i-1].lng,
@@ -52,7 +52,7 @@ export const calculateDistance = (trip) => {
             resultArray[i].lng,
         )
     }
-    return (Math.round(mileage * 100))/100
+    return (Math.ceil(mileage * 100))/100
 }
 
 export const haversine = (lat1, lon1, lat2, lon2)=> {

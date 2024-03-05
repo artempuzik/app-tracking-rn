@@ -65,7 +65,6 @@ const ObjectItemRoutes = ({object}) => {
         setMinTimeDrive('')
         setMinTripDrive('')
     },[])
-
     const getHistory = useCallback(async () => {
         await dispatch(getObjectHistory({
             from: interval.from,
@@ -118,7 +117,7 @@ const ObjectItemRoutes = ({object}) => {
         for (const point of routes) {
             result += calculateDistance(point)
         }
-        return result.toFixed(2)
+        return Math.ceil(result*100)/100
     }, [routes])
 
     const renderMapScreen = useMemo(() => {
@@ -360,7 +359,7 @@ const ObjectItemRoutes = ({object}) => {
                                                 </View>
                                                 <View>
                                                     <Text>
-                                                        {Math.round(+h.length)/1000}
+                                                        {Number(h.length/1000).toFixed(2)}
                                                         {` ${i18n.t('km')}`}
                                                     </Text>
                                                 </View>
