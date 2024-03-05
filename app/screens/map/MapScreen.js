@@ -14,7 +14,7 @@ import i18n from "../../utils/i18";
 import {convertDate, getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
 import {PRESSED_COLOR} from "../../config";
 
-const FOREGROUND_LOCATION_ACCURACY = Location.Accuracy.BestForNavigation;
+//const FOREGROUND_LOCATION_ACCURACY = Location.Accuracy.BestForNavigation;
 
 const meIcon = 'https://cdn-icons-png.flaticon.com/512/25/25613.png'
 const ObjectsMapScreen = ({navigation}) => {
@@ -44,16 +44,16 @@ const ObjectsMapScreen = ({navigation}) => {
     const [geoZones, setGeoZones] = useState(null)
 
     const subscribeLocation = useCallback(async () => {
-        await Location.watchPositionAsync(
-            {
-                accuracy: FOREGROUND_LOCATION_ACCURACY,
-                distanceInterval: 0,
-                timeInterval: 10000,
-            },
-            (_location) => {
-                console.log('got foreground location subscription update');
-            },
-        );
+        // await Location.watchPositionAsync(
+        //     {
+        //         accuracy: FOREGROUND_LOCATION_ACCURACY,
+        //         distanceInterval: 0,
+        //         timeInterval: 10000,
+        //     },
+        //     (_location) => {
+        //         console.log('got foreground location subscription update');
+        //     },
+        // );
     }, [])
 
     const getObjectGeozones = async () => {
