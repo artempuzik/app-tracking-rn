@@ -5,7 +5,7 @@ import styles from './styles';
 import {useDispatch} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import {useRoute} from "@react-navigation/native";
-import {editDriver, getDriverById, getDriverSessionById} from "../../store/drivers/driversActions";
+import {editDriver, getDriverById} from "../../store/drivers/driversActions";
 import Svg, {Path} from "react-native-svg";
 import AppCalendarFilter from "../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../components/button/Button";
@@ -22,7 +22,6 @@ const DriverItemScreen = ({navigation}) => {
     const [error, setError] = useState('')
 
     const [sessions, setSessions] = useState(null)
-    const [history, setHistory] = useState(null)
     const [interval, setInterval] = useState({
         from: 0,
         till: 0,
@@ -40,35 +39,16 @@ const DriverItemScreen = ({navigation}) => {
 
     const dispatch = useDispatch()
 
-    const fetchSessionData = async () => {
-        try {
-            setError('')
-            setLoading(true)
-            await dispatch(getDriverSessionById({
-                from: interval.from,
-                till: interval.till,
-                driverID: route.params.id,
-            })).then((data) => {
-                if(data.response) {
-                    setSessions(data.response)
-                }
-            })
-        } catch (err) {
-            setError(err.message)
-        }
-    }
-
     const fetchHistoryData = async () => {
         try {
             setError('')
-            setLoading(true)
             await dispatch(getObjectHistoryDriversSession({
                 from: interval.from,
                 till: interval.till,
-                objectID: route.params.id,
+                objectID: 0,
             })).then((data) => {
                 if(data.response) {
-                    setHistory(data.response)
+                    setSessions(data.response.driversessions?.filter(r => r.driverid == route.params.id))
                 }
             })
         } catch (err) {
@@ -79,7 +59,6 @@ const DriverItemScreen = ({navigation}) => {
     const fetchData = async () => {
         try {
             setError('')
-            setLoading(true)
             await dispatch(getDriverById(route.params.id)).then((data) => {
                     if(data.response) {
                         setDriver(data.response)
@@ -96,7 +75,6 @@ const DriverItemScreen = ({navigation}) => {
 
     useEffect(() => {
         if(interval.from && interval.till) {
-            fetchSessionData().catch(() => {})
             fetchHistoryData().catch(() => {})
         }
     }, [interval.from, interval.till])
@@ -130,24 +108,24 @@ const DriverItemScreen = ({navigation}) => {
                 if(response.error) {
                     setError(response.error)
                 }
-            })
+            }).finally(() => setLoading(false))
         } catch (e) {
-            setLoading(false)
+
         }
     }
 
-    const totalMileage = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.length, 0), [sessions])
-    const totalIdle = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.idletime, 0), [sessions])
-    const totalFuel = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.driverpenalty, 0), [sessions])
-    const totalEngineH = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.enginehours, 0), [sessions])
-    const violationcount = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.violationcount, 0), [sessions])
-    const driverpenalty = useMemo(() => sessions?.driversessions?.reduce((acc, s) => acc +=+s.driverpenalty, 0), [sessions])
+    const totalMileage = useMemo(() => sessions?.reduce((acc, s) => acc +=+s.length, 0), [sessions])
+    const totalIdle = useMemo(() => sessions?.reduce((acc, s) => acc +=+s.idletime, 0), [sessions])
+    const totalFuel = useMemo(() => sessions?.reduce((acc, s) => acc +=+s.driverpenalty, 0), [sessions])
+    const totalEngineH = useMemo(() => sessions?.reduce((acc, s) => acc +=+s.enginehours, 0), [sessions])
+    const violationcount = useMemo(() => sessions?.reduce((acc, s) => acc +=+s.violationcount, 0), [sessions])
+    const driverpenalty = useMemo(() => sessions?.reduce((acc, s) => acc +=+s.driverpenalty, 0), [sessions])
     const maxspeed = useMemo(() => {
-        const result = sessions?.driversessions?.map((s) => +s.maxspeed)
+        const result = sessions?.map((s) => +s.maxspeed)
         return Math.max.apply(Math, result);
     }, [sessions])
     const avgspeed = useMemo(() => {
-        const result = sessions?.driversessions?.map((s) => +s.avgspeed)
+        const result = sessions?.map((s) => +s.avgspeed)
         return result ? result.reduce((acc, s) => acc +=+s, 0)/result.length : 0
     }, [sessions])
 
@@ -216,7 +194,9 @@ const DriverItemScreen = ({navigation}) => {
                 <Text style={styles.error}>
                     {error}
                 </Text>
-                <CustomButton title={i18n.t('save')} onPress={saveDriver} isLoading={loading}/>
+                <View style={{marginBottom: 20}}>
+                    <CustomButton title={i18n.t('save')} onPress={saveDriver} isLoading={loading}/>
+                </View>
             </View>
         </View>
     ), [ isEditBlockOpen, name, phone, license, rank, category])
@@ -229,46 +209,46 @@ const DriverItemScreen = ({navigation}) => {
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('mileage')}</Text>
                 {
-                    sessions?.driversessions ? <Text>{getMileage(totalMileage)}{` ${i18n.t('km')}`}</Text> : <Text>0</Text>
+                    sessions ? <Text>{getMileage(totalMileage)}{` ${i18n.t('km')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('engine_hours')}</Text>
                 {
-                    sessions?.driversessions ? <Text>{getDuration(0, totalEngineH)}</Text> : <Text>0</Text>
+                    sessions ? <Text>{getDuration(0, totalEngineH)}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('idle')}</Text>
                 {
-                    sessions?.driversessions ? <Text>{getDuration(0, totalIdle)}</Text> : <Text>0</Text>
+                    sessions ? <Text>{getDuration(0, totalIdle)}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('speed')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('max_speed')}</Text>
                 {
-                    sessions?.driversessions ? <Text>{maxspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
+                    sessions ? <Text>{maxspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('average_speed')}</Text>
                 {
-                    sessions?.driversessions ? <Text>{avgspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
+                    sessions ? <Text>{avgspeed}{` ${i18n.t('speed_text')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('fuel')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('fuel_consumption')}</Text>
                 {
-                    sessions?.driversessions ? <Text>{totalFuel}{` ${i18n.t('l')}`}</Text> : <Text>0</Text>
+                    sessions ? <Text>{totalFuel}{` ${i18n.t('l')}`}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.mainInfoRow}><Text>{i18n.t('drive')}</Text></View>
             <View style={styles.subInfoRow}>
                 <Text>{i18n.t('number_of_violations')}</Text>
                 {
-                    sessions?.driversessions ? <Text>{violationcount}</Text> : <Text>0</Text>
+                    sessions ? <Text>{violationcount}</Text> : <Text>0</Text>
                 }
             </View>
             <View style={styles.subInfoRow}>

@@ -100,7 +100,7 @@ const AppHeader = ({ canGoBack }) => {
                                         </View>
                                     <View style={styles.block}>
                                         <Text style={styles.text}>{i18n.t('object_counter')}</Text>
-                                        <Text style={styles.balance}>{ profile ? profile.objects.length : 0}</Text>
+                                        <Text style={styles.balance}>{ profile ? profile.objects?.length : 0}</Text>
                                     </View>
                                 <View style={styles.line}></View>
                                 <Pressable

@@ -26,9 +26,11 @@ const DriversScreen = ({navigation}) => {
     const [isLoading, setIsLoading] = useState(false)
 
     const [drivers, setDrivers] = useState([])
+    const [filteredArray, setFilteredArray] = useState([])
     const [driverGroups, setDriverGroups] = useState([])
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+    const [isFiltersReset, setIsFiltersReset] = useState(false)
 
     const [selectedGroup, setSelectedGroup] = useState('')
     const [isAll, setIsAll] = useState(null);
@@ -42,23 +44,37 @@ const DriversScreen = ({navigation}) => {
         }))
     }, [driverGroups])
 
-    const items = useMemo(() => {
-        if(!drivers.length) {
-            return []
+    const filterHandler = useCallback(() => {
+        setIsFiltersOpen(false)
+        if(!selectedGroup) {
+            return drivers
         }
-        return drivers.filter(el => el.name.toLowerCase().includes(query.toLowerCase()))
+        const result = drivers.filter(el => el.groups.includes(+selectedGroup))
+        setFilteredArray(result)
+    }, [drivers, selectedGroup])
+
+    useEffect(() => {
+        if(query) {
+            const result = filteredArray.filter(el => el.name.toLowerCase().includes(query.toLowerCase()))
+            setFilteredArray(result)
+        }
     }, [query, drivers])
 
     const resetFilters = useCallback(() => {
         setSelectedGroup(initialFilters.selectedGroup)
-        setIsAll(initialFilters.isAll)
+        setFilteredArray(drivers)
+        setIsFiltersReset(true)
+        setTimeout(() => setIsFiltersReset(false))
+        // setIsAll(initialFilters.isAll)
     },[])
+
     const fetchData = async () => {
         try {
             setIsLoading(true)
             await dispatch(getDrivers()).then((data) =>{
                 if(data.response) {
                     setDrivers(data.response)
+                    setFilteredArray(data.response)
                 }
             })
             await dispatch(getDriverGroups()).then((data) =>{
@@ -102,7 +118,7 @@ const DriversScreen = ({navigation}) => {
 
     const filtersBlock = useMemo(() => {
         return (
-            <View style={styles.filtersContainer}>
+            <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>
                 <View style={{flex: 1}}>
                     <View style={styles.screenTitle}>
                         <Text>Фильтры</Text>
@@ -125,7 +141,7 @@ const DriversScreen = ({navigation}) => {
                                 items={formatGroups} onChange={setSelectedGroup}
                             />
                         </View>
-                        {radioButtonsBlock}
+                        {/*{radioButtonsBlock}*/}
                         <Pressable
                             style={({pressed}) => [
                                 {
@@ -140,11 +156,11 @@ const DriversScreen = ({navigation}) => {
                     </View>
                 </View>
                 <View style={{paddingHorizontal: 20, marginBottom: 20}}>
-                    <CustomButton title={i18n.t('save')} onPress={() => {}} />
+                    <CustomButton title={i18n.t('save')} onPress={filterHandler} />
                 </View>
             </View>
         )
-    }, [selectedGroup, resetFilters, radioButtonsBlock])
+    }, [selectedGroup, resetFilters, radioButtonsBlock, isFiltersOpen])
 
     const listBlock = useMemo(() => (
         <View style={{flex: 1}}>
@@ -170,7 +186,7 @@ const DriversScreen = ({navigation}) => {
                 </Pressable>
             </View>
             <FlatList
-                data={items}
+                data={filteredArray}
                 keyExtractor={(item, index) => index.toString()}
                 ListEmptyComponent={<Text style={styles.emptyList}>{i18n.t('empty_list')}</Text>}
                 ListFooterComponent={() => (<View style={{height: 130}}></View>)}
@@ -194,13 +210,14 @@ const DriversScreen = ({navigation}) => {
                 }
             />
         </View>
-), [items, isLoading])
+), [filteredArray, isLoading])
 
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
+            {!isFiltersReset && filtersBlock}
             {
-                isFiltersOpen ? filtersBlock : listBlock
+                !isFiltersOpen ? listBlock : null
             }
         </SafeAreaView>
     );

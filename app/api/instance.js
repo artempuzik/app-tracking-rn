@@ -97,6 +97,7 @@ api.interceptors.response.use((response) => {
         }
         return api(originalRequest);
     }
+    console.log(error.message, error.response.status)
     error.message = i18n.t(api.defaults.errorMessage[error.response.status]) || error.message;
     return Promise.reject(error);
 });
