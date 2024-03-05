@@ -1,7 +1,7 @@
 import i18n from "../utils/i18";
 
 export const REFRESH_INTERVAL = 15000 // milliseconds
-export const BASE_URL = 'https://s4.geotek.online'
+export const BASE_URL = 'https://geotek.pro'
 
 export const PRESSED_COLOR = 'rgb(210, 230, 255)'
 

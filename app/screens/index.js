@@ -50,7 +50,7 @@ export default function Screens() {
 
     if(isLoading || loading) {
         return (
-            <Loading isLoading={isLoading} />
+            <Loading isLoading={true} />
         )
     }
     return (

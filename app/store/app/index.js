@@ -46,8 +46,6 @@ export const appSlice = createSlice({
         resetAppState: (state) => {
             state.token = initialState.token
             state.profile = initialState.profile
-            state.servers = initialState.servers
-            state.currentServer = initialState.currentServer
         }
     },
 })

@@ -13,7 +13,6 @@ import {useNavigation} from "@react-navigation/native";
 
 const AppGeneralSettings = () => {
     const lang = useSelector(state => state.app.language)
-    const navigation = useNavigation();
     const [flags, setFlags] = useState('')
     const [geocoder, setGeocoder] = useState('')
     const [interval, setInterval] = useState(REFRESH_INTERVAL)
