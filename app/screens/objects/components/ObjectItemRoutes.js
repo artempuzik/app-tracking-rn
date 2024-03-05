@@ -115,9 +115,9 @@ const ObjectItemRoutes = ({object}) => {
     const totalMileage = useMemo(() => {
         let result = 0
         for (const point of routes) {
-            result += calculateDistance(point)
+            result += +point.length
         }
-        return Math.ceil(result*100)/100
+        return Math.ceil(result/10)/100
     }, [routes])
 
     const renderMapScreen = useMemo(() => {

@@ -121,7 +121,6 @@ export const reloadApp = () => async (dispatch) => {
 
 export const getToken = (dto) => async (dispatch) => {
   try {
-    dispatch(setLoading(true))
     const response = await Api.getUserToken({
       userName: dto.userName.trim(),
       password: dto.password.trim(),
@@ -149,13 +148,11 @@ export const getToken = (dto) => async (dispatch) => {
     await dispatch(getObjectIcons())
     await dispatch(getProfileData())
     await dispatch(getObjectsStatuses())
-    dispatch(setLoading(false))
     return {
       response,
       error: null,
     };
   } catch (e) {
-    dispatch(setLoading(false))
     return {
       response: null,
       error: JSON.stringify(e.message)

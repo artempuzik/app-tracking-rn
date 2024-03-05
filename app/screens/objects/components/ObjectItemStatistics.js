@@ -94,8 +94,8 @@ const ObjectItemStatistics = ({object}) => {
             return (
                 <View key={index} style={{borderBottomColor: '#a7a7aa', borderBottomWidth: 1}}>
                     <View style={styles.subStatRow}>
-                        <Text>{i18n.t(action.type.toLowerCase())}</Text>
-                        <Text>{action.type}</Text>
+                        <Text>{i18n.t(action?.type?.toLowerCase())}</Text>
+                        <Text>{action?.type}</Text>
                     </View>
                     <View style={styles.subStatRow}>
                         <Text>{i18n.t('volume')}</Text>
@@ -107,7 +107,7 @@ const ObjectItemStatistics = ({object}) => {
                     </View>
                     <View style={styles.subStatRow}>
                         <Text>{i18n.t('address')}</Text>
-                        <Text style={{maxWidth: '50%'}}>{action.address.display_name}</Text>
+                        <Text style={{maxWidth: '50%'}}>{action?.address?.display_name}</Text>
                     </View>
                 </View>
             )
