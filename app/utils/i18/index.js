@@ -523,7 +523,7 @@ const translations = {
 
 
 const i18n = new I18n(translations);
-i18n.defaultLocale = "ru-ru"
+i18n.defaultLocale = "en-us"
 i18n.enableFallback = true;
 
 export default i18n

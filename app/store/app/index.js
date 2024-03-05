@@ -44,7 +44,6 @@ export const appSlice = createSlice({
             state.languages = formatted
         },
         resetAppState: (state) => {
-            state.language = initialState.language
             state.token = initialState.token
             state.profile = initialState.profile
             state.servers = initialState.servers

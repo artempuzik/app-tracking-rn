@@ -4,12 +4,12 @@
     "slug": "geotek",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/geotek.png",
+    "icon": "./assets/gt.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/geotek.png",
+      "image": "./assets/gt.png",
       "resizeMode": "contain",
-      "backgroundColor": "#fff"
+      "backgroundColor": "#2060ae"
     },
     "assetBundlePatterns": [
       "assets/**/*"
@@ -25,7 +25,7 @@
         "apiKey": ""
       },
       "adaptiveIcon": {
-        "foregroundImage": "./assets/geotek.png",
+        "foregroundImage": "./assets/gt.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.geotek",
