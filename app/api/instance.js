@@ -20,12 +20,15 @@ const refreshToken = async () => {
     reconnect++
     try {
         const {user, login} = await getUserDataFromStorage()
-        const response = await api.post('/token', {
-            language: user.language,
-            subUserId: user.id,
+        const dto = {
+            language: user?.language || 'ru-ru',
             userName: login.userName,
             password: login.password,
-        })
+        }
+        if(user) {
+            dto.subUserId = user.id
+        }
+        const response = await api.post('/token', dto)
         const access_token = response.data.accessToken
         if (access_token !== undefined) {
             await AsyncStorage.setItem('token', access_token);
@@ -78,7 +81,7 @@ api.interceptors.response.use((response) => {
     reconnect = 0
     return response
 }, async function (error) {
-    const originalRequest = error.config;
+    const originalRequest = error.message;
     if(!axios.defaults.baseURL) {
         axios.defaults.baseURL = BASE_URL + '/api';
     }

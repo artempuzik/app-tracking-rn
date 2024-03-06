@@ -135,7 +135,7 @@ export const getToken = (dto) => async (dispatch) => {
     }
     dispatch(getUsers()).then(async (users) => {
       if(users) {
-        const matchedUser = users.find(user => user.name === dto.userName.trim())
+        const matchedUser = users.find(user => user.name.toLowerCase() === dto.userName.trim().toLowerCase())
         if(matchedUser) {
           await AsyncStorage.setItem('user', JSON.stringify(matchedUser));
           dispatch(setCurrentUser(matchedUser))
