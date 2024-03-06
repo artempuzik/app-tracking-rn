@@ -56,17 +56,16 @@ export const init = () => async (dispatch) => {
     if(user) {
       const currentUser = JSON.parse(user)
       await dispatch(setCurrentUser(currentUser))
-      await dispatch(refreshUserToken())
+      //await dispatch(refreshUserToken())
     }
     const interval = await AsyncStorage.getItem('refresh');
     if(interval) {
       await dispatch(setRefreshInterval(+interval))
     }
     await dispatch(getObjects())
-    await dispatch(getObjectIcons())
-    await dispatch(getProfileData())
     await dispatch(getObjectsStatuses())
     await dispatch(getObjectIcons())
+    await dispatch(getProfileData())
     await dispatch(getUsers())
   }
   dispatch(setLoading(false))
@@ -133,21 +132,20 @@ export const getToken = (dto) => async (dispatch) => {
       await AsyncStorage.removeItem('token');
       await Updates.reloadAsync()
     }
-    dispatch(getUsers()).then(async (users) => {
+    await dispatch(getUsers()).then(async (users) => {
       if(users) {
         const matchedUser = users.find(user => user.name.toLowerCase() === dto.userName.trim().toLowerCase())
         if(matchedUser) {
           await AsyncStorage.setItem('user', JSON.stringify(matchedUser));
           dispatch(setCurrentUser(matchedUser))
-          dispatch(refreshUserToken())
         }
       }
     })
     dispatch(setToken(token))
     await dispatch(getObjects())
+    await dispatch(getObjectsStatuses())
     await dispatch(getObjectIcons())
     await dispatch(getProfileData())
-    await dispatch(getObjectsStatuses())
     return {
       response,
       error: null,

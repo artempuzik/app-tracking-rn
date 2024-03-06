@@ -5,6 +5,12 @@ import * as Updates from "expo-updates";
 import i18n from "../utils/i18";
 let reconnect = 0
 
+export const wait = (delay = 1000) => {
+    return new Promise((resolve) => {
+        setTimeout(()=> resolve(), delay)
+    })
+}
+
 const api = axios.create({
     baseURL: BASE_URL + '/api',
     errorMessage: {
@@ -59,29 +65,19 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        console.log('config 1', config.url)
         return config;
     },
     (error) => {
         return Promise.reject(error);
     }
 );
-
-api.interceptors.request.use(
-    async config => {
-        const access_token = await AsyncStorage.getItem('token');
-        config.headers = {
-            'Authorization': `Bearer ${access_token}`,
-        }
-        return config;
-    },
-    error => {
-        return Promise.reject(error);
-    });
 api.interceptors.response.use((response) => {
     reconnect = 0
     return response
 }, async function (error) {
     const originalRequest = error.message;
+    console.log(error.response.status)
     if(!axios.defaults.baseURL) {
         axios.defaults.baseURL = BASE_URL + '/api';
     }
@@ -100,7 +96,10 @@ api.interceptors.response.use((response) => {
         }
         return api(originalRequest);
     }
-    error.message = i18n.t(api.defaults.errorMessage[error.response.status]) || error.message;
+    if([400,403,401,404,500].includes(error.response.status)) {
+        error.message = i18n.t(api.defaults.errorMessage[error.response.status]) || error.message;
+        return Promise.reject(error);
+    }
     return Promise.reject(error);
 });
 

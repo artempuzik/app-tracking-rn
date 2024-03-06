@@ -14,7 +14,6 @@ import SelectList from "../../components/select/SelectList";
 import {getObjectIcons, getObjects, getObjectsStatuses} from "../../store/objects/objectsActions";
 import CustomButton from "../../components/button/Button";
 import {getProfileData} from "../../store/app/appActions";
-import {getUsers} from "../../store/user/usersActions";
 import {getItemIoPointsByItemId, getItemPointByItemId} from "../../utils/helpers";
 import Loading from "../../components/loading/Loading";
 
@@ -29,6 +28,8 @@ const ObjectsScreen = ({navigation}) => {
     const dispatch = useDispatch()
 
     const refreshInterval = useSelector(state => state.user.refreshInterval)
+    const icons = useSelector(state => state.objects.icons)
+    const profile = useSelector(state => state.app.profile)
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -37,9 +38,7 @@ const ObjectsScreen = ({navigation}) => {
     const interval = useRef(null)
 
     const [objects, setObjects] = useState([])
-    const [icons, setIcons] = useState([])
     const [statuses, setStatuses] = useState([])
-    const [profile, setProfile] = useState(null)
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
@@ -111,29 +110,25 @@ const ObjectsScreen = ({navigation}) => {
     },[])
 
     const getObjectStatuses = useCallback(async () => {
+        console.log('Start Fetching data getObjectStatuses', new Date().toJSON())
         await dispatch(getObjectsStatuses()).then((data) => {
             if(data.response) {
+                console.log('Fetching data getObjectStatuses', new Date().toJSON(), !!data.response)
                 setStatuses(data.response)
             }
         })
     }, [])
 
     const getProfile = useCallback(async () => {
-        await dispatch(getProfileData()).then((data) => {
-            if(data.response) {
-                setProfile(data.response)
-            }
-        })
-    }, [])
-
-    const getUserData = useCallback(async () => {
-        await dispatch(getUsers())
+        await dispatch(getProfileData())
     }, [])
 
     const onRefresh = useCallback(async () => {
         try {
             setIsLoading(true)
             await getObjectStatuses()
+            await dispatch(getObjectIcons())
+            await getProfile()
         } finally {
             setIsLoading(false)
         }
@@ -141,14 +136,11 @@ const ObjectsScreen = ({navigation}) => {
 
     const getObjectsData = useCallback(async () => {
         setObjects([])
+        console.log('Start Fetching data getObjectsData', new Date().toJSON())
         await dispatch(getObjects()).then(async (data) =>{
             if(data.response) {
+                console.log('Fetching data getObjectsData', new Date().toJSON(), !!data.response)
                 setObjects(data.response)
-                await dispatch(getObjectIcons()).then((data) => {
-                    if(data.response) {
-                        setIcons(data.response)
-                    }
-                })
             }
         })
     }, [])
@@ -157,9 +149,7 @@ const ObjectsScreen = ({navigation}) => {
         try {
             setIsLoading(true)
             await getObjectsData()
-            await getProfile()
             await getObjectStatuses()
-            await getUserData()
         } finally {
             setIsLoading(false)
         }
