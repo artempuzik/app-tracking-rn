@@ -5,13 +5,6 @@ export const BASE_URL = 'https://geotek.pro'
 
 export const PRESSED_COLOR = 'rgb(210, 230, 255)'
 
-export const LANGUAGE_LIST = [
-    {'en': 'English'},
-    {'ru': 'Russian'},
-    {'az': "Azəricə"},
-    {'tr': 'Türkçe'}
-]
-
 export const METRICS_LIST = [
     {'metric': 'Metric'},
     {'non-metric': 'Non-metric'},
@@ -26,21 +19,6 @@ export const CODE_LIST = [
     {'geotek': 'Geotek'},
     {'google': 'Google'},
 ]
-
-export const WITH_IGNITION_OPTIONS = [
-    { label: i18n.t('on'), value: true },
-    { label: i18n.t('off'), value: false },
-];
-
-export const MOVE_OPTIONS = [
-    { label: i18n.t('in_move'), value: true },
-    { label: i18n.t('parked'), value: false },
-];
-
-export const STATUS_OPTIONS = [
-    { label: i18n.t('online'), value: true },
-    { label: i18n.t('offline'), value: false },
-];
 
 export const DRIVERS_OPTIONS = [
     { label: 'All drivers', value: true },

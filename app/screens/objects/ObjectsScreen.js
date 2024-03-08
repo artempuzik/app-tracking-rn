@@ -7,7 +7,7 @@ import styles from './styles';
 import SearchInput from "../../components/search/SearchInput";
 import Svg, {Path} from "react-native-svg";
 import ObjectItemElement from "./components/ObjectItemElement";
-import {MOVE_OPTIONS, PRESSED_COLOR, STATUS_OPTIONS, WITH_IGNITION_OPTIONS} from "../../config";
+import {PRESSED_COLOR} from "../../config";
 import {useDispatch, useSelector} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import SelectList from "../../components/select/SelectList";
@@ -23,6 +23,21 @@ const initialFilters = {
     isOnline: null,
     selectedGroup: null
 }
+
+const WITH_IGNITION_OPTIONS = [
+    { label: i18n.t('on'), value: true },
+    { label: i18n.t('off'), value: false },
+];
+
+const MOVE_OPTIONS = [
+    { label: i18n.t('in_move'), value: true },
+    { label: i18n.t('parked'), value: false },
+];
+
+const STATUS_OPTIONS = [
+    { label: i18n.t('online'), value: true },
+    { label: i18n.t('offline'), value: false },
+];
 
 const ObjectsScreen = ({navigation}) => {
     const dispatch = useDispatch()
@@ -110,10 +125,8 @@ const ObjectsScreen = ({navigation}) => {
     },[])
 
     const getObjectStatuses = useCallback(async () => {
-        console.log('Start Fetching data getObjectStatuses', new Date().toJSON())
         await dispatch(getObjectsStatuses()).then((data) => {
             if(data.response) {
-                console.log('Fetching data getObjectStatuses', new Date().toJSON(), !!data.response)
                 setStatuses(data.response)
             }
         })

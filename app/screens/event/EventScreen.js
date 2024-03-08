@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import SearchInput from "../../components/search/SearchInput";
 import Svg, {Path} from "react-native-svg";
-import {MOVE_OPTIONS, PRESSED_COLOR, STATUS_OPTIONS, WITH_IGNITION_OPTIONS} from "../../config";
+import {PRESSED_COLOR} from "../../config";
 import {useDispatch, useSelector} from "react-redux";
 import AppHeader from "../../components/header/AppHeader";
 import {
