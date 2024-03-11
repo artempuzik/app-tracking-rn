@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {Pressable, Text, View} from "react-native";
+import {Alert, Pressable, Text, View} from "react-native";
 import i18n from "../../utils/i18";
 import styles from "./styles";
 import Svg, {Path} from "react-native-svg";
@@ -24,17 +24,24 @@ const AppCalendarFilter = ({
     const [isOpenMaxTimeModal, setIsOpenMaxTimeModal] = useState(false)
 
     const saveCalendar = useCallback(() => {
-        setIsCalendarOpen(false)
         const from_h = new Date(minTime).getHours()
         const from_m = new Date(minTime).getMinutes()
         const till_h = new Date(maxTime).getHours()
         const till_m = new Date(maxTime).getMinutes()
         const from = new Date(minDate).setHours(from_h, from_m)
         const till = new Date(maxDate).setHours(till_h, till_m)
-        setCalendarProperties({
-            from,
-            till,
-        })
+
+        const differenceInTime = new Date(till).getTime() - new Date(from).getTime();
+        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+        if (differenceInDays < 31) {
+            setIsCalendarOpen(false)
+            setCalendarProperties({
+                from,
+                till,
+            });
+        } else {
+            Alert.alert("The selected range exceeds 30 days. Please select a range less than 31 days.");
+        }
     }, [minDate, maxDate, minTime, maxTime])
 
     const formatMinDate = useMemo(() => {

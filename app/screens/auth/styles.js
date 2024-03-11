@@ -50,7 +50,7 @@ export default StyleSheet.create({
     logo: {
         width: '100%',
         marginTop: 55,
-        height: 40,
+        height: 50,
     },
     input: {
         borderWidth: 0,

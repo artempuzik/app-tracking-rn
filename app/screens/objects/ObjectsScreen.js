@@ -24,21 +24,6 @@ const initialFilters = {
     selectedGroup: null
 }
 
-const WITH_IGNITION_OPTIONS = [
-    { label: i18n.t('on'), value: true },
-    { label: i18n.t('off'), value: false },
-];
-
-const MOVE_OPTIONS = [
-    { label: i18n.t('in_move'), value: true },
-    { label: i18n.t('parked'), value: false },
-];
-
-const STATUS_OPTIONS = [
-    { label: i18n.t('online'), value: true },
-    { label: i18n.t('offline'), value: false },
-];
-
 const ObjectsScreen = ({navigation}) => {
     const dispatch = useDispatch()
 
@@ -91,7 +76,7 @@ const ObjectsScreen = ({navigation}) => {
         const withEngineFilter = withGroupFilter.filter(el => {
             if(withIgnition !== null) {
                 const iopoints = getItemIoPointsByItemId(statuses, el)
-                return withIgnition ? Boolean(iopoints?.value) : !Boolean(iopoints?.value)
+                return withIgnition ? Boolean(+iopoints?.value) : !Boolean(+iopoints?.value)
             }
             return el
         })
@@ -149,10 +134,8 @@ const ObjectsScreen = ({navigation}) => {
 
     const getObjectsData = useCallback(async () => {
         setObjects([])
-        console.log('Start Fetching data getObjectsData', new Date().toJSON())
         await dispatch(getObjects()).then(async (data) =>{
             if(data.response) {
-                console.log('Fetching data getObjectsData', new Date().toJSON(), !!data.response)
                 setObjects(data.response)
             }
         })
@@ -195,7 +178,10 @@ const ObjectsScreen = ({navigation}) => {
                 <Text>{i18n.t('only_with_engines')}</Text>
                 <RadioForm
                     style={styles.radioButtons}
-                    radio_props={WITH_IGNITION_OPTIONS}
+                    radio_props={[
+                        { label: i18n.t('on'), value: true },
+                        { label: i18n.t('off'), value: false },
+                    ]}
                     onPress={(value) => {
                         setWithIgnition(value);
                     }}
@@ -212,7 +198,10 @@ const ObjectsScreen = ({navigation}) => {
                 <Text>{i18n.t('only_objects')}</Text>
                 <RadioForm
                     style={styles.radioButtons}
-                    radio_props={MOVE_OPTIONS}
+                    radio_props={[
+                        { label: i18n.t('in_move'), value: true },
+                        { label: i18n.t('parked'), value: false },
+                    ]}
                     onPress={(value) => {
                         setIsMove(value);
                     }}
@@ -229,7 +218,10 @@ const ObjectsScreen = ({navigation}) => {
                 <Text>{i18n.t('only_with_states')}</Text>
                 <RadioForm
                     style={styles.radioButtons}
-                    radio_props={STATUS_OPTIONS}
+                    radio_props={[
+                        { label: i18n.t('online'), value: true },
+                        { label: i18n.t('offline'), value: false },
+                    ]}
                     onPress={(value) => {
                         setIsOnline(value);
                     }}

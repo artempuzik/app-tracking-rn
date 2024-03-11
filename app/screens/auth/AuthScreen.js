@@ -19,11 +19,11 @@ import CustomButton from "../../components/button/Button";
 import RNPickerSelect from "react-native-picker-select";
 
 const background = require('../../../assets/bg_auth.png')
-const logo = require('../../../assets/logo.png')
 export default function AuthScreen({navigation}) {
     const servers = useSelector(state => state.app.servers)
     const languages = useSelector(state => state.app.languages)
     const lang = useSelector(state => state.app.language)
+    const logo = useSelector(state => state.app.logo)
 
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
@@ -90,7 +90,7 @@ export default function AuthScreen({navigation}) {
                 >
                     <View style={styles.mainContainer}>
                         <Image
-                            source={logo}
+                            source={{ uri: logo}}
                             style={styles.logo}
                             alt="logotype"
                             resizeMode={'contain'}

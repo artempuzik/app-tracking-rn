@@ -55,7 +55,6 @@ const ObjectSendCommandScreen = ({navigation}) => {
 
     const sendCommand = useCallback(() => {
         if(sendSmsMessages) {
-            console.log(isSmsAvailable)
             if(!isSmsAvailable) {
                 Alert.alert('Sms is not available');
                 navigation.navigate('ObjectItem', {id: route.params.id})
@@ -64,7 +63,7 @@ const ObjectSendCommandScreen = ({navigation}) => {
             sendDirectSms(message, element.phone).catch()
         } else {
             dispatch(sendCustomCommand({
-                objectID: element.id,
+                objectIDs: [+element.id],
                 templateID: 0,
                 command: message
             }))
@@ -82,7 +81,7 @@ const ObjectSendCommandScreen = ({navigation}) => {
             sendDirectSms(template.cmd, element.phone).catch()
         } else {
             dispatch(sendCustomCommand({
-                objectID: element.id,
+                objectIDs: [+element.id],
                 templateID: template.id,
                 cmd: template.cmd
             }))

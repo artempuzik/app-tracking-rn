@@ -23,7 +23,7 @@ const initialFilters = {
     minParking: '',
     showParkingOptions: null,
 }
-const ObjectItemParking = ({object}) => {
+const ObjectItemParking = ({object, style}) => {
     const navigation = useNavigation();
     const route = useRoute();
     const dispatch = useDispatch();
@@ -387,7 +387,7 @@ const ObjectItemParking = ({object}) => {
     ), [minParking, showParkingOptions, isFiltersOpen])
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
             {filtersBlock}
             <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {

@@ -7,7 +7,7 @@ import {
   setCurrentServer,
   setLanguage,
   setLanguages,
-  setLoading,
+  setLoading, setLogo,
   setProfile,
   setServers,
   setToken
@@ -78,6 +78,7 @@ export const getSettings = () => async (dispatch) => {
         .then(data => {
           dispatch(setServers(data.servers))
           dispatch(setLanguages(data.langs))
+          dispatch(setLogo(data['app-logo']))
         })
   } catch (e) {
     console.log(e)

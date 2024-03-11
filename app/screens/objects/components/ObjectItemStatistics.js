@@ -13,7 +13,7 @@ import {Image} from "expo-image";
 import {useDispatch, useSelector} from "react-redux";
 import {convertDate, getDuration, getMileage} from "../../../utils/helpers";
 
-const ObjectItemStatistics = ({object}) => {
+const ObjectItemStatistics = ({object, style}) => {
     const navigation = useNavigation();
     const route = useRoute();
     const dispatch = useDispatch();
@@ -391,7 +391,7 @@ const ObjectItemStatistics = ({object}) => {
     ), [report, isFiltersOpen])
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
             {filtersBlock}
             <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {

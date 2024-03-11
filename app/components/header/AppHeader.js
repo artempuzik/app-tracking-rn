@@ -9,13 +9,12 @@ import {PRESSED_COLOR} from "../../config";
 import {useDispatch, useSelector} from "react-redux";
 import {logOut} from "../../store/app/appActions";
 
-const logo = require('../../../assets/logo.png')
-
 const AppHeader = ({ canGoBack }) => {
     const navigation = useNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const dispatch = useDispatch()
 
+    const logo = useSelector(state => state.app.logo)
     const profile = useSelector(state => state.app.profile)
     const currentUser = useSelector(state => state.user.currentUser)
     const logoutHandler = () => {
@@ -152,8 +151,9 @@ const AppHeader = ({ canGoBack }) => {
             <View style={styles.headerInner}>
                 { leftIconRender }
                 { renderModalMenu }
-                <Image source={logo}
+                <Image source={{uri: logo}}
                        style={styles.logo}
+                       width={150}
                        alt="logotype"
                        resizeMode={'contain'} />
                 <Pressable

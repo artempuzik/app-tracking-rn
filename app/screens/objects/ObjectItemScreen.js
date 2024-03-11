@@ -65,14 +65,15 @@ const ObjectItemScreen = ({navigation}) => {
         }
     })
 
-    const page = useMemo(() => {
-        switch (icon) {
-            case 1: return <ObjectItemRoutes object={object}/>
-            case 2: return <ObjectItemParking object={object}/>
-            case 3: return <ObjectItemStatistics object={object}/>
-            case 4: return <ObjectItemPhoto object={object}/>
-            default: return <ObjectItemInfo object={object} status={status}/>
-        }
+    const pages = useMemo(() => {
+        console.log(icon)
+        return (<View style={{flex: 1}}>
+            <ObjectItemRoutes object={object} style={{display: icon===1 ? 'flex' : 'none'}}/>
+            <ObjectItemParking object={object} style={{display: icon===2 ? 'flex' : 'none'}}/>
+            <ObjectItemStatistics object={object} style={{display: icon===3 ? 'flex' : 'none'}}/>
+            <ObjectItemPhoto object={object} style={{display: icon===4 ? 'flex' : 'none'}}/>
+            <ObjectItemInfo object={object} status={status} style={{display: icon===0 ? 'flex' : 'none'}}/>
+        </View>)
     }, [icon, object, status])
 
     return (
@@ -189,7 +190,7 @@ const ObjectItemScreen = ({navigation}) => {
             </View>
             <View style={{flex: 1}}>
                 {
-                    isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : page
+                    isLoading ? <ActivityIndicator style={{marginTop: 50}} size="large" color="#2060ae" /> : pages
                 }
             </View>
         </SafeAreaView>

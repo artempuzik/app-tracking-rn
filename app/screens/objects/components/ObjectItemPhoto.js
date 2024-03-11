@@ -7,7 +7,7 @@ import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import {useSelector} from "react-redux";
 import {Image} from "expo-image";
 
-const ObjectItemPhoto = ({object}) => {
+const ObjectItemPhoto = ({object, style}) => {
     const navigation = useNavigation();
 
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
@@ -106,7 +106,7 @@ const ObjectItemPhoto = ({object}) => {
 ), [])
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
             <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={(data) => console.log(data)}/>
             {
                 !isCalendarOpen ? pageBlock : null

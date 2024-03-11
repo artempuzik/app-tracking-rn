@@ -10,7 +10,7 @@ import {Image} from "expo-image";
 import {convertDate, getMileage} from "../../../utils/helpers";
 import {getObjectPoint} from "../../../store/objects/objectsActions";
 
-const ObjectItemInfo = ({object, status}) => {
+const ObjectItemInfo = ({object, status, style}) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
@@ -93,7 +93,7 @@ const ObjectItemInfo = ({object, status}) => {
     }, [iopoints])
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
             <View style={styles.pageItemHeader}>
                 <View style={styles.rightBlock}>
                     <Pressable

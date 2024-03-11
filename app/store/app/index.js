@@ -7,6 +7,7 @@ const initialState = {
     token: null,
     currentServer: BASE_URL,
     language: 'en-us',
+    logo: null,
     profile: null,
     languages: ['en-us'],
     servers: [BASE_URL]
@@ -21,6 +22,9 @@ export const appSlice = createSlice({
         },
         setLoading: (state, action) => {
             state.loading = action.payload
+        },
+        setLogo: (state, action) => {
+            state.logo = action.payload
         },
         setLanguage: (state, action) => {
             state.language = action.payload
@@ -58,6 +62,7 @@ export const {
     setServers,
     setLanguages,
     setCurrentServer,
+    setLogo,
     setLoading
 } = appSlice.actions
 
