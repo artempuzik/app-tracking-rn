@@ -65,17 +65,17 @@ const ObjectItemScreen = ({navigation}) => {
         }
     }, [refreshInterval, inter])
 
-    const [interval, setInterval] = useState({
-        from: 0,
-        till: 0,
+    const [calendar, setCalendar] = useState({
+        from: new Date().setHours(0,0),
+        till: +new Date(),
     })
 
     const pages = useMemo(() => {
         switch (icon) {
-            case 1: return <ObjectItemRoutes object={object} interval={interval} setInterval={setInterval}/>
-            case 2: return <ObjectItemParking object={object} interval={interval} setInterval={setInterval}/>
-            case 3: return <ObjectItemStatistics object={object} interval={interval} setInterval={setInterval}/>
-            case 4: return <ObjectItemPhoto object={object} interval={interval} setInterval={setInterval}/>
+            case 1: return <ObjectItemRoutes object={object} interval={calendar} setInterval={setCalendar}/>
+            case 2: return <ObjectItemParking object={object} interval={calendar} setInterval={setCalendar}/>
+            case 3: return <ObjectItemStatistics object={object} interval={calendar} setInterval={setCalendar}/>
+            case 4: return <ObjectItemPhoto object={object} interval={calendar} setInterval={setCalendar}/>
             default: return <ObjectItemInfo object={object} status={status}/>
         }
     }, [icon, object, status])

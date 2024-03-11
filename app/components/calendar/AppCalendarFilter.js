@@ -109,16 +109,6 @@ const AppCalendarFilter = ({
         setMaxTime(new Date(new Date().setDate(-1)).setHours(23,59))
     }, [])
 
-    useEffect(() => {
-        if(!interval.from && !interval.till) {
-            setToday()
-            setCalendarProperties({
-                from: new Date().setHours(0,0),
-                till: +new Date(),
-            })
-        }
-    }, [interval])
-
     return (
         <View style={{...styles.filtersContainer, display: isCalendarOpen ? 'flex' : 'none'}}>
             <View style={styles.screenTitle}>
