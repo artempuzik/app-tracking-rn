@@ -23,8 +23,8 @@ const DriverItemScreen = ({navigation}) => {
 
     const [sessions, setSessions] = useState(null)
     const [interval, setInterval] = useState({
-        from: 0,
-        till: 0,
+        from: new Date().setHours(0,0),
+        till: +new Date(),
     })
 
     const [isEditBlockOpen, setIsEditBlockOpen] = useState(false)
@@ -344,7 +344,7 @@ const DriverItemScreen = ({navigation}) => {
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
             {editBlock}
-            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
+            <AppCalendarFilter interval={interval} isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isEditBlockOpen && !isCalendarOpen ? pageBlock : null
             }

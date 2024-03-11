@@ -28,8 +28,8 @@ const GasStationScreen = ({navigation}) => {
     const [transactions, setTransactions] = useState([])
 
     const [interval, setInterval] = useState({
-        from: 0,
-        till: 0,
+        from: new Date().setHours(0,0),
+        till: +new Date(),
     })
 
     const [isFiltersOpen, setIsFiltersOpen] = useState(false)
@@ -219,7 +219,7 @@ const GasStationScreen = ({navigation}) => {
         <SafeAreaView style={styles.container}>
             <AppHeader canGoBack={true} />
             {!isFiltersReset && filtersBlock}
-            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
+            <AppCalendarFilter interval={interval}  isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isFiltersOpen && !isCalendarOpen ? listBlock : null
             }
