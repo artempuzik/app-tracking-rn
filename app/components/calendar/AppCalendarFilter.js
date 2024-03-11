@@ -11,12 +11,13 @@ const AppCalendarFilter = ({
                                isCalendarOpen,
                                setIsCalendarOpen,
                                setCalendarProperties,
+                               interval
 }) => {
-    const [minDate, setMinDate] = useState(0)
-    const [maxDate, setMaxDate] = useState(0)
+    const [minDate, setMinDate] = useState(interval.from)
+    const [maxDate, setMaxDate] = useState(interval.till)
 
-    const [minTime, setMinTime] = useState(0)
-    const [maxTime, setMaxTime] = useState(0)
+    const [minTime, setMinTime] = useState(interval.from)
+    const [maxTime, setMaxTime] = useState(interval.till)
 
     const [isOpenMinDateModal, setIsOpenMinDateModal] = useState(false)
     const [isOpenMaxDateModal, setIsOpenMaxDateModal] = useState(false)
@@ -32,6 +33,7 @@ const AppCalendarFilter = ({
         const till = new Date(maxDate).setHours(till_h, till_m)
 
         const differenceInTime = new Date(till).getTime() - new Date(from).getTime();
+
         const differenceInDays = differenceInTime / (1000 * 3600 * 24);
         if (differenceInDays < 31) {
             setIsCalendarOpen(false)
@@ -45,11 +47,11 @@ const AppCalendarFilter = ({
     }, [minDate, maxDate, minTime, maxTime])
 
     const formatMinDate = useMemo(() => {
-        return minDate ? `${new Date(minDate).toISOString()}`.substring(-10, 10) : `${new Date().toISOString()}`.substring(-10, 10)
+        return minDate ? `${new Date(minDate).toLocaleDateString()}`.substring(-10, 10) : `${new Date().toISOString()}`.substring(-10, 10)
     }, [minDate])
 
     const formatMaxDate = useMemo(() => {
-        return maxDate ? `${new Date(maxDate).toISOString()}`.substring(-10, 10) : `${new Date().toISOString()}`.substring(-10, 10)
+        return maxDate ? `${new Date(maxDate).toLocaleDateString()}`.substring(-10, 10) : `${new Date().toISOString()}`.substring(-10, 10)
     }, [maxDate])
 
     const formatMinTime = useMemo(() => {
@@ -108,12 +110,14 @@ const AppCalendarFilter = ({
     }, [])
 
     useEffect(() => {
-        setToday()
-        setCalendarProperties({
-            from: new Date().setHours(0,0),
-            till: +new Date(),
-        })
-    }, [])
+        if(!interval.from && !interval.till) {
+            setToday()
+            setCalendarProperties({
+                from: new Date().setHours(0,0),
+                till: +new Date(),
+            })
+        }
+    }, [interval])
 
     return (
         <View style={{...styles.filtersContainer, display: isCalendarOpen ? 'flex' : 'none'}}>

@@ -23,7 +23,7 @@ const initialFilters = {
     minParking: '',
     showParkingOptions: null,
 }
-const ObjectItemParking = ({object, style}) => {
+const ObjectItemParking = ({object, interval, setInterval}) => {
     const navigation = useNavigation();
     const route = useRoute();
     const dispatch = useDispatch();
@@ -31,11 +31,6 @@ const ObjectItemParking = ({object, style}) => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isShowMap, setIsShowMap] = useState(false)
-
-    const [interval, setInterval] = useState({
-        from: 0,
-        till: 0,
-    })
 
     const [history, setHistory] = useState([])
     const [minParking, setMinParking] = useState(initialFilters.minParking)
@@ -387,9 +382,9 @@ const ObjectItemParking = ({object, style}) => {
     ), [minParking, showParkingOptions, isFiltersOpen])
 
     return (
-        <View style={[styles.container, style]}>
+        <View style={[styles.container]}>
             {filtersBlock}
-            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
+            <AppCalendarFilter interval={interval} isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isFiltersOpen && !isCalendarOpen ? pageBlock : null
             }

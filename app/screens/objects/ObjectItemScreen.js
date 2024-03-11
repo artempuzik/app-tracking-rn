@@ -18,7 +18,7 @@ const ObjectItemScreen = ({navigation}) => {
     const route = useRoute();
     const dispatch = useDispatch()
     const refreshInterval = useSelector(state => state.user.refreshInterval)
-    const interval = useRef(null)
+    const inter = useRef(null)
 
     const [object, setObject] = useState(null)
     const [status, setStatus] = useState(null)
@@ -57,22 +57,27 @@ const ObjectItemScreen = ({navigation}) => {
     }, []);
 
     useEffect(() => {
-        interval.current = setInterval(async () => await getObjectStatusData(), refreshInterval)
+        inter.current = setInterval(async () => await getObjectStatusData(), refreshInterval)
         return () => {
             console.log('CLOSE OBJECT ID SCREEN')
-            clearInterval(interval.current)
-            interval.current = null
+            clearInterval(inter.current)
+            inter.current = null
         }
+    }, [refreshInterval, inter])
+
+    const [interval, setInterval] = useState({
+        from: 0,
+        till: 0,
     })
 
     const pages = useMemo(() => {
-        return (<View style={{flex: 1}}>
-            <ObjectItemRoutes object={object} style={{display: icon===1 ? 'flex' : 'none'}}/>
-            <ObjectItemParking object={object} style={{display: icon===2 ? 'flex' : 'none'}}/>
-            <ObjectItemStatistics object={object} style={{display: icon===3 ? 'flex' : 'none'}}/>
-            <ObjectItemPhoto object={object} style={{display: icon===4 ? 'flex' : 'none'}}/>
-            <ObjectItemInfo object={object} status={status} style={{display: icon===0 ? 'flex' : 'none'}}/>
-        </View>)
+        switch (icon) {
+            case 1: return <ObjectItemRoutes object={object} interval={interval} setInterval={setInterval}/>
+            case 2: return <ObjectItemParking object={object} interval={interval} setInterval={setInterval}/>
+            case 3: return <ObjectItemStatistics object={object} interval={interval} setInterval={setInterval}/>
+            case 4: return <ObjectItemPhoto object={object} interval={interval} setInterval={setInterval}/>
+            default: return <ObjectItemInfo object={object} status={status}/>
+        }
     }, [icon, object, status])
 
     return (

@@ -13,7 +13,7 @@ import {Image} from "expo-image";
 import {useDispatch, useSelector} from "react-redux";
 import {convertDate, getDuration, getMileage} from "../../../utils/helpers";
 
-const ObjectItemStatistics = ({object, style}) => {
+const ObjectItemStatistics = ({object, interval, setInterval}) => {
     const navigation = useNavigation();
     const route = useRoute();
     const dispatch = useDispatch();
@@ -25,10 +25,6 @@ const ObjectItemStatistics = ({object, style}) => {
 
     const [isLoading, setIsLoading] = useState(false)
     const [report, setReport] = useState(null)
-    const [interval, setInterval] = useState({
-        from: 0,
-        till: 0,
-    })
 
     const icons = useSelector(state => state.objects.icons)
     const baseUrl = useSelector(state => state.app.currentServer)
@@ -391,9 +387,9 @@ const ObjectItemStatistics = ({object, style}) => {
     ), [report, isFiltersOpen])
 
     return (
-        <View style={[styles.container, style]}>
+        <View style={[styles.container]}>
             {filtersBlock}
-            <AppCalendarFilter isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
+            <AppCalendarFilter interval={interval} isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
                 !isFiltersOpen && !isCalendarOpen && report ? pageBlock : null
             }
