@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView, Platform, KeyboardAvoidingView} from 'react-native';
+import {View, Text, Pressable, ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
@@ -8,7 +8,7 @@ import CustomButton from "../../../components/button/Button";
 import i18n from "../../../utils/i18";
 import {getObjectHistory} from "../../../store/objects/objectsActions";
 import {useDispatch, useSelector} from "react-redux";
-import {calculateDistance, convertDate, getDuration, parsePointString} from "../../../utils/helpers";
+import {convertDate, getDuration, parsePointString} from "../../../utils/helpers";
 import {Image} from "expo-image";
 import {LeafletView} from "react-native-leaflet-view";
 import Input from "../../../components/input/Input";
@@ -452,7 +452,10 @@ const ObjectItemRoutes = ({object, interval, setInterval}) => {
             {filtersBlock}
             <AppCalendarFilter interval={interval} isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
-                !isFiltersOpen && !isCalendarOpen ? pageBlock : null
+                !isFiltersOpen && !isCalendarOpen && !isLoading ? pageBlock : null
+            }
+            {
+                isLoading ? <ActivityIndicator /> : null
             }
         </View>
     );

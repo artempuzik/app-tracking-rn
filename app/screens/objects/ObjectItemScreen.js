@@ -78,7 +78,7 @@ const ObjectItemScreen = ({navigation}) => {
             case 4: return <ObjectItemPhoto object={object} interval={calendar} setInterval={setCalendar}/>
             default: return <ObjectItemInfo object={object} status={status}/>
         }
-    }, [icon, object, status])
+    }, [icon, object, status, calendar])
 
     return (
         <SafeAreaView style={styles.container}>

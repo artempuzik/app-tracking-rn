@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView} from 'react-native';
+import {View, Text, Pressable, ScrollView, ActivityIndicator} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import i18n from "../../../utils/i18";
@@ -386,7 +386,10 @@ const ObjectItemParking = ({object, interval, setInterval}) => {
             {filtersBlock}
             <AppCalendarFilter interval={interval} isCalendarOpen={isCalendarOpen} setIsCalendarOpen={setIsCalendarOpen} setCalendarProperties={setInterval}/>
             {
-                !isFiltersOpen && !isCalendarOpen ? pageBlock : null
+                !isFiltersOpen && !isCalendarOpen && !isLoading ? pageBlock : null
+            }
+            {
+                isLoading ? <ActivityIndicator /> : null
             }
         </View>
     );
