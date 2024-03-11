@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, Text, ActivityIndicator, Pressable, ScrollView, Platform, Linking} from 'react-native';
+import {View, Text, ActivityIndicator, Pressable, ScrollView, Platform, Linking, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import {LeafletView} from 'react-native-leaflet-view';
@@ -177,14 +177,16 @@ const ObjectsMapScreen = ({navigation}) => {
         return geoZones.map(zone => {
             const mapPoints = []
             zone?.points.split(' ').forEach(point => {
-                if(!mapPoints.length) {
-                    mapPoints.push({lat: point})
-                } else {
-                    const lastPoint = mapPoints[mapPoints.length - 1]
-                    if(lastPoint.lng) {
+                if(point) {
+                    if(!mapPoints.length) {
                         mapPoints.push({lat: point})
                     } else {
-                        lastPoint.lng = point
+                        const lastPoint = mapPoints[mapPoints.length - 1]
+                        if(lastPoint.lng) {
+                            mapPoints.push({lat: point})
+                        } else {
+                            lastPoint.lng = point
+                        }
                     }
                 }
             })

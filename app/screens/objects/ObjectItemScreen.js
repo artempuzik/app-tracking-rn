@@ -66,7 +66,6 @@ const ObjectItemScreen = ({navigation}) => {
     })
 
     const pages = useMemo(() => {
-        console.log(icon)
         return (<View style={{flex: 1}}>
             <ObjectItemRoutes object={object} style={{display: icon===1 ? 'flex' : 'none'}}/>
             <ObjectItemParking object={object} style={{display: icon===2 ? 'flex' : 'none'}}/>
