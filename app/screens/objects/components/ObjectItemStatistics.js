@@ -5,7 +5,6 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import styles from '../styles';
 import SelectList from "../../../components/select/SelectList";
 import {getFuelReport, getObjectPoint} from '../../../store/objects/objectsActions';
-import {REPORTS_LIST} from "../../../config";
 import AppCalendarFilter from "../../../components/calendar/AppCalendarFilter";
 import CustomButton from "../../../components/button/Button";
 import i18n from "../../../utils/i18";
@@ -343,7 +342,7 @@ const ObjectItemStatistics = ({object, interval, setInterval}) => {
     const filtersBlock = useMemo(() => (
         <View style={{...styles.filtersContainer, display: isFiltersOpen ? 'flex' : 'none'}}>
             <View style={styles.screenTitle}>
-                <Text>Фильтры</Text>
+                <Text>{i18n.t('filters')}</Text>
                 <Pressable
                     style={styles.headerButton}
                     onPress={() => setIsFiltersOpen(false)}
@@ -362,7 +361,10 @@ const ObjectItemStatistics = ({object, interval, setInterval}) => {
                 <View style={{paddingHorizontal: 20}}>
                     <View style={styles.selectContainer}>
                         <SelectList
-                            items={REPORTS_LIST}
+                            items={[
+                                {'general': i18n.t('general_report')},
+                                {'fuel': i18n.t('fuel_report')},
+                            ]}
                             onChange={setReportType}
                             value={reportType}
                         />

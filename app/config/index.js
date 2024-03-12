@@ -10,11 +10,6 @@ export const METRICS_LIST = [
     {'non-metric': 'Non-metric'},
 ]
 
-export const REPORTS_LIST = [
-    {'general': i18n.t('general_report')},
-    {'fuel': i18n.t('fuel_report')},
-]
-
 export const CODE_LIST = [
     {'geotek': 'Geotek'},
     {'google': 'Google'},
