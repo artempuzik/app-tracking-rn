@@ -1,4 +1,4 @@
-import {setUsers, setRefreshInterval} from "./index";
+import {setUsers, setRefreshInterval, setCurrentUser} from "./index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Api from '../../api'
 
@@ -88,6 +88,7 @@ export const changeUser = (dto) => async (dispatch, getState) => {
       ...user,
       ...dto
     })
+    await dispatch(setCurrentUser(response.data))
     return {
       response: response.data,
       error: null,

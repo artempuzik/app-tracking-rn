@@ -8,8 +8,7 @@ import {CODE_LIST, METRICS_LIST, REFRESH_INTERVAL} from "../../../config";
 import CustomButton from "../../../components/button/Button";
 import {changeUser, setRefreshStatusInterval} from "../../../store/user/usersActions";
 import RangeSlider from "../../../components/Slider/RangeSlider";
-import {reloadApp, setAppLanguage} from "../../../store/app/appActions";
-import {useNavigation} from "@react-navigation/native";
+import {refreshUserToken, reloadApp, setAppLanguage} from "../../../store/app/appActions";
 
 const AppGeneralSettings = () => {
     const lang = useSelector(state => state.app.language)
@@ -42,13 +41,14 @@ const AppGeneralSettings = () => {
                 geocoder,
                 language: lang,
                 flags,
-            })).then((response) => {
+            })).then(async (response) => {
                 setLoading(false)
                 if(response.error) {
                     setError(response.error)
                 }
-                dispatch(setRefreshStatusInterval(interval))
-                dispatch(reloadApp())
+                await dispatch(setRefreshStatusInterval(interval))
+                await dispatch(refreshUserToken())
+                await dispatch(reloadApp())
             })
         } catch (e) {
             setLoading(false)
