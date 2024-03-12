@@ -119,11 +119,13 @@ export const reloadApp = () => async (dispatch) => {
   setTimeout(() => dispatch(setLoading(false)), 500)
 }
 
-export const getToken = (dto) => async (dispatch) => {
+export const getToken = (dto) => async (dispatch, getState) => {
   try {
+    const language = getState().app.language
     const response = await Api.getUserToken({
       userName: dto.userName.trim(),
       password: dto.password.trim(),
+      language,
     })
     await AsyncStorage.setItem('login', JSON.stringify(dto));
     const token = response.data.accessToken
