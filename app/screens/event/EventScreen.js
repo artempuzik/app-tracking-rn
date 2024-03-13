@@ -55,7 +55,6 @@ const EventScreen = ({navigation}) => {
         })
     }, [events, query, date, showAll, selectedObject])
 
-    console.log(filteredArray.length, query)
     const formatObjects = useMemo(() => {
         if(!profile?.objects.length) {
             return []
@@ -197,7 +196,7 @@ const EventScreen = ({navigation}) => {
                     data={filteredArray}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={() => (<View style={{height: 130}}></View>)}
-                    ListEmptyComponent={<Text style={styles.emptyList}>Empty list</Text>}
+                    ListEmptyComponent={<Text style={styles.emptyList}>{i18n.t('empty_list')}</Text>}
                     enableEmptySections={true}
                     renderItem={({item}) => (
                         <Pressable
