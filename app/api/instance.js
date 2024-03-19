@@ -45,7 +45,7 @@ const refreshToken = async () => {
         }
         return response;
     } catch (err) {
-        console.log('refreshToken error', err)
+        console.log('Error RefreshToken: ', err)
         return null
     }
 };
@@ -76,7 +76,6 @@ api.interceptors.response.use((response) => {
     return response
 }, async function (error) {
     const originalRequest = error.message;
-    console.log(error.response.status)
     if(!axios.defaults.baseURL) {
         axios.defaults.baseURL = BASE_URL + '/api';
     }
