@@ -17,13 +17,13 @@
     "ios": {
       "userInterfaceStyle": "light",
       "supportsTablet": true,
-      "bundleIdentifier": "com.geotek"
+      "bundleIdentifier": "com.geotek",
+      "infoPlist": {
+        "NSLocationAlwaysUsageDescription": "App would like to access your location."
+      }
     },
     "android": {
       "userInterfaceStyle": "light",
-      "googleMaps": {
-        "apiKey": ""
-      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/gt.png",
         "backgroundColor": "#ffffff"
@@ -45,7 +45,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "App would like to access your location."
         }
       ],
       ["expo-build-properties",
