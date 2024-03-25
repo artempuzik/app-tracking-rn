@@ -1,0 +1,150 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "GeoTek Mobile"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "GeoTekMobile"
+          }
+        }
+      }
+    },
+    "NSLocationAlwaysAndWhenInUseUsageDescription" : {
+      "comment" : "App would like to access your location.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "az-AZ" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App would like to access your location."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение хочет получить доступ к вашему местоположению."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama konumunuza erişmek istiyor."
+          }
+        }
+      }
+    },
+    "NSLocationAlwaysUsageDescription" : {
+      "comment" : "App would like to access your location.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "az-AZ" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App would like to access your location."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение хочет получить доступ к вашему местоположению."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama konumunuza erişmek istiyor."
+          }
+        }
+      }
+    },
+    "NSLocationUsageDescription" : {
+      "comment" : "App would like to access your location.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "az-AZ" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App would like to access your location."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение хочет получить доступ к вашему местоположению."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama konumunuza erişmek istiyor."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "App would like to access your location.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "az-AZ" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App would like to access your location."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение хочет получить доступ к вашему местоположению."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama konumunuza erişmek istiyor."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

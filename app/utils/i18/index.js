@@ -131,6 +131,7 @@ const translations = {
     min_parking_min:  'Minimum parking, min.',
     general_report: 'General report',
     calendar_alert: 'The selected range exceeds 30 days. Please select a range less than 31 days',
+    locationAlwaysAndWhenInUsePermission: "App would like to access your location."
   },
   'ru-ru': {
     auth_title: "Авторизация",
@@ -261,6 +262,7 @@ const translations = {
     min_parking_min:  'Минимальная парковка, мин.',
     general_report: 'Сводный отчет',
     calendar_alert: 'Выбранный диапазон превышает 30 дней. Пожалуйста, выберите диапазон менее 31 дня',
+    locationAlwaysAndWhenInUsePermission: "Приложение хочет получить доступ к вашему местоположению."
   },
   'tr-tr': {
     auth_title: "Giriş",
@@ -391,6 +393,7 @@ const translations = {
     min_parking_min:  'Minimum park, dak.',
     general_report: 'Genel rapor',
     calendar_alert: 'Seçilen aralık 30 günü aşıyor. Lütfen 31 günden kısa bir aralık seçin',
+    locationAlwaysAndWhenInUsePermission: "Uygulama konumunuza erişmek istiyor."
   },
   'az-latn-az': {
     auth_title: "Sisteme giriş",
@@ -521,6 +524,7 @@ const translations = {
     min_parking_min:  'Minimum park, dəq.',
     general_report: 'Gənəl hesabat',
     calendar_alert: 'Seçilmiş diapazon 30 günü keçir. Zəhmət olmasa 31 gündən az bir sıra seçin',
+    locationAlwaysAndWhenInUsePermission: "Tətbiq məkanınıza daxil olmaq istəyir."
   }
 }
 

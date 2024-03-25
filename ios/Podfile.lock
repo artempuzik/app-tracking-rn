@@ -26,6 +26,8 @@ PODS:
     - SDWebImageWebPCoder (~> 0.13.0)
   - ExpoKeepAwake (12.8.2):
     - ExpoModulesCore
+  - ExpoLocalization (14.8.3):
+    - ExpoModulesCore
   - ExpoModulesCore (1.11.8):
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1190,6 +1192,7 @@ DEPENDENCIES:
   - ExpoHead (from `../node_modules/expo-router/ios`)
   - ExpoImage (from `../node_modules/expo-image/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLocalization (from `../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSMS (from `../node_modules/expo-sms/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
@@ -1301,6 +1304,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-image/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  ExpoLocalization:
+    :path: "../node_modules/expo-localization/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoSMS:
@@ -1441,6 +1446,7 @@ SPEC CHECKSUMS:
   ExpoHead: 5aa4ef0a18a83f323e21cf83ff29b94d3c53e050
   ExpoImage: 2b71f20472f293c1fbbf2400795b03d5bf8dd598
   ExpoKeepAwake: 0f5cad99603a3268e50af9a6eb8b76d0d9ac956c
+  ExpoLocalization: f5f5d71dc0c9514d3d77b2771144f6fed6398d04
   ExpoModulesCore: 96d1751929ad10622773bb729ab28a8423f0dd0c
   ExpoSMS: 50236489ead8beaef1eb7a1be262e7f51169e34b
   EXSplashScreen: 39244885abfb1b12765aae89edb90f8c88db6bbd
@@ -1521,4 +1527,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b743cbc7c880d0d848cfbb897645d311b7109d7f
 
-COCOAPODS: 1.15.0
+COCOAPODS: 1.15.2

@@ -17,10 +17,7 @@
     "ios": {
       "userInterfaceStyle": "light",
       "supportsTablet": true,
-      "bundleIdentifier": "com.geotek",
-      "infoPlist": {
-        "NSLocationAlwaysUsageDescription": "App would like to access your location."
-      }
+      "bundleIdentifier": "com.geotek"
     },
     "android": {
       "userInterfaceStyle": "light",
@@ -43,10 +40,7 @@
     "plugins": [
       "expo-router",
       [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "App would like to access your location."
-        }
+        "expo-location"
       ],
       ["expo-build-properties",
         {
