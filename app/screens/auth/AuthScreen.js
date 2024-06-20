@@ -96,11 +96,6 @@ export default function AuthScreen({navigation}) {
                             resizeMode={'contain'}
                         />
                         <ScrollView style={{flex: 1, marginTop: '20%'}}>
-                            <KeyboardAvoidingView
-                                behavior='padding'
-                                enabled={Platform.OS === 'ios'}
-                                style={styles.auth}
-                            >
                                 <Text style={styles.title}>
                                     {i18n.t('auth_title')}
                                 </Text>
@@ -149,17 +144,16 @@ export default function AuthScreen({navigation}) {
                                     btnColor={'#FFA500'}
                                     onPress={submitHandler}
                                 />
-                        <View style={{ marginTop: 20, marginBottom: 50, ...styles.row }}>
-                        <Text style={styles.text}>{i18n.t('interface_language')}</Text>
-                            <RNPickerSelect
-                                onValueChange={(itemValue) => dispatch(setAppLanguage(itemValue))}
-                                items={formatLangArray}
-                                style={pickerSelectStylesLanguage}
-                                value={lang}
-                                placeholder={{value: 'select_item', label: i18n.t('select_item')}}
-                            />
-                    </View>
-                            </KeyboardAvoidingView>
+                                <View style={{ marginTop: 20, marginBottom: 50, ...styles.row }}>
+                                <Text style={styles.text}>{i18n.t('interface_language')}</Text>
+                                    <RNPickerSelect
+                                        onValueChange={(itemValue) => dispatch(setAppLanguage(itemValue))}
+                                        items={formatLangArray}
+                                        style={pickerSelectStylesLanguage}
+                                        value={lang}
+                                        placeholder={{value: 'select_item', label: i18n.t('select_item')}}
+                                    />
+                                </View>
                         </ScrollView>
                     </View>
                 </ImageBackground>

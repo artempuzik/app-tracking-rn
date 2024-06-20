@@ -26,121 +26,117 @@
       }
     },
     "NSLocationAlwaysAndWhenInUseUsageDescription" : {
-      "comment" : "App would like to access your location.",
       "extractionState" : "manual",
       "localizations" : {
         "az-AZ" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+            "value" : "Məkan xidmətlərini yandırmaq bizə yerinizi xəritədə göstərməyə imkan verəcək"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App would like to access your location."
+            "value" : "Turning on location services will allow us to show your location on the MAP."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Приложение хочет получить доступ к вашему местоположению."
+            "value" : "Включение служб определения местоположения позволит нам показывать ваше местоположение на карте"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygulama konumunuza erişmek istiyor."
+            "value" : "Konum hizmetlerini açmak, konumunuzu haritada göstermemize olanak tanır"
           }
         }
       }
     },
     "NSLocationAlwaysUsageDescription" : {
-      "comment" : "App would like to access your location.",
       "extractionState" : "manual",
       "localizations" : {
         "az-AZ" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+            "value" : "Məkan xidmətlərini yandırmaq bizə yerinizi xəritədə göstərməyə imkan verəcək"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App would like to access your location."
+            "value" : "Turning on location services will allow us to show your location on the MAP."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Приложение хочет получить доступ к вашему местоположению."
+            "value" : "Включение служб определения местоположения позволит нам показывать ваше местоположение на карте"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygulama konumunuza erişmek istiyor."
+            "value" : "Konum hizmetlerini açmak, konumunuzu haritada göstermemize olanak tanır"
           }
         }
       }
     },
     "NSLocationUsageDescription" : {
-      "comment" : "App would like to access your location.",
       "extractionState" : "manual",
       "localizations" : {
         "az-AZ" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+            "value" : "Məkan xidmətlərini yandırmaq bizə yerinizi xəritədə göstərməyə imkan verəcək"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App would like to access your location."
+            "value" : "Turning on location services will allow us to show your location on the MAP."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Приложение хочет получить доступ к вашему местоположению."
+            "value" : "Включение служб определения местоположения позволит нам показывать ваше местоположение на карте"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygulama konumunuza erişmek istiyor."
+            "value" : "Konum hizmetlerini açmak, konumunuzu haritada göstermemize olanak tanır"
           }
         }
       }
     },
     "NSLocationWhenInUseUsageDescription" : {
-      "comment" : "App would like to access your location.",
       "extractionState" : "manual",
       "localizations" : {
         "az-AZ" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tətbiq məkanınıza daxil olmaq istəyir."
+            "value" : "Məkan xidmətlərini yandırmaq bizə yerinizi xəritədə göstərməyə imkan verəcək"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App would like to access your location."
+            "value" : "Turning on location services will allow us to show your location on the MAP."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Приложение хочет получить доступ к вашему местоположению."
+            "value" : "Включение служб определения местоположения позволит нам показывать ваше местоположение на карте"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygulama konumunuza erişmek istiyor."
+            "value" : "Konum hizmetlerini açmak, konumunuzu haritada göstermemize olanak tanır"
           }
         }
       }

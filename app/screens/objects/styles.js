@@ -281,4 +281,15 @@ export default StyleSheet.create({
         marginLeft: 10,
         backgroundColor: 'transparent',
     },
+    locationPoint: {
+        width: 40,
+        height: 40,
+        position: 'absolute',
+        bottom: 20,
+        right: 10,
+        zIndex: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    }
 });

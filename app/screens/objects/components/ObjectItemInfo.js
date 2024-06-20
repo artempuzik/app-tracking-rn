@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, Pressable, ScrollView, Alert} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View, Text, Pressable, ScrollView, Alert, Platform, Linking} from 'react-native';
 import Svg, {Path} from "react-native-svg";
 import i18n from '../../../utils/i18'
 import styles from '../styles';
@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Image} from "expo-image";
 import {convertDate, getMileage} from "../../../utils/helpers";
 import {getObjectPoint} from "../../../store/objects/objectsActions";
+import {PRESSED_COLOR} from "../../../config";
 
 const ObjectItemInfo = ({object, status}) => {
     const navigation = useNavigation();
@@ -92,6 +93,22 @@ const ObjectItemInfo = ({object, status}) => {
         })
     }, [iopoints])
 
+    const moveToLocation = useCallback(async () => {
+        const marker = points[0]
+        if(!marker) {
+            return
+        }
+        const {lat, lng} = marker.position
+
+        if (Platform.OS === 'ios') {
+            const url = `maps://maps.apple.com/maps?daddr=${lat},${lng}&ll=`;
+            await Linking.openURL(url);
+        } else {
+            const url = `http://maps.google.com?daddr=${lat},${lng}&ll=`;
+            await Linking.openURL(url);
+        }
+    }, [points]);
+
     return (
         <View style={[styles.container]}>
             <View style={styles.pageItemHeader}>
@@ -142,6 +159,24 @@ const ObjectItemInfo = ({object, status}) => {
                     mapMarkers={points}
                     mapCenterPosition={points[0]?.position}
                 />
+                <View style={styles.locationPoint}>
+                    <Pressable
+                        style={({pressed}) => [
+                            {
+                                backgroundColor: pressed ? PRESSED_COLOR : 'transparent',
+                            },
+                        ]}
+                        onPress={moveToLocation}
+                    >
+                        <Svg
+                            width={30}
+                            height={30}
+                            fill="#838b8b"
+                            viewBox="0 0 16 16">
+                            <Path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M2.04 4.326c.325 1.329 2.532 2.54 3.717 3.19.48.263.793.434.743.484q-.121.12-.242.234c-.416.396-.787.749-.758 1.266.035.634.618.824 1.214 1.017.577.188 1.168.38 1.286.983.082.417-.075.988-.22 1.52-.215.782-.406 1.48.22 1.48 1.5-.5 3.798-3.186 4-5 .138-1.243-2-2-3.5-2.5-.478-.16-.755.081-.99.284-.172.15-.322.279-.51.216-.445-.148-2.5-2-1.5-2.5.78-.39.952-.171 1.227.182.078.099.163.208.273.318.609.304.662-.132.723-.633.039-.322.081-.671.277-.867.434-.434 1.265-.791 2.028-1.12.712-.306 1.365-.587 1.579-.88A7 7 0 1 1 2.04 4.327Z"/>
+                        </Svg>
+                    </Pressable>
+                </View>
             </View>
             <Text style={{marginBottom: 5, marginTop: 10, marginHorizontal: 20, opacity: 0.6}}>{convertDate(point?.time)}</Text>
             <Text style={{marginVertical: 5, marginHorizontal: 20, opacity: 0.6}}>
