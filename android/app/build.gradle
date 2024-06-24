@@ -97,9 +97,24 @@ android {
             absolutePaths false
             lintConfig file('lint.xml')
         }
+        sourceSets {
+            test {
+                java.srcDirs += "$projectDir/src/testCommon"
+            }
+
+            androidTest {
+                java.srcDirs += "$projectDir/src/testCommon"
+            }
+        }
     }
     signingConfigs {
         debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
             storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'

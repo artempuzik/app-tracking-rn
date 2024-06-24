@@ -100,13 +100,15 @@ const ObjectItemInfo = ({object, status}) => {
         }
         const {lat, lng} = marker.position
 
-        if (Platform.OS === 'ios') {
-            const url = `maps://maps.apple.com/maps?daddr=${lat},${lng}&ll=`;
-            await Linking.openURL(url);
-        } else {
-            const url = `http://maps.google.com?daddr=${lat},${lng}&ll=`;
-            await Linking.openURL(url);
-        }
+        const url = `http://maps.google.com?daddr=${lat},${lng}&ll=`;
+        await Linking.openURL(url);
+        // if (Platform.OS === 'ios') {
+        //     const url = `maps://maps.apple.com/maps?daddr=${lat},${lng}&ll=`;
+        //     await Linking.openURL(url);
+        // } else {
+        //     const url = `http://maps.google.com?daddr=${lat},${lng}&ll=`;
+        //     await Linking.openURL(url);
+        // }
     }, [points]);
 
     return (
