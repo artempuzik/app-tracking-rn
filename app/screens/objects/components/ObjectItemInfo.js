@@ -48,10 +48,12 @@ const ObjectItemInfo = ({object, status}) => {
 
     useEffect(() => {
         const coords = status?.points[0]
+        console.log('coords', coords)
         if(!coords) {
             return
         }
         dispatch(getObjectPoint(coords)).then(data => {
+            console.log(data.response)
             if(data.response) {
                 setCity(data.response)
             }
@@ -110,6 +112,8 @@ const ObjectItemInfo = ({object, status}) => {
         //     await Linking.openURL(url);
         // }
     }, [points]);
+
+    console.log('---------------', city)
 
     return (
         <View style={[styles.container]}>
@@ -182,7 +186,7 @@ const ObjectItemInfo = ({object, status}) => {
             </View>
             <Text style={{marginBottom: 5, marginTop: 10, marginHorizontal: 20, opacity: 0.6}}>{convertDate(point?.time)}</Text>
             <Text style={{marginVertical: 5, marginHorizontal: 20, opacity: 0.6}}>
-                {address}
+                address {address}
             </Text>
             <View style={{...styles.footer, marginVertical: 5, paddingHorizontal: 20}}>
                 <View style={styles.footerElement}>

@@ -17,7 +17,12 @@
     "ios": {
       "userInterfaceStyle": "light",
       "supportsTablet": true,
-      "bundleIdentifier": "com.geotek"
+      "bundleIdentifier": "com.geotek",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
       "userInterfaceStyle": "light",

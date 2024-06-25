@@ -216,7 +216,9 @@ export const getGeozoneById = (id) => async () => {
 export const getObjectPoint = (coords) => async (dispatch, getState) => {
   try {
     const lang = getState().app.language
+    console.log('coords+lang: ', coords, lang)
     const response = await Api.getPoint(coords, lang)
+    console.log('response: ' + response, coords, lang)
     return {
       response: response.data,
       error: null,
